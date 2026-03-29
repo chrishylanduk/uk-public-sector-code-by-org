@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/chrishylanduk/uk-public-sector-code-by-org/main/public/data/org-mapping.schema.json",
+  "title": "UK Government GitHub Organisation Mapping",
+  "description": "Maps GitHub organisations to UK central and local government organisations.",
+  "type": "object",
+  "required": ["description", "licence", "source", "last_updated", "central_government", "local_government"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "licence": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "last_updated": {
+      "type": "string",
+      "description": "ISO 8601 date the file was last updated",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "examples": ["2026-03-30"]
+    },
+    "central_government": {
+      "type": "array",
+      "description": "Central government organisations, identified by GOV.UK organisation slug.",
+      "items": {
+        "type": "object",
+        "required": ["govuk_slug", "wikidata_id", "github_orgs"],
+        "additionalProperties": false,
+        "properties": {
+          "govuk_slug": {
+            "type": "string",
+            "description": "GOV.UK organisation slug. Use with the GOV.UK Organisations API: GET https://www.gov.uk/api/organisations/{govuk_slug}",
+            "pattern": "^[a-z0-9-]+$",
+            "examples": ["home-office", "cabinet-office", "hm-revenue-customs"]
+          },
+          "wikidata_id": {
+            "type": "string",
+            "description": "Wikidata entity ID. Use with the Wikidata API: https://www.wikidata.org/entity/{wikidata_id}",
+            "pattern": "^Q[0-9]+$",
+            "examples": ["Q763388", "Q5995", "Q1protected"]
+          },
+          "github_orgs": {
+            "type": "array",
+            "description": "GitHub organisation names belonging to this government organisation. Match against the 'owner' field in the UK X-Gov Open Source Repo Scraper dataset.",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            "uniqueItems": true,
+            "examples": [
+              ["UKHomeOffice", "UKHomeOfficeForms", "HO-CTO"],
+              ["alphagov", "cabinetoffice"]
+            ]
+          }
+        }
+      }
+    },
+    "local_government": {
+      "type": "array",
+      "description": "Local government organisations. English councils include an england_planning_data_reference; all entries include a wikidata_id.",
+      "items": {
+        "type": "object",
+        "required": ["wikidata_id", "github_orgs"],
+        "additionalProperties": false,
+        "properties": {
+          "england_planning_data_reference": {
+            "type": "string",
+            "description": "Local authority reference code from planning.data.gov.uk. Present for English councils only. Use with the planning data API: GET https://www.planning.data.gov.uk/entity.json?dataset=local-authority&reference={england_planning_data_reference}",
+            "pattern": "^[A-Z0-9]+$",
+            "examples": ["COV", "BIR", "LBH"]
+          },
+          "wikidata_id": {
+            "type": "string",
+            "description": "Wikidata entity ID. Present for all entries. Use with the Wikidata API: https://www.wikidata.org/entity/{wikidata_id}",
+            "pattern": "^Q[0-9]+$",
+            "examples": ["Q5179058", "Q28530250"]
+          },
+          "github_orgs": {
+            "type": "array",
+            "description": "GitHub organisation names belonging to this local authority. Match against the 'owner' field in the UK X-Gov Open Source Repo Scraper dataset.",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]+$"
+            },
+            "uniqueItems": true,
+            "examples": [
+              ["coventry-city-council"],
+              ["edinburghcouncil"]
+            ]
+          }
+        }
+      }
+    }
+  }
+}

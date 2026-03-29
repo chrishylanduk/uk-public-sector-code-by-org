@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://publicsectorcodebyorg.co.uk/sitemap.xml

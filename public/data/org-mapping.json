@@ -1,0 +1,653 @@
+{
+  "$schema": "https://raw.githubusercontent.com/chrishylanduk/uk-public-sector-code-by-org/main/public/data/org-mapping.schema.json",
+  "description": "Mapping of GitHub organisations to UK government organisations. Central government entries use GOV.UK organisation slugs (https://www.gov.uk/api/organisations) and Wikidata IDs. Local government entries use planning.data.gov.uk local authority references (https://www.planning.data.gov.uk/dataset/local-authority) and Wikidata IDs.",
+  "licence": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
+  "source": "https://publicsectorcodebyorg.co.uk/data",
+  "last_updated": "2026-03-30",
+  "central_government": [
+    {
+      "govuk_slug": "department-of-health-and-social-care",
+      "wikidata_id": "Q3044742",
+      "github_orgs": [
+        "dhsc-govuk"
+      ]
+    },
+    {
+      "govuk_slug": "cabinet-office",
+      "wikidata_id": "Q5995",
+      "github_orgs": [
+        "cabinetoffice",
+        "Civil-Service-Human-Resources"
+      ]
+    },
+    {
+      "govuk_slug": "uk-statistics-authority",
+      "github_orgs": [],
+      "wikidata_id": "Q14592116"
+    },
+    {
+      "govuk_slug": "department-for-business-and-trade",
+      "github_orgs": [],
+      "wikidata_id": "Q116726347"
+    },
+    {
+      "govuk_slug": "ministry-of-housing-communities-local-government",
+      "github_orgs": [
+        "communitiesuk",
+        "digital-land"
+      ],
+      "wikidata_id": "Q601819"
+    },
+    {
+      "govuk_slug": "department-for-culture-media-and-sport",
+      "github_orgs": [],
+      "wikidata_id": "Q910019"
+    },
+    {
+      "govuk_slug": "attorney-generals-office",
+      "github_orgs": [],
+      "wikidata_id": "Q2928396"
+    },
+    {
+      "govuk_slug": "office-for-equality-and-opportunity",
+      "wikidata_id": "Q138837814",
+      "github_orgs": [
+        "ukgov-equality-hub"
+      ]
+    },
+    {
+      "govuk_slug": "department-for-science-innovation-and-technology",
+      "wikidata_id": "Q116719150",
+      "github_orgs": []
+    },
+    {
+      "govuk_slug": "government-digital-service",
+      "wikidata_id": "Q5588795",
+      "github_orgs": [
+        "alphagov",
+        "i-dot-ai",
+        "govuk-digital-backbone",
+        "govuk-one-login",
+        "govuk-pay",
+        "gds-operations",
+        "co-cddo",
+        "datagovuk",
+        "ukgovdatascience",
+        "govuk-forms",
+        "govuk-paas",
+        "openregister"
+      ]
+    },
+    {
+      "govuk_slug": "ministry-of-justice",
+      "wikidata_id": "Q2983190",
+      "github_orgs": [
+        "ministryofjustice",
+        "moj-analytical-services"
+      ]
+    },
+    {
+      "govuk_slug": "hm-courts-and-tribunals-service",
+      "wikidata_id": "Q5732294",
+      "github_orgs": [
+        "hmcts",
+        "CJSCommonPlatform"
+      ]
+    },
+    {
+      "govuk_slug": "home-office",
+      "wikidata_id": "Q763388",
+      "github_orgs": [
+        "UKHomeOffice",
+        "UKHomeOfficeForms",
+        "HO-CTO"
+      ]
+    },
+    {
+      "govuk_slug": "homes-england",
+      "github_orgs": [
+        "homesengland"
+      ],
+      "wikidata_id": "Q5890410"
+    },
+    {
+      "govuk_slug": "department-for-education",
+      "wikidata_id": "Q2612019",
+      "github_orgs": [
+        "DFE-Digital"
+      ]
+    },
+    {
+      "govuk_slug": "nhs-england",
+      "wikidata_id": "Q19382273",
+      "github_orgs": [
+        "nhsengland",
+        "NHSDigital",
+        "nhsx",
+        "nhs-england-tools",
+        "nhsuk"
+      ]
+    },
+    {
+      "govuk_slug": "department-for-environment-food-rural-affairs",
+      "wikidata_id": "Q3044721",
+      "github_orgs": [
+        "DEFRA",
+        "defra-design"
+      ]
+    },
+    {
+      "govuk_slug": "department-for-work-pensions",
+      "wikidata_id": "Q1191394",
+      "github_orgs": [
+        "dwp",
+        "dwpdigital"
+      ]
+    },
+    {
+      "govuk_slug": "hm-revenue-customs",
+      "wikidata_id": "Q166559",
+      "github_orgs": [
+        "hmrc"
+      ]
+    },
+    {
+      "govuk_slug": "ministry-of-defence",
+      "wikidata_id": "Q1143261",
+      "github_orgs": [
+        "defencedigital"
+      ]
+    },
+    {
+      "govuk_slug": "defence-science-and-technology-laboratory",
+      "github_orgs": [
+        "dstl"
+      ],
+      "wikidata_id": "Q5251253"
+    },
+    {
+      "govuk_slug": "department-for-transport",
+      "wikidata_id": "Q2982287",
+      "github_orgs": [
+        "department-for-transport",
+        "department-for-transport-BODS"
+      ]
+    },
+    {
+      "govuk_slug": "office-for-national-statistics",
+      "wikidata_id": "Q1334971",
+      "github_orgs": [
+        "ONSdigital",
+        "ONS-Innovation",
+        "ONSBigData",
+        "ONS-OpenData",
+        "datasciencecampus"
+      ]
+    },
+    {
+      "govuk_slug": "companies-house",
+      "wikidata_id": "Q257303",
+      "github_orgs": [
+        "companieshouse"
+      ]
+    },
+    {
+      "govuk_slug": "land-registry",
+      "wikidata_id": "Q5635120",
+      "github_orgs": [
+        "LandRegistry"
+      ]
+    },
+    {
+      "govuk_slug": "foreign-commonwealth-development-office",
+      "wikidata_id": "Q358834",
+      "github_orgs": [
+        "UKForeignOffice"
+      ]
+    },
+    {
+      "govuk_slug": "the-national-archives",
+      "wikidata_id": "Q392703",
+      "github_orgs": [
+        "nationalarchives",
+        "digital-preservation"
+      ]
+    },
+    {
+      "govuk_slug": "national-crime-agency",
+      "wikidata_id": "Q6971994",
+      "github_orgs": [
+        "NationalCrimeAgency"
+      ]
+    },
+    {
+      "govuk_slug": "food-standards-agency",
+      "wikidata_id": "Q2741994",
+      "github_orgs": [
+        "FoodStandardsAgency",
+        "fsadata"
+      ]
+    },
+    {
+      "govuk_slug": "crown-prosecution-service",
+      "wikidata_id": "Q1141790",
+      "github_orgs": [
+        "CPS-Innovation"
+      ]
+    },
+    {
+      "govuk_slug": "uk-export-finance",
+      "wikidata_id": "Q4158541",
+      "github_orgs": [
+        "UK-Export-Finance"
+      ]
+    },
+    {
+      "govuk_slug": "competition-and-markets-authority",
+      "wikidata_id": "Q18363996",
+      "github_orgs": [
+        "cmagovuk"
+      ]
+    },
+    {
+      "govuk_slug": "ofqual",
+      "wikidata_id": "Q7079769",
+      "github_orgs": [
+        "OfqualGovUK"
+      ]
+    },
+    {
+      "govuk_slug": "forestry-commission",
+      "wikidata_id": "Q1437242",
+      "github_orgs": [
+        "forestresearch"
+      ]
+    },
+    {
+      "govuk_slug": "uk-health-security-agency",
+      "wikidata_id": "Q104336949",
+      "github_orgs": [
+        "ukhsa-collaboration",
+        "UKHSA-Internal"
+      ]
+    },
+    {
+      "govuk_slug": "national-cyber-security-centre",
+      "github_orgs": [
+        "ukncsc"
+      ],
+      "wikidata_id": "Q23688635"
+    },
+    {
+      "govuk_slug": "government-communications-headquarters",
+      "wikidata_id": "Q220798",
+      "github_orgs": [
+        "gchq"
+      ]
+    },
+    {
+      "govuk_slug": "care-quality-commission",
+      "github_orgs": [
+        "CareQualityCommission"
+      ],
+      "wikidata_id": "Q5038860"
+    },
+    {
+      "govuk_slug": "driver-and-vehicle-standards-agency",
+      "wikidata_id": "Q16974184",
+      "github_orgs": [
+        "dvsa"
+      ]
+    },
+    {
+      "govuk_slug": "driver-and-vehicle-licensing-agency",
+      "wikidata_id": "Q16974184",
+      "github_orgs": [
+        "dvla"
+      ]
+    },
+    {
+      "govuk_slug": "intellectual-property-office",
+      "wikidata_id": "Q4052127",
+      "github_orgs": [
+        "intellectual-property-office"
+      ]
+    },
+    {
+      "govuk_slug": "ordnance-survey",
+      "wikidata_id": "Q548721",
+      "github_orgs": [
+        "OrdnanceSurvey"
+      ]
+    },
+    {
+      "govuk_slug": "uk-space-agency",
+      "wikidata_id": "Q1140638",
+      "github_orgs": [
+        "UKSpaceAgency"
+      ]
+    },
+    {
+      "govuk_slug": "medicines-and-healthcare-products-regulatory-agency",
+      "wikidata_id": "Q1916302",
+      "github_orgs": [
+        "MHRA"
+      ]
+    },
+    {
+      "govuk_slug": "hm-passport-office",
+      "wikidata_id": "Q5988335",
+      "github_orgs": [
+        "HMPO"
+      ]
+    },
+    {
+      "govuk_slug": "crown-commercial-service",
+      "wikidata_id": "Q5589070",
+      "github_orgs": [
+        "Crown-Commercial-Service"
+      ]
+    },
+    {
+      "govuk_slug": "uk-research-and-innovation",
+      "wikidata_id": "Q38609561",
+      "github_orgs": []
+    },
+    {
+      "govuk_slug": "innovate-uk",
+      "wikidata_id": "Q7692585",
+      "github_orgs": [
+        "InnovateUKGitHub"
+      ]
+    },
+    {
+      "govuk_slug": "nhs-business-services-authority",
+      "wikidata_id": "Q6954117",
+      "github_orgs": [
+        "nhsbsa",
+        "nhsbsa-data-analytics"
+      ]
+    },
+    {
+      "govuk_slug": "national-institute-for-clinical-excellence",
+      "wikidata_id": "Q3425168",
+      "github_orgs": [
+        "nice-digital"
+      ]
+    },
+    {
+      "govuk_slug": "insolvency-service",
+      "wikidata_id": "Q6038232",
+      "github_orgs": [
+        "InsolvencyService"
+      ]
+    },
+    {
+      "govuk_slug": "uk-hydrographic-office",
+      "wikidata_id": "Q5955058",
+      "github_orgs": [
+        "UKHO"
+      ]
+    },
+    {
+      "govuk_slug": "the-pensions-regulator",
+      "wikidata_id": "Q7756572",
+      "github_orgs": [
+        "thepensionsregulator"
+      ]
+    },
+    {
+      "govuk_slug": "department-for-energy-security-and-net-zero",
+      "wikidata_id": "Q116825523",
+      "github_orgs": []
+    },
+    {
+      "govuk_slug": "uk-atomic-energy-authority",
+      "wikidata_id": "Q615775",
+      "github_orgs": [
+        "ukaea"
+      ]
+    },
+    {
+      "govuk_slug": "active-travel-england",
+      "wikidata_id": "Q97933142",
+      "github_orgs": [
+        "acteng"
+      ]
+    },
+    {
+      "govuk_slug": "met-office",
+      "wikidata_id": "Q1851405",
+      "github_orgs": [
+        "MetOffice",
+        "MetOfficeSpaceApps"
+      ]
+    },
+    {
+      "govuk_slug": "joint-nature-conservation-committee",
+      "wikidata_id": "Q6269293",
+      "github_orgs": [
+        "jncc",
+        "JNCC-UK"
+      ]
+    },
+    {
+      "govuk_slug": "veterinary-medicines-directorate",
+      "wikidata_id": "Q7923709",
+      "github_orgs": [
+        "VMDDTE"
+      ]
+    }
+  ],
+  "local_government": [
+    {
+      "england_planning_data_reference": "BAS",
+      "wikidata_id": "Q16966588",
+      "github_orgs": [
+        "BathnesDevelopment"
+      ]
+    },
+    {
+      "england_planning_data_reference": "BNH",
+      "wikidata_id": "Q16953725",
+      "github_orgs": [
+        "brighton-hove-gov-uk"
+      ]
+    },
+    {
+      "england_planning_data_reference": "BRC",
+      "wikidata_id": "Q896725",
+      "github_orgs": [
+        "BracknellForestCouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "BST",
+      "wikidata_id": "Q16953796",
+      "github_orgs": [
+        "BristolCityCouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "CMD",
+      "wikidata_id": "Q5025790",
+      "github_orgs": [
+        "CamdenCouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "COV",
+      "wikidata_id": "Q5179058",
+      "github_orgs": [
+        "coventry-city-council"
+      ]
+    },
+    {
+      "england_planning_data_reference": "DEV",
+      "wikidata_id": "Q6385990",
+      "github_orgs": [
+        "DevonCC"
+      ]
+    },
+    {
+      "england_planning_data_reference": "DST",
+      "wikidata_id": "Q55231693",
+      "github_orgs": [
+        "Dorset-Council-UK"
+      ]
+    },
+    {
+      "england_planning_data_reference": "ESS",
+      "wikidata_id": "Q23240",
+      "github_orgs": [
+        "essexcountycouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "ESX",
+      "wikidata_id": "Q5329458",
+      "github_orgs": [
+        "east-sussex-county-council"
+      ]
+    },
+    {
+      "england_planning_data_reference": "HCK",
+      "wikidata_id": "Q5637369",
+      "github_orgs": [
+        "LBHackney-IT"
+      ]
+    },
+    {
+      "england_planning_data_reference": "HNS",
+      "wikidata_id": "Q5913301",
+      "github_orgs": [
+        "LBHounslow"
+      ]
+    },
+    {
+      "england_planning_data_reference": "KHL",
+      "wikidata_id": "Q5935834",
+      "github_orgs": [
+        "hull-city-council"
+      ]
+    },
+    {
+      "england_planning_data_reference": "KTT",
+      "wikidata_id": "Q6413671",
+      "github_orgs": [
+        "RoyalBoroughKingston"
+      ]
+    },
+    {
+      "england_planning_data_reference": "LBH",
+      "wikidata_id": "Q6481450",
+      "github_orgs": [
+        "LambethCouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "LIF",
+      "wikidata_id": "Q6543271",
+      "github_orgs": [
+        "Lichfield-District-Council"
+      ]
+    },
+    {
+      "england_planning_data_reference": "LIV",
+      "wikidata_id": "Q6658351",
+      "github_orgs": [
+        "LiverpoolCityCouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "LUT",
+      "wikidata_id": "Q16997109",
+      "github_orgs": [
+        "LutonCouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "OXF",
+      "wikidata_id": "Q6386253",
+      "github_orgs": [
+        "OxfordshireCountyCouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "RDG",
+      "wikidata_id": "Q17018654",
+      "github_orgs": [
+        "Reading-Borough-Council"
+      ]
+    },
+    {
+      "england_planning_data_reference": "ROT",
+      "wikidata_id": "Q217039",
+      "github_orgs": [
+        "rothgov"
+      ]
+    },
+    {
+      "england_planning_data_reference": "RUH",
+      "wikidata_id": "Q73072730",
+      "github_orgs": [
+        "rushmoor"
+      ]
+    },
+    {
+      "england_planning_data_reference": "SKP",
+      "wikidata_id": "Q18655",
+      "github_orgs": [
+        "smbc-digital"
+      ]
+    },
+    {
+      "england_planning_data_reference": "SRY",
+      "wikidata_id": "Q6386325",
+      "github_orgs": [
+        "surreydigitalservices"
+      ]
+    },
+    {
+      "england_planning_data_reference": "STN",
+      "wikidata_id": "Q7650288",
+      "github_orgs": [
+        "LondonBoroughSutton"
+      ]
+    },
+    {
+      "england_planning_data_reference": "TRF",
+      "wikidata_id": "Q7832588",
+      "github_orgs": [
+        "TraffordCouncil"
+      ]
+    },
+    {
+      "england_planning_data_reference": "WAR",
+      "wikidata_id": "Q17066348",
+      "github_orgs": [
+        "warwickshire"
+      ]
+    },
+    {
+      "england_planning_data_reference": "WBK",
+      "wikidata_id": "Q17041496",
+      "github_orgs": [
+        "west-berkshire-council"
+      ]
+    },
+    {
+      "england_planning_data_reference": "YOR",
+      "wikidata_id": "Q17059453",
+      "github_orgs": [
+        "CityOfYork"
+      ]
+    },
+    {
+      "wikidata_id": "Q28530250",
+      "github_orgs": [
+        "edinburghcouncil"
+      ]
+    }
+  ]
+}

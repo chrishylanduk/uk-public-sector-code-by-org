@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-gov-blue: #c2410c;
+  --color-gov-dark-blue: #9a3412;
+  --color-gov-light-blue: #fb923c;
+  --color-gov-green: #00703c;
+  --color-gov-red: #d4351c;
+  --color-gov-grey: #505a5f;
+  --color-gov-light-grey: #f3f2f1;
+  --color-gov-border: #b1b4b6;
+
+  /* System fonts */
+  --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-sans);
+}

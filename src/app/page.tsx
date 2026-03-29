@@ -1,0 +1,50 @@
+import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs } from '@/lib/data-fetcher';
+import { processOrganisationData, getOrgList, getUniqueFormats } from '@/lib/data-processor';
+import OrgDirectory from '@/components/OrgDirectory';
+import { formatDateTime } from '@/utils/format';
+import Link from 'next/link';
+
+export const dynamic = 'force-static';
+export const revalidate = false;
+
+export default async function HomePage() {
+  // Fetch data at build time
+  const [repos, govOrgs, planningOrgs] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs()]);
+
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs);
+  const orgList = getOrgList(organisations);
+  const formats = getUniqueFormats(organisations);
+
+  const buildDate = new Date();
+  const totalRepos = orgList.reduce((sum, entry) => sum + entry.repoCount, 0);
+
+  return (
+    <div>
+      <div className="bg-gov-light-grey border-l-4 border-gov-blue px-6 py-6 mb-8 rounded">
+        <h2 className="text-3xl font-bold mb-4 leading-tight">
+          Explore the open source code published by UK public sector organisations
+        </h2>
+        <p className="text-lg mb-3">
+          Powered by a mapping of GitHub organisations to UK public sector organisations.
+          The mapping data is open and available for others to use:{' '}
+          <Link
+            href="/data"
+            className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+          >
+            get the mapping data
+          </Link>
+          .
+        </p>
+        <p className="text-base mb-3">
+          Currently tracking <strong>{orgList.length} organisations</strong> and{' '}
+          <strong>{totalRepos.toLocaleString('en-GB')} active repositories</strong>.
+        </p>
+        <p className="text-sm text-gov-grey">
+          Updated daily · Last update: {formatDateTime(buildDate)}
+        </p>
+      </div>
+
+      <OrgDirectory entries={orgList} availableFormats={formats} />
+    </div>
+  );
+}

@@ -3,7 +3,7 @@
  * Produces one row per GitHub org (or one row per gov org if github_orgs is empty).
  *
  * Columns:
- *   github_org, org_type, govuk_slug, england_planning_data_reference, wikidata_id
+ *   github_org, org_type, govuk_slug, england_planning_data_reference, wikidata_id, site_slug, site_url
  */
 
 import fs from 'fs';
@@ -12,21 +12,36 @@ import path from 'path';
 const DATA_FILE = path.join(process.cwd(), 'public/data/org-mapping.json');
 const CSV_FILE = path.join(process.cwd(), 'public/data/org-mapping.csv');
 
-interface CentralGovEntry {
+interface GovUkEntry {
+  type: 'gov_uk';
   govuk_slug: string;
-  wikidata_id: string | null;
+  wikidata_id?: string | null;
+  site_slug?: string;
+  site_url?: string;
   github_orgs: string[];
 }
 
-interface LocalGovEntry {
-  england_planning_data_reference?: string;
+interface EnglishCouncilEntry {
+  type: 'english_council';
+  england_planning_data_reference: string;
   wikidata_id?: string | null;
+  site_slug?: string;
+  site_url?: string;
   github_orgs: string[];
 }
+
+interface OtherEntry {
+  type: 'other';
+  wikidata_id: string;
+  site_slug?: string;
+  site_url?: string;
+  github_orgs: string[];
+}
+
+type OrgEntry = GovUkEntry | EnglishCouncilEntry | OtherEntry;
 
 interface JsonMappingFile {
-  central_government: CentralGovEntry[];
-  local_government: LocalGovEntry[];
+  organisations: OrgEntry[];
 }
 
 function escapeCell(value: string): string {
@@ -44,26 +59,37 @@ export function generateCsv(): void {
   const raw = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8')) as JsonMappingFile;
   const lines: string[] = [];
 
-  lines.push(row('github_org', 'org_type', 'govuk_slug', 'england_planning_data_reference', 'wikidata_id'));
+  lines.push(row('github_org', 'org_type', 'govuk_slug', 'england_planning_data_reference', 'wikidata_id', 'site_slug', 'site_url'));
 
-  for (const entry of raw.central_government) {
-    if (entry.github_orgs.length === 0) {
-      lines.push(row('', 'central_government', entry.govuk_slug, '', entry.wikidata_id ?? ''));
-    } else {
-      for (const githubOrg of entry.github_orgs) {
-        lines.push(row(githubOrg, 'central_government', entry.govuk_slug, '', entry.wikidata_id ?? ''));
+  for (const entry of raw.organisations) {
+    if (entry.type === 'gov_uk') {
+      const wikidataId = entry.wikidata_id ?? '';
+      const siteSlug = entry.site_slug ?? '';
+      const siteUrl = entry.site_url ?? '';
+      if (entry.github_orgs.length === 0) {
+        lines.push(row('', 'gov_uk', entry.govuk_slug, '', wikidataId, siteSlug, siteUrl));
+      } else {
+        for (const githubOrg of entry.github_orgs) {
+          lines.push(row(githubOrg, 'gov_uk', entry.govuk_slug, '', wikidataId, siteSlug, siteUrl));
+        }
       }
-    }
-  }
-
-  for (const entry of (raw.local_government ?? [])) {
-    const planningRef = entry.england_planning_data_reference ?? '';
-    const wikidataId = entry.wikidata_id ?? '';
-    if (entry.github_orgs.length === 0) {
-      lines.push(row('', 'local_government', '', planningRef, wikidataId));
+    } else if (entry.type === 'english_council') {
+      const planningRef = entry.england_planning_data_reference;
+      const wikidataId = entry.wikidata_id ?? '';
+      const siteSlug = entry.site_slug ?? '';
+      const siteUrl = entry.site_url ?? '';
+      if (entry.github_orgs.length === 0) {
+        lines.push(row('', 'english_council', '', planningRef, wikidataId, siteSlug, siteUrl));
+      } else {
+        for (const githubOrg of entry.github_orgs) {
+          lines.push(row(githubOrg, 'english_council', '', planningRef, wikidataId, siteSlug, siteUrl));
+        }
+      }
     } else {
+      const siteSlug = entry.site_slug ?? '';
+      const siteUrl = entry.site_url ?? '';
       for (const githubOrg of entry.github_orgs) {
-        lines.push(row(githubOrg, 'local_government', '', planningRef, wikidataId));
+        lines.push(row(githubOrg, 'other', '', '', entry.wikidata_id, siteSlug, siteUrl));
       }
     }
   }

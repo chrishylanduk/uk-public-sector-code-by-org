@@ -8,8 +8,11 @@
 import fs from 'fs';
 import path from 'path';
 import Ajv from 'ajv/dist/2020';
-import { fetchGithubRepos, fetchAllGovUkOrgs } from '../src/lib/data-fetcher';
+import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchWikidataLocalOrg } from '../src/lib/data-fetcher';
+import { getRawOrganisations } from '../src/lib/mapping';
 import { generateCsv } from './generate-csv';
+import { populateSiteSlugs } from './populate-site-slugs';
+import { main as populateNullWikidataIds } from './populate-null-wikidata-ids';
 
 function validateOrgMapping() {
   const dataFile = path.join(process.cwd(), 'public/data/org-mapping.json');
@@ -33,14 +36,25 @@ async function main() {
   console.log('🚀 Pre-build: Fetching and caching data...\n');
 
   try {
-    validateOrgMapping();
-    generateCsv();
+    await populateNullWikidataIds();
 
-    // Fetch both data sources in parallel
+    // Cache all external data in parallel before population scripts need it
+    const wikidataIds = [...new Set(
+      getRawOrganisations()
+        .map((e) => ('wikidata_id' in e ? e.wikidata_id : null))
+        .filter((id): id is string => typeof id === 'string')
+    )];
+
     await Promise.all([
       fetchGithubRepos(),
       fetchAllGovUkOrgs(),
+      fetchPlanningDataOrgs(),
+      ...wikidataIds.map((id) => fetchWikidataLocalOrg(id)),
     ]);
+
+    await populateSiteSlugs();
+    validateOrgMapping();
+    generateCsv();
 
     console.log('\n✅ Pre-build complete: Data cached to .cache/\n');
   } catch (error) {

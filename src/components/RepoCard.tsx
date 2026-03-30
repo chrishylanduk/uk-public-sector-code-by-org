@@ -52,11 +52,21 @@ export default function RepoCard({ repo }: Props) {
 
           {repo.description && <p className="text-gov-grey mb-2">{repo.description}</p>}
 
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gov-grey">
-            <span>Last pushed {formatDate(new Date(repo.pushedAt))}</span>
-            {repo.license && (
-              <span>License: <span className="font-medium">{repo.license.name}</span></span>
-            )}
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm text-gov-grey">
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              <span>Last pushed: {formatDate(new Date(repo.pushedAt))}</span>
+              {repo.license && (
+                <span>License: <span className="font-medium">{repo.license.name}</span></span>
+              )}
+            </div>
+            <a
+              href={`https://github.com/${repo.owner}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+            >
+              github.com/{repo.owner}
+            </a>
           </div>
         </div>
       </div>

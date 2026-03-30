@@ -39,6 +39,8 @@ export interface WikidataLocalOrg {
   wikidataId: string;
   name: string;
   webUrl: string;
+  format?: string;
+  parentWikidataId?: string;
 }
 
 export interface PlanningDataOrg {
@@ -88,10 +90,17 @@ export interface GithubOrgStats {
   repos: GithubRepo[];
 }
 
+export interface GroupedFormats {
+  govUk: string[];
+  englishCouncil: string[];
+  other: string[];
+}
+
 export interface OrganisationStats {
   slug: string;
   name: string;
   format: string;
+  mappingType: 'gov_uk' | 'english_council' | 'other';
   totalStars: number;
   repoCount: number;
   totalRepoCount: number;

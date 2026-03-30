@@ -60,10 +60,11 @@ export default function DataPage() {
       <h2 className="text-3xl font-bold mb-3">Organisation mapping</h2>
       <p className="text-lg mb-6">
         A mapping of GitHub organisations to UK public sector organisations.
-        Central government entries reference the{' '}
-        <a href="https://www.gov.uk/api/organisations" target="_blank" rel="noopener noreferrer" className="text-gov-blue underline hover:text-gov-dark-blue">GOV.UK Organisations API</a>.
-        English local government entries reference the{' '}
-        <a href="https://www.planning.data.gov.uk/dataset/local-authority" target="_blank" rel="noopener noreferrer" className="text-gov-blue underline hover:text-gov-dark-blue">planning.data.gov.uk local authority dataset</a>.
+        Each entry has a <code className="font-mono bg-gray-100 px-1">type</code> field:{' '}
+        <code className="font-mono bg-gray-100 px-1">gov_uk</code> entries reference the{' '}
+        <a href="https://www.gov.uk/api/organisations" target="_blank" rel="noopener noreferrer" className="text-gov-blue underline hover:text-gov-dark-blue">GOV.UK Organisations API</a>.{' '}
+        <code className="font-mono bg-gray-100 px-1">english_council</code> entries reference the{' '}
+        <a href="https://www.planning.data.gov.uk/dataset/local-authority" target="_blank" rel="noopener noreferrer" className="text-gov-blue underline hover:text-gov-dark-blue">planning.data.gov.uk local authority dataset</a>.{' '}
         All entries include a <a href="https://www.wikidata.org" target="_blank" rel="noopener noreferrer" className="text-gov-blue underline hover:text-gov-dark-blue">Wikidata</a> ID.
       </p>
 
@@ -101,21 +102,28 @@ export default function DataPage() {
         <h5 className="font-bold mb-2">Example</h5>
         <pre className="bg-gray-100 border border-gov-border rounded p-4 text-sm overflow-x-auto mb-4">{`{
   "last_updated": "2026-03-30",
-  "central_government": [
+  "organisations": [
     {
+      "type": "gov_uk",
       "govuk_slug": "home-office",
       "wikidata_id": "Q763388",
+      "site_slug": "home-office",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/home-office",
       "github_orgs": ["UKHomeOffice", "UKHomeOfficeForms", "HO-CTO"]
-    }
-  ],
-  "local_government": [
+    },
     {
+      "type": "english_council",
       "england_planning_data_reference": "COV",
       "wikidata_id": "Q5179058",
+      "site_slug": "coventry-city-council",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/coventry-city-council",
       "github_orgs": ["coventry-city-council"]
     },
     {
+      "type": "other",
       "wikidata_id": "Q28530250",
+      "site_slug": "city-of-edinburgh-council",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/city-of-edinburgh-council",
       "github_orgs": ["edinburghcouncil"]
     }
   ]
@@ -135,20 +143,32 @@ export default function DataPage() {
               <td className="px-3 py-2">ISO 8601 date the file was last updated</td>
             </tr>
             <tr className="border-b border-gov-border">
+              <td className="px-3 py-2 font-mono">type</td>
+              <td className="px-3 py-2"><code className="font-mono bg-gray-100 px-1">gov_uk</code>, <code className="font-mono bg-gray-100 px-1">english_council</code>, or <code className="font-mono bg-gray-100 px-1">other</code></td>
+            </tr>
+            <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">govuk_slug</td>
-              <td className="px-3 py-2">GOV.UK organisation slug (central government only)</td>
+              <td className="px-3 py-2">GOV.UK organisation slug (<code className="font-mono bg-gray-100 px-1">gov_uk</code> entries only)</td>
             </tr>
             <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">england_planning_data_reference</td>
-              <td className="px-3 py-2">planning.data.gov.uk local authority reference code (English local government only)</td>
+              <td className="px-3 py-2">planning.data.gov.uk local authority reference code (<code className="font-mono bg-gray-100 px-1">english_council</code> entries only)</td>
             </tr>
             <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">wikidata_id</td>
               <td className="px-3 py-2">Wikidata entity ID (e.g. Q5995) — present for all entries</td>
             </tr>
             <tr className="border-b border-gov-border">
+              <td className="px-3 py-2 font-mono">site_slug</td>
+              <td className="px-3 py-2">URL slug for the organisation&apos;s page on this site</td>
+            </tr>
+            <tr className="border-b border-gov-border">
+              <td className="px-3 py-2 font-mono">site_url</td>
+              <td className="px-3 py-2">URL of the organisation&apos;s page on this site</td>
+            </tr>
+            <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">github_orgs</td>
-              <td className="px-3 py-2">Array of GitHub organisation names belonging to this government organisation</td>
+              <td className="px-3 py-2">Array of GitHub organisation names belonging to this organisation</td>
             </tr>
           </tbody>
         </table>
@@ -157,12 +177,12 @@ export default function DataPage() {
         <p className="text-sm text-gov-grey mb-3">One row per GitHub organisation.</p>
 
         <h5 className="font-bold mb-2">Example</h5>
-        <pre className="bg-gray-100 border border-gov-border rounded p-4 text-sm overflow-x-auto mb-4">{`github_org,org_type,govuk_slug,england_planning_data_reference,wikidata_id
-UKHomeOffice,central_government,home-office,,Q763388
-UKHomeOfficeForms,central_government,home-office,,Q763388
-HO-CTO,central_government,home-office,,Q763388
-coventry-city-council,local_government,,COV,Q5179058
-edinburghcouncil,local_government,,,Q28530250`}</pre>
+        <pre className="bg-gray-100 border border-gov-border rounded p-4 text-sm overflow-x-auto mb-4">{`github_org,org_type,govuk_slug,england_planning_data_reference,wikidata_id,site_slug,site_url
+UKHomeOffice,gov_uk,home-office,,Q763388,home-office,https://publicsectorcodebyorg.co.uk/org/home-office
+UKHomeOfficeForms,gov_uk,home-office,,Q763388,home-office,https://publicsectorcodebyorg.co.uk/org/home-office
+HO-CTO,gov_uk,home-office,,Q763388,home-office,https://publicsectorcodebyorg.co.uk/org/home-office
+coventry-city-council,english_council,,COV,Q5179058,coventry-city-council,https://publicsectorcodebyorg.co.uk/org/coventry-city-council
+edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsectorcodebyorg.co.uk/org/city-of-edinburgh-council`}</pre>
 
         <h5 className="font-bold mb-2">Columns</h5>
         <table className="w-full border-collapse text-sm">
@@ -175,23 +195,31 @@ edinburghcouncil,local_government,,,Q28530250`}</pre>
           <tbody>
             <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">github_org</td>
-              <td className="px-3 py-2">GitHub organisation name. Empty if the government organisation has no mapped GitHub presence.</td>
+              <td className="px-3 py-2">GitHub organisation name. Empty if the organisation has no mapped GitHub presence.</td>
             </tr>
             <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">org_type</td>
-              <td className="px-3 py-2"><code className="font-mono bg-gray-100 px-1">central_government</code> or <code className="font-mono bg-gray-100 px-1">local_government</code></td>
+              <td className="px-3 py-2"><code className="font-mono bg-gray-100 px-1">gov_uk</code>, <code className="font-mono bg-gray-100 px-1">english_council</code>, or <code className="font-mono bg-gray-100 px-1">other</code></td>
             </tr>
             <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">govuk_slug</td>
-              <td className="px-3 py-2">GOV.UK organisation slug (central government only)</td>
+              <td className="px-3 py-2">GOV.UK organisation slug (<code className="font-mono bg-gray-100 px-1">gov_uk</code> entries only)</td>
             </tr>
             <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">england_planning_data_reference</td>
-              <td className="px-3 py-2">planning.data.gov.uk local authority reference code (English local government only)</td>
+              <td className="px-3 py-2">planning.data.gov.uk local authority reference code (<code className="font-mono bg-gray-100 px-1">english_council</code> entries only)</td>
             </tr>
             <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">wikidata_id</td>
               <td className="px-3 py-2">Wikidata entity ID (e.g. Q5995)</td>
+            </tr>
+            <tr className="border-b border-gov-border">
+              <td className="px-3 py-2 font-mono">site_slug</td>
+              <td className="px-3 py-2">URL slug for the organisation&apos;s page on this site</td>
+            </tr>
+            <tr className="border-b border-gov-border">
+              <td className="px-3 py-2 font-mono">site_url</td>
+              <td className="px-3 py-2">URL of the organisation&apos;s page on this site</td>
             </tr>
           </tbody>
         </table>

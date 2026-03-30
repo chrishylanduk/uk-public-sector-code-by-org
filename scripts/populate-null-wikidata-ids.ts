@@ -1,7 +1,9 @@
 /**
  * Populates null wikidata_id fields in public/data/org-mapping.json by querying
- * the Wikidata SPARQL endpoint for items whose official website (P856) matches
- * the constructed GOV.UK URL for each organisation.
+ * the Wikidata SPARQL endpoint.
+ *
+ * - gov_uk entries: matched by GOV.UK URL (P856)
+ * - english_council entries: matched by council website URL from planning.data.gov.uk
  *
  * Run with: npx tsx scripts/populate-null-wikidata-ids.ts
  */
@@ -11,24 +13,33 @@ import path from 'path';
 
 const DATA_FILE = path.join(process.cwd(), 'public/data/org-mapping.json');
 
-interface CentralGovEntry {
+interface GovUkEntry {
+  type: 'gov_uk';
   govuk_slug: string;
-  wikidata_id: string | null;
+  wikidata_id?: string | null;
   github_orgs: string[];
 }
 
-interface LocalGovEntry {
+interface EnglishCouncilEntry {
+  type: 'english_council';
   england_planning_data_reference: string;
   wikidata_id?: string | null;
   github_orgs: string[];
 }
 
+interface OtherEntry {
+  type: 'other';
+  wikidata_id: string;
+  github_orgs: string[];
+}
+
+type OrgEntry = GovUkEntry | EnglishCouncilEntry | OtherEntry;
+
 interface JsonMappingFile {
   description: string;
   licence: string;
   source: string;
-  central_government: CentralGovEntry[];
-  local_government: LocalGovEntry[];
+  organisations: OrgEntry[];
 }
 
 const URL_PREFIXES = [
@@ -110,18 +121,20 @@ async function fetchPlanningDataWebsite(reference: string): Promise<string | nul
   }
 }
 
-async function main() {
+export async function main() {
   const raw = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8')) as JsonMappingFile;
 
   let found = 0;
   let missing = 0;
 
-  // Central government — match by GOV.UK URL
-  const centralToQuery = raw.central_government.filter((e) => e.wikidata_id == null);
-  if (centralToQuery.length > 0) {
-    console.log(`\nQuerying Wikidata for ${centralToQuery.length} central gov entries with null IDs...`);
-    const wikidataIds = await queryWikidata(centralToQuery.map((e) => e.govuk_slug));
-    for (const entry of centralToQuery) {
+  // gov_uk entries — match by GOV.UK URL
+  const govUkToQuery = raw.organisations.filter(
+    (e): e is GovUkEntry => e.type === 'gov_uk' && !e.wikidata_id
+  );
+  if (govUkToQuery.length > 0) {
+    console.log(`\nQuerying Wikidata for ${govUkToQuery.length} gov_uk entries with null IDs...`);
+    const wikidataIds = await queryWikidata(govUkToQuery.map((e) => e.govuk_slug));
+    for (const entry of govUkToQuery) {
       const id = wikidataIds.get(entry.govuk_slug) ?? null;
       entry.wikidata_id = id;
       if (id) { console.log(`  ✓  ${entry.govuk_slug} → ${id}`); found++; }
@@ -129,11 +142,13 @@ async function main() {
     }
   }
 
-  // Local government — match by council website URL from planning data API
-  const localToQuery = (raw.local_government ?? []).filter((e) => e.wikidata_id == null);
-  if (localToQuery.length > 0) {
-    console.log(`\nQuerying Wikidata for ${localToQuery.length} local gov entries with null IDs...`);
-    for (const entry of localToQuery) {
+  // english_council entries — match by council website URL from planning data API
+  const councilToQuery = raw.organisations.filter(
+    (e): e is EnglishCouncilEntry => e.type === 'english_council' && !e.wikidata_id
+  );
+  if (councilToQuery.length > 0) {
+    console.log(`\nQuerying Wikidata for ${councilToQuery.length} english_council entries with null IDs...`);
+    for (const entry of councilToQuery) {
       const website = await fetchPlanningDataWebsite(entry.england_planning_data_reference);
       if (!website) {
         console.log(`  -  ${entry.england_planning_data_reference} (no website in planning data)`);

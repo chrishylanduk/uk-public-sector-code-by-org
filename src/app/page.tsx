@@ -1,5 +1,5 @@
 import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs } from '@/lib/data-fetcher';
-import { processOrganisationData, getOrgList, getUniqueFormats } from '@/lib/data-processor';
+import { processOrganisationData, getOrgList, getGroupedFormats } from '@/lib/data-processor';
 import OrgDirectory from '@/components/OrgDirectory';
 import { formatDateTime } from '@/utils/format';
 import Link from 'next/link';
@@ -13,7 +13,7 @@ export default async function HomePage() {
 
   const organisations = await processOrganisationData(repos, govOrgs, planningOrgs);
   const orgList = getOrgList(organisations);
-  const formats = getUniqueFormats(organisations);
+  const formats = getGroupedFormats(organisations);
 
   const buildDate = new Date();
   const totalRepos = orgList.reduce((sum, entry) => sum + entry.repoCount, 0);

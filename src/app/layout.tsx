@@ -37,7 +37,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white text-gray-900">
+      <body className="min-h-screen flex flex-col bg-white text-gray-900">
         <SkipLink />
         <header className="bg-gov-dark-blue text-white py-4">
           <div className="max-w-7xl mx-auto px-4">
@@ -56,7 +56,7 @@ export default function RootLayout({
             An independently-maintained project, not affiliated with any organisation.
           </div>
         </div>
-        <main id="main-content" className="max-w-7xl mx-auto px-4 py-8 flex-1">
+        <main id="main-content" className="w-full max-w-7xl mx-auto px-4 py-8 flex-1">
           {children}
         </main>
         <footer className="bg-gov-light-grey border-t border-gov-border mt-16 py-8">

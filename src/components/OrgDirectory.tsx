@@ -2,12 +2,12 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import type { OrgEntry, FilterState } from '@/lib/types';
+import type { OrgEntry, FilterState, GroupedFormats } from '@/lib/types';
 import SearchAndFilter from './SearchAndFilter';
 
 interface Props {
   entries: OrgEntry[];
-  availableFormats: string[];
+  availableFormats: GroupedFormats;
 }
 
 export default function OrgDirectory({ entries, availableFormats }: Props) {

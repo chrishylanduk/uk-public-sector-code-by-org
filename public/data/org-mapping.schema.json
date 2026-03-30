@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/chrishylanduk/uk-public-sector-code-by-org/main/public/data/org-mapping.schema.json",
-  "title": "UK Government GitHub Organisation Mapping",
-  "description": "Maps GitHub organisations to UK central and local government organisations.",
+  "title": "UK Public Sector GitHub Organisation Mapping",
+  "description": "Maps GitHub organisations to UK public sector organisations.",
   "type": "object",
-  "required": ["description", "licence", "source", "last_updated", "central_government", "local_government"],
+  "required": ["description", "licence", "source", "last_updated", "organisations"],
   "additionalProperties": false,
   "properties": {
     "$schema": {
@@ -25,29 +25,50 @@
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
       "examples": ["2026-03-30"]
     },
-    "central_government": {
+    "organisations": {
       "type": "array",
-      "description": "Central government organisations, identified by GOV.UK organisation slug.",
+      "description": "All mapped public sector organisations.",
       "items": {
         "type": "object",
-        "required": ["govuk_slug", "wikidata_id", "github_orgs"],
+        "required": ["type", "wikidata_id", "github_orgs"],
         "additionalProperties": false,
         "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["gov_uk", "english_council", "other"],
+            "description": "gov_uk: central government identified by GOV.UK slug. english_council: English local authority identified by planning.data.gov.uk reference. other: identified by Wikidata ID only."
+          },
           "govuk_slug": {
             "type": "string",
-            "description": "GOV.UK organisation slug. Use with the GOV.UK Organisations API: GET https://www.gov.uk/api/organisations/{govuk_slug}",
+            "description": "GOV.UK organisation slug (gov_uk entries only). Use with the GOV.UK Organisations API: GET https://www.gov.uk/api/organisations/{govuk_slug}",
             "pattern": "^[a-z0-9-]+$",
             "examples": ["home-office", "cabinet-office", "hm-revenue-customs"]
           },
+          "england_planning_data_reference": {
+            "type": "string",
+            "description": "Local authority reference code from planning.data.gov.uk (english_council entries only). Use with the planning data API: GET https://www.planning.data.gov.uk/entity.json?dataset=local-authority&reference={england_planning_data_reference}",
+            "pattern": "^[A-Z0-9]+$",
+            "examples": ["COV", "BIR", "LBH"]
+          },
           "wikidata_id": {
             "type": "string",
-            "description": "Wikidata entity ID. Use with the Wikidata API: https://www.wikidata.org/entity/{wikidata_id}",
+            "description": "Wikidata entity ID. Mandatory for other entries; present where known for gov_uk and english_council. Use with the Wikidata API: https://www.wikidata.org/entity/{wikidata_id}",
             "pattern": "^Q[0-9]+$",
-            "examples": ["Q763388", "Q5995", "Q1protected"]
+            "examples": ["Q763388", "Q5995", "Q28530250"]
+          },
+          "site_slug": {
+            "type": "string",
+            "description": "URL slug for the organisation's page on publicsectorcodebyorg.co.uk",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "site_url": {
+            "type": "string",
+            "description": "URL of the organisation's page on publicsectorcodebyorg.co.uk",
+            "pattern": "^https://publicsectorcodebyorg\\.co\\.uk/org/[a-z0-9-]+$"
           },
           "github_orgs": {
             "type": "array",
-            "description": "GitHub organisation names belonging to this government organisation. Match against the 'owner' field in the UK X-Gov Open Source Repo Scraper dataset.",
+            "description": "GitHub organisation names belonging to this organisation. Match against the 'owner' field in the UK X-Gov Open Source Repo Scraper dataset.",
             "items": {
               "type": "string",
               "pattern": "^[a-zA-Z0-9_-]+$"
@@ -55,44 +76,27 @@
             "uniqueItems": true,
             "examples": [
               ["UKHomeOffice", "UKHomeOfficeForms", "HO-CTO"],
-              ["alphagov", "cabinetoffice"]
+              ["coventry-city-council"]
             ]
           }
-        }
-      }
-    },
-    "local_government": {
-      "type": "array",
-      "description": "Local government organisations. English councils include an england_planning_data_reference; all entries include a wikidata_id.",
-      "items": {
-        "type": "object",
-        "required": ["wikidata_id", "github_orgs"],
-        "additionalProperties": false,
-        "properties": {
-          "england_planning_data_reference": {
-            "type": "string",
-            "description": "Local authority reference code from planning.data.gov.uk. Present for English councils only. Use with the planning data API: GET https://www.planning.data.gov.uk/entity.json?dataset=local-authority&reference={england_planning_data_reference}",
-            "pattern": "^[A-Z0-9]+$",
-            "examples": ["COV", "BIR", "LBH"]
+        },
+        "if": {
+          "properties": { "type": { "const": "gov_uk" } },
+          "required": ["type"]
+        },
+        "then": {
+          "required": ["govuk_slug"]
+        },
+        "else": {
+          "if": {
+            "properties": { "type": { "const": "english_council" } },
+            "required": ["type"]
           },
-          "wikidata_id": {
-            "type": "string",
-            "description": "Wikidata entity ID. Present for all entries. Use with the Wikidata API: https://www.wikidata.org/entity/{wikidata_id}",
-            "pattern": "^Q[0-9]+$",
-            "examples": ["Q5179058", "Q28530250"]
+          "then": {
+            "required": ["england_planning_data_reference"]
           },
-          "github_orgs": {
-            "type": "array",
-            "description": "GitHub organisation names belonging to this local authority. Match against the 'owner' field in the UK X-Gov Open Source Repo Scraper dataset.",
-            "items": {
-              "type": "string",
-              "pattern": "^[a-zA-Z0-9_-]+$"
-            },
-            "uniqueItems": true,
-            "examples": [
-              ["coventry-city-council"],
-              ["edinburghcouncil"]
-            ]
+          "else": {
+            "required": ["wikidata_id"]
           }
         }
       }

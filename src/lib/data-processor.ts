@@ -1,7 +1,17 @@
-import type { GithubRepo, GovUkOrg, PlanningDataOrg, OrganisationStats, OrgEntry } from './types';
-import { getOrgMapping, getLocalGovEntries, getAllMappedGithubOrgs, getMissingWikidataOrgs } from './mapping';
+import type { GithubRepo, GovUkOrg, PlanningDataOrg, OrganisationStats, OrgEntry, GroupedFormats } from './types';
+import { getOrgMapping, getLocalGovEntries, getAllMappedGithubOrgs, getMissingWikidataOrgs, getDuplicateWikidataOrgs, getWikidataIdToSlug, getGovUkWikidataIds } from './mapping';
 import { fetchWikidataLocalOrg } from './data-fetcher';
-import { isActiveRepo, slugify } from '@/utils/format';
+import { isActiveRepo } from '@/utils/format';
+
+async function resolveParentViaWikidata(
+  wikidataId: string,
+  wikidataIdToSlug: Map<string, string>
+): Promise<string | undefined> {
+  const wikidataOrg = await fetchWikidataLocalOrg(wikidataId);
+  return wikidataOrg.parentWikidataId
+    ? wikidataIdToSlug.get(wikidataOrg.parentWikidataId)
+    : undefined;
+}
 
 const LOCAL_AUTHORITY_TYPE: Record<string, string> = {
   CTY: 'County council',
@@ -30,6 +40,8 @@ export async function processOrganisationData(
 ): Promise<OrganisationStats[]> {
   const mapping = getOrgMapping();
   const allowedGithubOrgs = getAllMappedGithubOrgs();
+  const wikidataIdToSlug = getWikidataIdToSlug();
+  const govUkWikidataIds = getGovUkWikidataIds();
 
   // Deduplicate repos by URL in case the scraper contains duplicate entries
   const seen = new Set<string>();
@@ -72,6 +84,11 @@ export async function processOrganisationData(
   // WARNING: Orgs missing Wikidata IDs
   for (const id of getMissingWikidataOrgs()) {
     console.warn(`⚠️  Warning: "${id}" has no wikidata_id`);
+  }
+
+  // WARNING: Duplicate Wikidata IDs
+  for (const { wikidataId, orgs } of getDuplicateWikidataOrgs()) {
+    console.warn(`⚠️  Warning: wikidata_id "${wikidataId}" is shared by multiple entries: ${orgs.join(', ')}`);
   }
 
   // WARNING: GitHub orgs in the data that aren't in the mapping
@@ -128,14 +145,22 @@ export async function processOrganisationData(
 
     const totalStars = activeOrgRepos.reduce((sum, repo) => sum + repo.stargazersCount, 0);
 
-    // Find parent slug if the parent org is also in our mapping
+    // Find parent slug via GOV.UK API first, then fall back to Wikidata P749
     const parentSlugs = (govOrg.parent_organisations ?? []).map((p) => p.id.split('/').pop()!);
-    const parentSlug = parentSlugs.find((s) => s in mapping);
+    let parentSlug = parentSlugs.find((s) => s in mapping);
 
     // Warn if this org has a parent on GOV.UK but the parent isn't in our mapping
     for (const p of parentSlugs) {
       if (!(p in mapping)) {
         console.warn(`⚠️  Warning: "${slug}" has parent "${p}" on GOV.UK but "${p}" is not in org-mapping.json`);
+      }
+    }
+
+    // Fall back to Wikidata if no parent found via GOV.UK
+    if (!parentSlug) {
+      const wikidataId = govUkWikidataIds.get(slug);
+      if (wikidataId) {
+        parentSlug = await resolveParentViaWikidata(wikidataId, wikidataIdToSlug);
       }
     }
 
@@ -148,6 +173,7 @@ export async function processOrganisationData(
       slug,
       name,
       format: govOrg.format,
+      mappingType: 'gov_uk',
       totalStars,
       repoCount: activeOrgRepos.length,
       totalRepoCount: allOrgRepos.length,
@@ -158,7 +184,7 @@ export async function processOrganisationData(
     });
   }
 
-  // Process local government entries
+  // Process local government / other entries
   const localGovEntries = getLocalGovEntries();
   const planningDataByRef = new Map<string, PlanningDataOrg>();
   for (const org of planningDataOrgs) {
@@ -169,6 +195,7 @@ export async function processOrganisationData(
     let name: string;
     let webUrl: string;
     let format: string;
+    let parentSlug: string | undefined;
 
     if (entry.type === 'planning_data') {
       const planningOrg = planningDataByRef.get(entry.planningDataReference);
@@ -187,14 +214,19 @@ export async function processOrganisationData(
       name = planningOrg.name;
       webUrl = planningOrg.website;
       format = LOCAL_AUTHORITY_TYPE[planningOrg['local-authority-type']] ?? planningOrg['local-authority-type'];
+      if (entry.wikidataId) {
+        parentSlug = await resolveParentViaWikidata(entry.wikidataId, wikidataIdToSlug);
+      }
     } else {
       const wikidataOrg = await fetchWikidataLocalOrg(entry.wikidataId);
       name = wikidataOrg.name;
       webUrl = wikidataOrg.webUrl;
-      format = 'Local authority';
+      format = wikidataOrg.format ?? 'Other';
+      parentSlug = await resolveParentViaWikidata(entry.wikidataId, wikidataIdToSlug);
     }
 
-    const slug = slugify(name);
+    const slug = entry.siteSlug!;
+
     const allOrgRepos = repos.filter((repo) => entry.githubOrgs.includes(repo.owner));
     const activeOrgRepos = allOrgRepos.filter(isActiveRepo);
     const totalStars = activeOrgRepos.reduce((sum, repo) => sum + repo.stargazersCount, 0);
@@ -203,12 +235,14 @@ export async function processOrganisationData(
       slug,
       name,
       format,
+      mappingType: entry.type === 'planning_data' ? 'english_council' : 'other',
       totalStars,
       repoCount: activeOrgRepos.length,
       totalRepoCount: allOrgRepos.length,
       githubOrgs: entry.githubOrgs,
       repos: allOrgRepos,
       webUrl,
+      parentSlug,
     });
   }
 
@@ -236,9 +270,23 @@ export function getOrgList(organisations: OrganisationStats[]): OrgEntry[] {
 }
 
 /**
- * Get unique organisation formats for filtering
+ * Get unique organisation formats grouped by mapping type
  */
-export function getUniqueFormats(organisations: OrganisationStats[]): string[] {
-  const formats = new Set(organisations.map((d) => d.format));
-  return Array.from(formats).sort();
+export function getGroupedFormats(organisations: OrganisationStats[]): GroupedFormats {
+  const govUk = new Set<string>();
+  const englishCouncil = new Set<string>();
+  const other = new Set<string>();
+  for (const org of organisations) {
+    if (org.mappingType === 'gov_uk') govUk.add(org.format);
+    else if (org.mappingType === 'english_council') englishCouncil.add(org.format);
+    else other.add(org.format);
+  }
+  for (const f of govUk) englishCouncil.delete(f);
+  for (const f of govUk) other.delete(f);
+  for (const f of englishCouncil) other.delete(f);
+  return {
+    govUk: Array.from(govUk).sort(),
+    englishCouncil: Array.from(englishCouncil).sort(),
+    other: Array.from(other).sort(),
+  };
 }

@@ -177,10 +177,16 @@ export async function fetchWikidataLocalOrg(wikidataId: string): Promise<Wikidat
   }
 
   const query = `
-    SELECT ?label ?website WHERE {
+    SELECT ?label ?website ?instanceOfLabel ?parentOrg WHERE {
       BIND(wd:${wikidataId} AS ?item)
       ?item rdfs:label ?label . FILTER(LANG(?label) = "en")
       OPTIONAL { ?item wdt:P856 ?website . }
+      OPTIONAL {
+        ?item wdt:P31 ?instanceOf .
+        ?instanceOf rdfs:label ?instanceOfLabel . FILTER(LANG(?instanceOfLabel) = "en")
+      }
+      OPTIONAL { ?item wdt:P749 ?parentOrg . }
+      OPTIONAL { ?item wdt:P361 ?parentOrg . }
     } LIMIT 1
   `;
 
@@ -194,16 +200,27 @@ export async function fetchWikidataLocalOrg(wikidataId: string): Promise<Wikidat
   );
 
   const data = await response.json() as {
-    results: { bindings: { label: { value: string }; website?: { value: string } }[] };
+    results: { bindings: { label: { value: string }; website?: { value: string }; instanceOfLabel?: { value: string }; parentOrg?: { value: string } }[] };
   };
 
   const binding = data.results.bindings[0];
   if (!binding) throw new Error(`Wikidata entity ${wikidataId} not found or has no English label`);
 
+  const rawFormat = binding.instanceOfLabel?.value;
+  const format = rawFormat
+    ? rawFormat.charAt(0).toUpperCase() + rawFormat.slice(1)
+    : undefined;
+
+  const parentWikidataId = binding.parentOrg?.value
+    ? binding.parentOrg.value.replace('http://www.wikidata.org/entity/', '')
+    : undefined;
+
   const result: WikidataLocalOrg = {
     wikidataId,
     name: binding.label.value,
     webUrl: binding.website?.value ?? '',
+    format,
+    parentWikidataId,
   };
 
   await fs.mkdir(WIKIDATA_ORGS_DIR, { recursive: true });

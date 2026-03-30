@@ -1,70 +1,162 @@
 {
   "$schema": "https://raw.githubusercontent.com/chrishylanduk/uk-public-sector-code-by-org/main/public/data/org-mapping.schema.json",
-  "description": "Mapping of GitHub organisations to UK government organisations. Central government entries use GOV.UK organisation slugs (https://www.gov.uk/api/organisations) and Wikidata IDs. Local government entries use planning.data.gov.uk local authority references (https://www.planning.data.gov.uk/dataset/local-authority) and Wikidata IDs.",
+  "description": "Mapping of GitHub organisations to UK public sector organisations. Each entry has a type field: gov_uk (identified by GOV.UK organisation slug), english_council (identified by planning.data.gov.uk local authority reference), or other (identified by Wikidata ID only).",
   "licence": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
   "source": "https://publicsectorcodebyorg.co.uk/data",
   "last_updated": "2026-03-30",
-  "central_government": [
+  "organisations": [
     {
+      "type": "gov_uk",
       "govuk_slug": "department-of-health-and-social-care",
       "wikidata_id": "Q3044742",
       "github_orgs": [
         "dhsc-govuk"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-of-health-and-social-care",
+      "site_slug": "department-of-health-and-social-care"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "cabinet-office",
       "wikidata_id": "Q5995",
       "github_orgs": [
         "cabinetoffice",
         "Civil-Service-Human-Resources"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/cabinet-office",
+      "site_slug": "cabinet-office"
     },
     {
+      "type": "gov_uk",
+      "govuk_slug": "science-and-technology-facilities-council",
+      "github_orgs": [
+        "stfc"
+      ],
+      "wikidata_id": "Q1669366",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/science-and-technology-facilities-council",
+      "site_slug": "science-and-technology-facilities-council"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q6970828",
+      "github_orgs": [
+        "naouk"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/national-audit-office",
+      "site_slug": "national-audit-office"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q682520",
+      "github_orgs": [
+        "TransportForLondon"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/tfl",
+      "site_slug": "tfl"
+    },
+    {
+      "type": "gov_uk",
       "govuk_slug": "uk-statistics-authority",
+      "wikidata_id": "Q14592116",
       "github_orgs": [],
-      "wikidata_id": "Q14592116"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/uk-statistics-authority",
+      "site_slug": "uk-statistics-authority"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "department-for-business-and-trade",
-      "github_orgs": [],
-      "wikidata_id": "Q116726347"
+      "wikidata_id": "Q116726347",
+      "github_orgs": [
+        "uktrade"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-business-and-trade",
+      "site_slug": "department-for-business-and-trade"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "ministry-of-housing-communities-local-government",
+      "wikidata_id": "Q601819",
       "github_orgs": [
         "communitiesuk",
         "digital-land"
       ],
-      "wikidata_id": "Q601819"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/ministry-of-housing-communities-local-government",
+      "site_slug": "ministry-of-housing-communities-local-government"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "department-for-culture-media-and-sport",
+      "wikidata_id": "Q910019",
       "github_orgs": [],
-      "wikidata_id": "Q910019"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-culture-media-and-sport",
+      "site_slug": "department-for-culture-media-and-sport"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "attorney-generals-office",
+      "wikidata_id": "Q2928396",
       "github_orgs": [],
-      "wikidata_id": "Q2928396"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/attorney-generals-office",
+      "site_slug": "attorney-generals-office"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "office-for-equality-and-opportunity",
       "wikidata_id": "Q138837814",
       "github_orgs": [
         "ukgov-equality-hub"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/office-for-equality-and-opportunity",
+      "site_slug": "office-for-equality-and-opportunity"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "department-for-science-innovation-and-technology",
       "wikidata_id": "Q116719150",
-      "github_orgs": []
+      "github_orgs": [
+        "UKGovernmentBEIS",
+        "CDEIUK"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-science-innovation-and-technology",
+      "site_slug": "department-for-science-innovation-and-technology"
     },
     {
+      "type": "gov_uk",
+      "govuk_slug": "nhs-blood-and-transplant",
+      "github_orgs": [
+        "NHS-Blood-and-Transplant"
+      ],
+      "wikidata_id": "Q16957766",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-blood-and-transplant",
+      "site_slug": "nhs-blood-and-transplant"
+    },
+    {
+      "type": "gov_uk",
+      "govuk_slug": "bank-of-england",
+      "github_orgs": [
+        "bank-of-england"
+      ],
+      "wikidata_id": "Q183231",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/bank-of-england",
+      "site_slug": "bank-of-england"
+    },
+    {
+      "type": "gov_uk",
+      "govuk_slug": "prime-ministers-office-10-downing-street",
+      "github_orgs": [
+        "no10ds"
+      ],
+      "wikidata_id": "Q14211",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/prime-ministers-office-10-downing-street",
+      "site_slug": "prime-ministers-office-10-downing-street"
+    },
+    {
+      "type": "gov_uk",
       "govuk_slug": "government-digital-service",
       "wikidata_id": "Q5588795",
       "github_orgs": [
         "alphagov",
+        "govuk-once",
         "i-dot-ai",
         "govuk-digital-backbone",
         "govuk-one-login",
@@ -75,49 +167,81 @@
         "ukgovdatascience",
         "govuk-forms",
         "govuk-paas",
-        "openregister"
-      ]
+        "openregister",
+        "gds-dead"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/government-digital-service",
+      "site_slug": "government-digital-service"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "ministry-of-justice",
       "wikidata_id": "Q2983190",
       "github_orgs": [
         "ministryofjustice",
         "moj-analytical-services"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/ministry-of-justice",
+      "site_slug": "ministry-of-justice"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "hm-courts-and-tribunals-service",
       "wikidata_id": "Q5732294",
       "github_orgs": [
         "hmcts",
         "CJSCommonPlatform"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/hm-courts-and-tribunals-service",
+      "site_slug": "hm-courts-and-tribunals-service"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "home-office",
       "wikidata_id": "Q763388",
       "github_orgs": [
         "UKHomeOffice",
         "UKHomeOfficeForms",
         "HO-CTO"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/home-office",
+      "site_slug": "home-office"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "homes-england",
+      "wikidata_id": "Q5890410",
       "github_orgs": [
         "homesengland"
       ],
-      "wikidata_id": "Q5890410"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/homes-england",
+      "site_slug": "homes-england"
     },
     {
+      "type": "gov_uk",
+      "govuk_slug": "the-scottish-government",
+      "github_orgs": [
+        "scottishgovernment",
+        "scottish-government-design-system",
+        "ScotGovAnalysis"
+      ],
+      "wikidata_id": "Q32521",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/the-scottish-government",
+      "site_slug": "the-scottish-government"
+    },
+    {
+      "type": "gov_uk",
       "govuk_slug": "department-for-education",
       "wikidata_id": "Q2612019",
       "github_orgs": [
-        "DFE-Digital"
-      ]
+        "DFE-Digital",
+        "SkillsFundingAgency"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-education",
+      "site_slug": "department-for-education"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "nhs-england",
       "wikidata_id": "Q19382273",
       "github_orgs": [
@@ -125,55 +249,89 @@
         "NHSDigital",
         "nhsx",
         "nhs-england-tools",
-        "nhsuk"
-      ]
+        "nhsuk",
+        "nhsuk-archive",
+        "NHSE-NDRS",
+        "nhsconnect"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-england",
+      "site_slug": "nhs-england"
     },
     {
+      "type": "gov_uk",
+      "govuk_slug": "public-health-wales",
+      "github_orgs": [
+        "Public-Health-Wales"
+      ],
+      "wikidata_id": "Q17018314",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/public-health-wales",
+      "site_slug": "public-health-wales"
+    },
+    {
+      "type": "gov_uk",
       "govuk_slug": "department-for-environment-food-rural-affairs",
       "wikidata_id": "Q3044721",
       "github_orgs": [
         "DEFRA",
         "defra-design"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-environment-food-rural-affairs",
+      "site_slug": "department-for-environment-food-rural-affairs"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "department-for-work-pensions",
       "wikidata_id": "Q1191394",
       "github_orgs": [
         "dwp",
         "dwpdigital"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-work-pensions",
+      "site_slug": "department-for-work-pensions"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "hm-revenue-customs",
       "wikidata_id": "Q166559",
       "github_orgs": [
         "hmrc"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/hm-revenue-customs",
+      "site_slug": "hm-revenue-customs"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "ministry-of-defence",
       "wikidata_id": "Q1143261",
       "github_orgs": [
         "defencedigital"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/ministry-of-defence",
+      "site_slug": "ministry-of-defence"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "defence-science-and-technology-laboratory",
+      "wikidata_id": "Q5251253",
       "github_orgs": [
         "dstl"
       ],
-      "wikidata_id": "Q5251253"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/defence-science-and-technology-laboratory",
+      "site_slug": "defence-science-and-technology-laboratory"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "department-for-transport",
       "wikidata_id": "Q2982287",
       "github_orgs": [
         "department-for-transport",
         "department-for-transport-BODS"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-transport",
+      "site_slug": "department-for-transport"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "office-for-national-statistics",
       "wikidata_id": "Q1334971",
       "github_orgs": [
@@ -181,473 +339,876 @@
         "ONS-Innovation",
         "ONSBigData",
         "ONS-OpenData",
-        "datasciencecampus"
-      ]
+        "datasciencecampus",
+        "best-practice-and-impact"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/office-for-national-statistics",
+      "site_slug": "office-for-national-statistics"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "companies-house",
       "wikidata_id": "Q257303",
       "github_orgs": [
         "companieshouse"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/companies-house",
+      "site_slug": "companies-house"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "land-registry",
       "wikidata_id": "Q5635120",
       "github_orgs": [
         "LandRegistry"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/land-registry",
+      "site_slug": "land-registry"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "foreign-commonwealth-development-office",
       "wikidata_id": "Q358834",
       "github_orgs": [
-        "UKForeignOffice"
-      ]
+        "UKForeignOffice",
+        "DFID"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/foreign-commonwealth-development-office",
+      "site_slug": "foreign-commonwealth-development-office"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "the-national-archives",
       "wikidata_id": "Q392703",
       "github_orgs": [
         "nationalarchives",
         "digital-preservation"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/the-national-archives",
+      "site_slug": "the-national-archives"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "national-crime-agency",
       "wikidata_id": "Q6971994",
       "github_orgs": [
         "NationalCrimeAgency"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/national-crime-agency",
+      "site_slug": "national-crime-agency"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "food-standards-agency",
       "wikidata_id": "Q2741994",
       "github_orgs": [
         "FoodStandardsAgency",
         "fsadata"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/food-standards-agency",
+      "site_slug": "food-standards-agency"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "crown-prosecution-service",
       "wikidata_id": "Q1141790",
       "github_orgs": [
         "CPS-Innovation"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/crown-prosecution-service",
+      "site_slug": "crown-prosecution-service"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "uk-export-finance",
       "wikidata_id": "Q4158541",
       "github_orgs": [
         "UK-Export-Finance"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/uk-export-finance",
+      "site_slug": "uk-export-finance"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "competition-and-markets-authority",
       "wikidata_id": "Q18363996",
       "github_orgs": [
         "cmagovuk"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/competition-and-markets-authority",
+      "site_slug": "competition-and-markets-authority"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "ofqual",
       "wikidata_id": "Q7079769",
       "github_orgs": [
         "OfqualGovUK"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/ofqual",
+      "site_slug": "ofqual"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "forestry-commission",
       "wikidata_id": "Q1437242",
       "github_orgs": [
         "forestresearch"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/forestry-commission",
+      "site_slug": "forestry-commission"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "uk-health-security-agency",
       "wikidata_id": "Q104336949",
       "github_orgs": [
         "ukhsa-collaboration",
         "UKHSA-Internal"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/uk-health-security-agency",
+      "site_slug": "uk-health-security-agency"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "national-cyber-security-centre",
+      "wikidata_id": "Q23688635",
       "github_orgs": [
         "ukncsc"
       ],
-      "wikidata_id": "Q23688635"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/national-cyber-security-centre",
+      "site_slug": "national-cyber-security-centre"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "government-communications-headquarters",
       "wikidata_id": "Q220798",
       "github_orgs": [
         "gchq"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/government-communications-headquarters",
+      "site_slug": "government-communications-headquarters"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "care-quality-commission",
+      "wikidata_id": "Q5038860",
       "github_orgs": [
         "CareQualityCommission"
       ],
-      "wikidata_id": "Q5038860"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/care-quality-commission",
+      "site_slug": "care-quality-commission"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "driver-and-vehicle-standards-agency",
       "wikidata_id": "Q16974184",
       "github_orgs": [
         "dvsa"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/driver-and-vehicle-standards-agency",
+      "site_slug": "driver-and-vehicle-standards-agency"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "driver-and-vehicle-licensing-agency",
-      "wikidata_id": "Q16974184",
+      "wikidata_id": "Q5308010",
       "github_orgs": [
         "dvla"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/driver-and-vehicle-licensing-agency",
+      "site_slug": "driver-and-vehicle-licensing-agency"
     },
     {
+      "type": "gov_uk",
+      "govuk_slug": "british-museum",
+      "github_orgs": [
+        "BritishMuseum"
+      ],
+      "wikidata_id": "Q6373",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/british-museum",
+      "site_slug": "british-museum"
+    },
+    {
+      "type": "gov_uk",
       "govuk_slug": "intellectual-property-office",
       "wikidata_id": "Q4052127",
       "github_orgs": [
         "intellectual-property-office"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/intellectual-property-office",
+      "site_slug": "intellectual-property-office"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "ordnance-survey",
       "wikidata_id": "Q548721",
       "github_orgs": [
         "OrdnanceSurvey"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/ordnance-survey",
+      "site_slug": "ordnance-survey"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "uk-space-agency",
       "wikidata_id": "Q1140638",
       "github_orgs": [
         "UKSpaceAgency"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/uk-space-agency",
+      "site_slug": "uk-space-agency"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "medicines-and-healthcare-products-regulatory-agency",
       "wikidata_id": "Q1916302",
       "github_orgs": [
         "MHRA"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/medicines-and-healthcare-products-regulatory-agency",
+      "site_slug": "medicines-and-healthcare-products-regulatory-agency"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "hm-passport-office",
       "wikidata_id": "Q5988335",
       "github_orgs": [
         "HMPO"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/hm-passport-office",
+      "site_slug": "hm-passport-office"
     },
     {
+      "type": "gov_uk",
+      "govuk_slug": "network-rail",
+      "github_orgs": [
+        "Network-Rail-Business-Systems"
+      ],
+      "wikidata_id": "Q1501071",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/network-rail",
+      "site_slug": "network-rail"
+    },
+    {
+      "type": "gov_uk",
       "govuk_slug": "crown-commercial-service",
       "wikidata_id": "Q5589070",
       "github_orgs": [
         "Crown-Commercial-Service"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/crown-commercial-service",
+      "site_slug": "crown-commercial-service"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "uk-research-and-innovation",
       "wikidata_id": "Q38609561",
-      "github_orgs": []
+      "github_orgs": [],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/uk-research-and-innovation",
+      "site_slug": "uk-research-and-innovation"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "innovate-uk",
       "wikidata_id": "Q7692585",
       "github_orgs": [
         "InnovateUKGitHub"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/innovate-uk",
+      "site_slug": "innovate-uk"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "nhs-business-services-authority",
       "wikidata_id": "Q6954117",
       "github_orgs": [
         "nhsbsa",
         "nhsbsa-data-analytics"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-business-services-authority",
+      "site_slug": "nhs-business-services-authority"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "national-institute-for-clinical-excellence",
       "wikidata_id": "Q3425168",
       "github_orgs": [
         "nice-digital"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/national-institute-for-clinical-excellence",
+      "site_slug": "national-institute-for-clinical-excellence"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "insolvency-service",
       "wikidata_id": "Q6038232",
       "github_orgs": [
         "InsolvencyService"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/insolvency-service",
+      "site_slug": "insolvency-service"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "uk-hydrographic-office",
       "wikidata_id": "Q5955058",
       "github_orgs": [
         "UKHO"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/uk-hydrographic-office",
+      "site_slug": "uk-hydrographic-office"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "the-pensions-regulator",
       "wikidata_id": "Q7756572",
       "github_orgs": [
         "thepensionsregulator"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/the-pensions-regulator",
+      "site_slug": "the-pensions-regulator"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "department-for-energy-security-and-net-zero",
       "wikidata_id": "Q116825523",
-      "github_orgs": []
+      "github_orgs": [
+        "BEACmodel",
+        "decc"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-energy-security-and-net-zero",
+      "site_slug": "department-for-energy-security-and-net-zero"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "uk-atomic-energy-authority",
       "wikidata_id": "Q615775",
       "github_orgs": [
         "ukaea"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/uk-atomic-energy-authority",
+      "site_slug": "uk-atomic-energy-authority"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "active-travel-england",
       "wikidata_id": "Q97933142",
       "github_orgs": [
         "acteng"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/active-travel-england",
+      "site_slug": "active-travel-england"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "met-office",
       "wikidata_id": "Q1851405",
       "github_orgs": [
         "MetOffice",
-        "MetOfficeSpaceApps"
-      ]
+        "MetOfficeSpaceApps",
+        "jules-lsm",
+        "metomi"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/met-office",
+      "site_slug": "met-office"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "joint-nature-conservation-committee",
       "wikidata_id": "Q6269293",
       "github_orgs": [
         "jncc",
         "JNCC-UK"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/joint-nature-conservation-committee",
+      "site_slug": "joint-nature-conservation-committee"
     },
     {
+      "type": "gov_uk",
       "govuk_slug": "veterinary-medicines-directorate",
       "wikidata_id": "Q7923709",
       "github_orgs": [
         "VMDDTE"
-      ]
-    }
-  ],
-  "local_government": [
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/veterinary-medicines-directorate",
+      "site_slug": "veterinary-medicines-directorate"
+    },
     {
+      "type": "english_council",
       "england_planning_data_reference": "BAS",
       "wikidata_id": "Q16966588",
       "github_orgs": [
         "BathnesDevelopment"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/bath-and-north-east-somerset-council",
+      "site_slug": "bath-and-north-east-somerset-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "BNH",
       "wikidata_id": "Q16953725",
       "github_orgs": [
         "brighton-hove-gov-uk"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/brighton-and-hove-city-council",
+      "site_slug": "brighton-and-hove-city-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "BRC",
       "wikidata_id": "Q896725",
       "github_orgs": [
         "BracknellForestCouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/bracknell-forest-council",
+      "site_slug": "bracknell-forest-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "BST",
       "wikidata_id": "Q16953796",
       "github_orgs": [
         "BristolCityCouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/bristol-city-council",
+      "site_slug": "bristol-city-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "CMD",
       "wikidata_id": "Q5025790",
       "github_orgs": [
         "CamdenCouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/london-borough-of-camden",
+      "site_slug": "london-borough-of-camden"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "COV",
       "wikidata_id": "Q5179058",
       "github_orgs": [
         "coventry-city-council"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/coventry-city-council",
+      "site_slug": "coventry-city-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "DEV",
       "wikidata_id": "Q6385990",
       "github_orgs": [
         "DevonCC"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/devon-county-council",
+      "site_slug": "devon-county-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "DST",
       "wikidata_id": "Q55231693",
       "github_orgs": [
         "Dorset-Council-UK"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/dorset-council",
+      "site_slug": "dorset-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "ESS",
       "wikidata_id": "Q23240",
       "github_orgs": [
         "essexcountycouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/essex-county-council",
+      "site_slug": "essex-county-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "ESX",
       "wikidata_id": "Q5329458",
       "github_orgs": [
         "east-sussex-county-council"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/east-sussex-county-council",
+      "site_slug": "east-sussex-county-council"
     },
     {
+      "type": "english_council",
+      "england_planning_data_reference": "WFT",
+      "github_orgs": [
+        "wfcouncil"
+      ],
+      "wikidata_id": "Q40608",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/london-borough-of-waltham-forest",
+      "site_slug": "london-borough-of-waltham-forest"
+    },
+    {
+      "type": "english_council",
       "england_planning_data_reference": "HCK",
       "wikidata_id": "Q5637369",
       "github_orgs": [
         "LBHackney-IT"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/london-borough-of-hackney",
+      "site_slug": "london-borough-of-hackney"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "HNS",
       "wikidata_id": "Q5913301",
       "github_orgs": [
         "LBHounslow"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/london-borough-of-hounslow",
+      "site_slug": "london-borough-of-hounslow"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "KHL",
       "wikidata_id": "Q5935834",
       "github_orgs": [
         "hull-city-council"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/hull-city-council",
+      "site_slug": "hull-city-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "KTT",
       "wikidata_id": "Q6413671",
       "github_orgs": [
         "RoyalBoroughKingston"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/royal-borough-of-kingston-upon-thames",
+      "site_slug": "royal-borough-of-kingston-upon-thames"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "LBH",
       "wikidata_id": "Q6481450",
       "github_orgs": [
         "LambethCouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/london-borough-of-lambeth",
+      "site_slug": "london-borough-of-lambeth"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "LIF",
       "wikidata_id": "Q6543271",
       "github_orgs": [
         "Lichfield-District-Council"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/lichfield-district-council",
+      "site_slug": "lichfield-district-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "LIV",
       "wikidata_id": "Q6658351",
       "github_orgs": [
         "LiverpoolCityCouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/liverpool-city-council",
+      "site_slug": "liverpool-city-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "LUT",
       "wikidata_id": "Q16997109",
       "github_orgs": [
         "LutonCouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/luton-borough-council",
+      "site_slug": "luton-borough-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "OXF",
       "wikidata_id": "Q6386253",
       "github_orgs": [
         "OxfordshireCountyCouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/oxfordshire-county-council",
+      "site_slug": "oxfordshire-county-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "RDG",
       "wikidata_id": "Q17018654",
       "github_orgs": [
         "Reading-Borough-Council"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/reading-borough-council",
+      "site_slug": "reading-borough-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "ROT",
       "wikidata_id": "Q217039",
       "github_orgs": [
         "rothgov"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/rotherham-metropolitan-borough-council",
+      "site_slug": "rotherham-metropolitan-borough-council"
     },
     {
+      "type": "english_council",
+      "england_planning_data_reference": "HEF",
+      "github_orgs": [
+        "HfdsCouncil"
+      ],
+      "wikidata_id": "Q5738061",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/herefordshire-council",
+      "site_slug": "herefordshire-council"
+    },
+    {
+      "type": "english_council",
       "england_planning_data_reference": "RUH",
       "wikidata_id": "Q73072730",
       "github_orgs": [
         "rushmoor"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/rushmoor-borough-council",
+      "site_slug": "rushmoor-borough-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "SKP",
       "wikidata_id": "Q18655",
       "github_orgs": [
         "smbc-digital"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/stockport-metropolitan-borough-council",
+      "site_slug": "stockport-metropolitan-borough-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "SRY",
       "wikidata_id": "Q6386325",
       "github_orgs": [
         "surreydigitalservices"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/surrey-county-council",
+      "site_slug": "surrey-county-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "STN",
       "wikidata_id": "Q7650288",
       "github_orgs": [
         "LondonBoroughSutton"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/london-borough-of-sutton",
+      "site_slug": "london-borough-of-sutton"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "TRF",
       "wikidata_id": "Q7832588",
       "github_orgs": [
         "TraffordCouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/trafford-metropolitan-borough-council",
+      "site_slug": "trafford-metropolitan-borough-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "WAR",
       "wikidata_id": "Q17066348",
       "github_orgs": [
         "warwickshire"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/warwickshire-county-council",
+      "site_slug": "warwickshire-county-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "WBK",
       "wikidata_id": "Q17041496",
       "github_orgs": [
         "west-berkshire-council"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/west-berkshire-council",
+      "site_slug": "west-berkshire-council"
     },
     {
+      "type": "english_council",
       "england_planning_data_reference": "YOR",
       "wikidata_id": "Q17059453",
       "github_orgs": [
         "CityOfYork"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/city-of-york-council",
+      "site_slug": "city-of-york-council"
     },
     {
+      "type": "english_council",
+      "england_planning_data_reference": "KIN",
+      "github_orgs": [
+        "KLBC-WebTeam"
+      ],
+      "wikidata_id": "Q73072537",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/borough-council-of-kings-lynn-and-west-norfolk",
+      "site_slug": "borough-council-of-kings-lynn-and-west-norfolk"
+    },
+    {
+      "type": "other",
       "wikidata_id": "Q28530250",
       "github_orgs": [
         "edinburghcouncil"
-      ]
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/city-of-edinburgh-council",
+      "site_slug": "city-of-edinburgh-council"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q666063",
+      "github_orgs": [
+        "LlGC-NLW"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/national-library-of-wales",
+      "site_slug": "national-library-of-wales"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q28528294",
+      "github_orgs": [
+        "DundeeCityCouncil"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/dundee-city-council",
+      "site_slug": "dundee-city-council"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q130637",
+      "github_orgs": [
+        "openglasgow"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/glasgow-city-council",
+      "site_slug": "glasgow-city-council"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q28530249",
+      "github_orgs": [
+        "TheHighlandCouncil"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/the-highland-council",
+      "site_slug": "the-highland-council"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q7985942",
+      "github_orgs": [
+        "wmfs"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/west-midlands-fire-service",
+      "site_slug": "west-midlands-fire-service"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q1670994",
+      "github_orgs": [
+        "NationalLibraryOfScotland"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/national-library-of-scotland",
+      "site_slug": "national-library-of-scotland"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q16993504",
+      "github_orgs": [
+        "GSTT-CSC"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/guys-and-st-thomas-nhs-foundation-trust",
+      "site_slug": "guys-and-st-thomas-nhs-foundation-trust"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q5744781",
+      "github_orgs": [
+        "ukfrs-hertsfrs"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/hertfordshire-fire-and-rescue-service",
+      "site_slug": "hertfordshire-fire-and-rescue-service"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q89284077",
+      "github_orgs": [
+        "Public-Health-Scotland"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/public-health-scotland",
+      "site_slug": "public-health-scotland"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q6954180",
+      "github_orgs": [
+        "nhscymru"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-wales",
+      "site_slug": "nhs-wales"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q7834896",
+      "github_orgs": [
+        "TransportScotland"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/transport-scotland",
+      "site_slug": "transport-scotland"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q17017470",
+      "github_orgs": [
+        "CDU-data-science-team"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/nottinghamshire-healthcare-nhs-foundation-trust",
+      "site_slug": "nottinghamshire-healthcare-nhs-foundation-trust"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q1537425",
+      "github_orgs": [
+        "Scottish-Natural-Heritage"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/naturescot",
+      "site_slug": "naturescot"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q11010",
+      "github_orgs": [
+        "ukparliament",
+        "UKParliData",
+        "houseofcommonslibrary"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/parliament-of-the-united-kingdom",
+      "site_slug": "parliament-of-the-united-kingdom"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q6764218",
+      "github_orgs": [
+        "MarineScotlandScience"
+      ],
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/marine-scotland",
+      "site_slug": "marine-scotland"
+    },
+    {
+      "type": "gov_uk",
+      "govuk_slug": "british-library",
+      "github_orgs": [
+        "ukwa",
+        "britishlibrary"
+      ],
+      "wikidata_id": "Q23308",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/british-library",
+      "site_slug": "british-library"
     }
   ]
 }

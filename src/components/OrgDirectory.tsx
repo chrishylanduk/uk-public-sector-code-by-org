@@ -98,7 +98,8 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         case 'stars': comparison = a.totalStars - b.totalStars; break;
         case 'repos': comparison = a.repoCount - b.repoCount; break;
         case 'total': comparison = a.totalRepoCount - b.totalRepoCount; break;
-        case 'fte':   comparison = (a.fte ?? -1) - (b.fte ?? -1); break;
+        case 'fte':           comparison = (a.fte ?? -1) - (b.fte ?? -1); break;
+        case 'digitalDataFte': comparison = (a.digitalDataFte ?? -1) - (b.digitalDataFte ?? -1); break;
       }
       return filters.sortDirection === 'asc' ? comparison : -comparison;
     });
@@ -165,6 +166,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
       <td className="px-4 py-3 text-right">{entry.repoCount.toLocaleString('en-GB')}</td>
       <td className="px-4 py-3 text-right hidden lg:table-cell">{entry.totalRepoCount.toLocaleString('en-GB')}</td>
       <td className="px-4 py-3 text-right">{entry.fte != null ? entry.fte.toLocaleString('en-GB') : <span className="text-gov-grey">—</span>}</td>
+      <td className="px-4 py-3 text-right">{entry.digitalDataFte != null ? entry.digitalDataFte.toLocaleString('en-GB') : <span className="text-gov-grey">—</span>}</td>
     </tr>
   );
 
@@ -224,12 +226,17 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
                   Total FTE{getSortIcon('fte')}
                 </button>
               </th>
+              <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('digitalDataFte')}>
+                <button onClick={() => handleSort('digitalDataFte')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by digital and data FTE">
+                  Digital &amp; data FTE{getSortIcon('digitalDataFte')}
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
             {topLevel.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gov-grey">
+                <td colSpan={7} className="px-4 py-8 text-center text-gov-grey">
                   No organisations match your search criteria.
                 </td>
               </tr>

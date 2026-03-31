@@ -100,6 +100,10 @@ export default function RootLayout({
               <a href="https://www.local.gov.uk/publications/ons-quarterly-public-sector-employment-survey" target="_blank" rel="noopener noreferrer" className="underline hover:text-gov-blue focus:outline-2 focus:outline-gov-blue">
                 LGA Quarterly Workforce Survey
               </a>
+              {' '}and{' '}
+              <a href="https://www.gov.uk/government/collections/civil-service-statistics" target="_blank" rel="noopener noreferrer" className="underline hover:text-gov-blue focus:outline-2 focus:outline-gov-blue">
+                Civil Service Statistics
+              </a>
               .
             </p>
           </div>

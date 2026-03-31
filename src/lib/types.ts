@@ -109,6 +109,7 @@ export interface OrganisationStats {
   webUrl: string;
   parentSlug?: string;
   fte?: number;
+  digitalDataFte?: number;
 }
 
 export interface OrgEntry {
@@ -121,10 +122,11 @@ export interface OrgEntry {
   parentSlug?: string;
   githubOrgs: string[];
   fte?: number;
+  digitalDataFte?: number;
 }
 
 // Filter/sort state (client-side)
-export type SortField = 'type' | 'name' | 'stars' | 'repos' | 'total' | 'fte';
+export type SortField = 'type' | 'name' | 'stars' | 'repos' | 'total' | 'fte' | 'digitalDataFte';
 export type SortDirection = 'asc' | 'desc';
 
 export interface FilterState {

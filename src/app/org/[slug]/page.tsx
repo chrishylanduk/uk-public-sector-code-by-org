@@ -1,4 +1,4 @@
-import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData } from '@/lib/data-fetcher';
+import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData, fetchCsStatsFteData } from '@/lib/data-fetcher';
 import { isActiveRepo } from '@/utils/format';
 import { processOrganisationData } from '@/lib/data-processor';
 import RepoList from '@/components/RepoList';
@@ -10,8 +10,8 @@ export const dynamic = 'force-static';
 export const revalidate = false;
 
 export async function generateStaticParams() {
-  const [repos, govOrgs, planningOrgs, lgaFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData()]);
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData);
+  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData()]);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData);
   return organisations.map((org) => ({ slug: org.slug }));
 }
 
@@ -21,9 +21,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const [repos, govOrgs, planningOrgs, lgaFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData()]);
+  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData()]);
 
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData);
   const org = organisations.find((d) => d.slug === slug);
 
   if (!org) {
@@ -48,9 +48,9 @@ export default async function OrganisationPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [repos, govOrgs, planningOrgs, lgaFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData()]);
+  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData()]);
 
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData);
   const org = organisations.find((d) => d.slug === slug);
 
   if (!org) {
@@ -78,7 +78,7 @@ export default async function OrganisationPage({
 
       <h2 className="text-3xl font-bold mb-2">{org.name}</h2>
       <p className="text-gov-grey mb-1">{org.format}</p>
-      <p className="text-sm mb-6">
+      <p className={`text-sm ${org.fte == null && org.digitalDataFte == null ? 'mb-6' : 'mb-1'}`}>
         <svg className="inline-block w-4 h-4 mr-1 text-gov-blue" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         <a
           href={org.webUrl}
@@ -89,6 +89,13 @@ export default async function OrganisationPage({
           {org.webUrl}
         </a>
       </p>
+      {(org.fte != null || org.digitalDataFte != null) && (
+        <p className="text-sm mb-6 text-gov-grey">
+          {org.fte != null && <span>Total FTE: <span className="font-semibold text-gov-dark-blue">{org.fte.toLocaleString('en-GB')}</span></span>}
+          {org.fte != null && org.digitalDataFte != null && <span className="mx-2">·</span>}
+          {org.digitalDataFte != null && <span>Digital &amp; data FTE: <span className="font-semibold text-gov-dark-blue">{org.digitalDataFte.toLocaleString('en-GB')}</span></span>}
+        </p>
+      )}
       {(() => {
         const parent = org.parentSlug ? organisations.find((o) => o.slug === org.parentSlug) : null;
         const subs = organisations.filter((o) => o.parentSlug === org.slug);
@@ -126,7 +133,7 @@ export default async function OrganisationPage({
         );
       })()}
 
-      <div className={`bg-gov-light-grey p-6 rounded mb-8 grid grid-cols-1 gap-4 ${org.fte != null ? 'sm:grid-cols-5' : 'sm:grid-cols-4'}`}>
+      <div className="bg-gov-light-grey p-6 rounded mb-8 grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div>
           <p className="text-sm text-gov-grey mb-1">Stars of active repositories</p>
           <p className="text-3xl font-bold text-gov-dark-blue">
@@ -145,14 +152,6 @@ export default async function OrganisationPage({
             {org.totalRepoCount.toLocaleString('en-GB')}
           </p>
         </div>
-        {org.fte != null && (
-          <div>
-            <p className="text-sm text-gov-grey mb-1">Total FTE</p>
-            <p className="text-3xl font-bold text-gov-dark-blue">
-              {org.fte.toLocaleString('en-GB')}
-            </p>
-          </div>
-        )}
         <div>
           <p className="text-sm text-gov-grey mb-1">GitHub organisations</p>
           <p className="text-lg font-semibold">

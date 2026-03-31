@@ -605,13 +605,11 @@
     },
     {
       "type": "gov_uk",
-      "govuk_slug": "crown-commercial-service",
+      "govuk_slug": "government-commercial-agency",
       "wikidata_id": "Q5589070",
       "github_orgs": [
         "Crown-Commercial-Service"
-      ],
-      "site_url": "https://publicsectorcodebyorg.co.uk/org/crown-commercial-service",
-      "site_slug": "crown-commercial-service"
+      ]
     },
     {
       "type": "gov_uk",

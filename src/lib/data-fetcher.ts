@@ -2,6 +2,7 @@ import type { GithubRepo, GovUkOrg, GovUkApiResponse, PlanningDataOrg, PlanningD
 import { promises as fs } from 'fs';
 import path from 'path';
 import ExcelJS from 'exceljs';
+import { unzipSync } from 'fflate';
 
 const CACHE_DIR = path.join(process.cwd(), '.cache');
 const REPOS_CACHE_FILE = path.join(CACHE_DIR, 'repos.json');
@@ -9,10 +10,13 @@ const ORGS_CACHE_FILE = path.join(CACHE_DIR, 'orgs.json');
 const PLANNING_DATA_CACHE_FILE = path.join(CACHE_DIR, 'planning-data-local-authorities.json');
 const WIKIDATA_ORGS_DIR = path.join(CACHE_DIR, 'wikidata-orgs');
 const LGA_FTE_CACHE_FILE = path.join(CACHE_DIR, 'lga-fte.json');
+const CS_STATS_FTE_CACHE_FILE = path.join(CACHE_DIR, 'cs-stats-fte.json');
 const CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Update this URL when a new quarterly release is published
 export const LGA_FTE_URL = 'https://www.local.gov.uk/sites/default/files/documents/QPSES%20Q4%202025.xlsx';
+// Update this URL when a new annual release is published
+export const CS_STATS_URL = 'https://assets.publishing.service.gov.uk/media/696f6cdc7e827090d02d4219/Statistical_tables_-_Civil_Service_Statistics_2025.ods';
 const ONS_GEOGRAPHY_URL = 'https://open-geography-portalx-ons.hub.arcgis.com/api/download/v1/items/984b3f485d1a4c0f9d9e51617cafc224/csv?layers=0';
 
 /**
@@ -356,4 +360,131 @@ export async function fetchLgaFteData(): Promise<Map<string, number>> {
   console.log('✓ Cached LGA FTE data to disk');
 
   return onsFteMap;
+}
+
+function normaliseOrgName(s: string): string {
+  return s.replace(/&/g, 'and').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+export interface CsStatsFteEntry {
+  fte: number;
+  digitalDataFte?: number;
+}
+
+/**
+ * Fetch Civil Service FTE data from Table 8A of the Civil Service Statistics ODS file.
+ * Returns a map of normalised organisation name → { fte, digitalDataFte }.
+ *
+ * Update CS_STATS_URL when a new annual release is published.
+ */
+export async function fetchCsStatsFteData(): Promise<Map<string, CsStatsFteEntry>> {
+  if (await isCacheFresh(CS_STATS_FTE_CACHE_FILE)) {
+    const cached = await readCache<[string, CsStatsFteEntry][]>(CS_STATS_FTE_CACHE_FILE);
+    if (cached) {
+      console.log(`✓ Using cached Civil Service FTE data (${cached.length} entries)`);
+      return new Map(cached);
+    }
+  }
+
+  console.log(`Fetching Civil Service Statistics from ${CS_STATS_URL}...`);
+  const response = await fetchWithRetry(CS_STATS_URL);
+  const buffer = new Uint8Array(await response.arrayBuffer());
+
+  // ODS is a ZIP archive — extract content/content.xml
+  const unzipped = unzipSync(buffer);
+  const contentXmlBytes = unzipped['content.xml'];
+  if (!contentXmlBytes) throw new Error('content.xml not found in ODS archive');
+  const contentXml = new TextDecoder().decode(contentXmlBytes);
+
+  // Parse XML to find table_8A
+  // Use regex to extract the table rather than a full XML parser
+  const tableMatch = contentXml.match(/<table:table[^>]+table:name="table_8A"[\s\S]*?<\/table:table>/);
+  if (!tableMatch) throw new Error('table_8A not found in Civil Service Statistics ODS');
+  const tableXml = tableMatch[0];
+
+  // Extract all rows
+  const rowMatches = [...tableXml.matchAll(/<table:table-row[\s\S]*?<\/table:table-row>/g)];
+
+  // Extract text content from a cell
+  const cellText = (cellXml: string): string => {
+    const texts = [...cellXml.matchAll(/<text:p[^>]*>([\s\S]*?)<\/text:p>/g)];
+    return texts.map(m => m[1].replace(/<[^>]+>/g, '')).join(' ').trim();
+  };
+
+  // Extract all cells from a row
+  const rowCells = (rowXml: string): string[] => {
+    const cells: string[] = [];
+    const cellRe = /<table:table-cell[\s\S]*?<\/table:table-cell>/g;
+    for (const m of rowXml.matchAll(cellRe)) {
+      // Handle repeated empty cells
+      const repeatMatch = m[0].match(/table:number-columns-repeated="(\d+)"/);
+      const repeat = repeatMatch ? parseInt(repeatMatch[1]) : 1;
+      const text = cellText(m[0]);
+      for (let i = 0; i < repeat; i++) cells.push(text);
+    }
+    return cells;
+  };
+
+  // Find header row to locate column indices
+  let orgNameCol = -1;
+  let fteTotalCol = -1;
+  let digitalDataFteCol = -1;
+  const dataRows: string[] = [];
+  let headerFound = false;
+
+  for (const rowMatch of rowMatches) {
+    const cells = rowCells(rowMatch[0]);
+    if (!headerFound) {
+      const orgIdx = cells.findIndex(c => c === 'Civil Service organisation');
+      const fteIdx = cells.findIndex(c => c.includes('Total full-time equivalent'));
+      const ddIdx = cells.findIndex(c => c.includes('Digital and Data'));
+      if (orgIdx !== -1 && fteIdx !== -1) {
+        orgNameCol = orgIdx;
+        fteTotalCol = fteIdx;
+        digitalDataFteCol = ddIdx;
+        headerFound = true;
+      }
+      continue;
+    }
+    dataRows.push(rowMatch[0]);
+  }
+
+  if (!headerFound) throw new Error('Could not find header row in table_8A');
+
+  const fteMap = new Map<string, CsStatsFteEntry>();
+  let matched = 0;
+
+  for (const rowXml of dataRows) {
+    const cells = rowCells(rowXml);
+    let orgName = cells[orgNameCol]?.trim() ?? '';
+    if (!orgName) continue;
+
+    // Discard "X Overall" rows — represent combined parent+agencies totals
+    if (orgName.endsWith(' Overall')) continue;
+
+    // Strip "(excl. agencies)" suffix — this is the core dept row, match to parent dept name
+    if (orgName.endsWith(' (excl. agencies)')) {
+      orgName = orgName.slice(0, -' (excl. agencies)'.length).trim();
+    }
+
+    const fteRaw = cells[fteTotalCol]?.replace(/,/g, '').trim();
+    const fte = fteRaw ? parseFloat(fteRaw) : NaN;
+    if (!orgName || isNaN(fte)) continue;
+
+    const ddRaw = digitalDataFteCol !== -1 ? cells[digitalDataFteCol]?.replace(/,/g, '').trim() : '';
+    const digitalDataFte = ddRaw ? parseFloat(ddRaw) : NaN;
+
+    fteMap.set(normaliseOrgName(orgName), {
+      fte,
+      digitalDataFte: isNaN(digitalDataFte) ? undefined : digitalDataFte,
+    });
+    matched++;
+  }
+
+  console.log(`✓ Parsed ${matched} Civil Service FTE entries`);
+
+  await writeCache(CS_STATS_FTE_CACHE_FILE, Array.from(fteMap.entries()));
+  console.log('✓ Cached Civil Service FTE data to disk');
+
+  return fteMap;
 }

@@ -290,6 +290,20 @@ edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsecto
           <li className="border-l-4 border-gov-blue pl-4">
             <p className="font-bold mb-1">
               <a
+                href="https://www.gov.uk/government/collections/civil-service-statistics"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gov-blue underline hover:text-gov-dark-blue"
+              >
+                Civil Service Statistics
+              </a>
+            </p>
+            <p className="text-sm text-gov-grey mb-1">Annual FTE data for civil service departments and agencies, published by the Cabinet Office. Used to populate Total FTE and Digital &amp; data FTE figures for central government organisations on this site.</p>
+            <p className="text-sm">Matched to organisations via GOV.UK organisation titles. Data from Table 8A (FTE by profession and department).</p>
+          </li>
+          <li className="border-l-4 border-gov-blue pl-4">
+            <p className="font-bold mb-1">
+              <a
                 href="https://www.local.gov.uk/publications/ons-quarterly-public-sector-employment-survey"
                 target="_blank"
                 rel="noopener noreferrer"

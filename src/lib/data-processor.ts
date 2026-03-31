@@ -1,6 +1,7 @@
 import type { GithubRepo, GovUkOrg, PlanningDataOrg, OrganisationStats, OrgEntry, GroupedFormats } from './types';
 import { getOrgMapping, getLocalGovEntries, getAllMappedGithubOrgs, getMissingWikidataOrgs, getDuplicateWikidataOrgs, getWikidataIdToSlug, getGovUkWikidataIds } from './mapping';
 import { fetchWikidataLocalOrg } from './data-fetcher';
+import type { CsStatsFteEntry } from './data-fetcher';
 import { isActiveRepo } from '@/utils/format';
 
 async function resolveParentViaWikidata(
@@ -33,11 +34,16 @@ const LOCAL_AUTHORITY_TYPE: Record<string, string> = {
  * Process and aggregate organisation data
  * Validates mapping file and fails build if stale
  */
+function normaliseOrgName(s: string): string {
+  return s.replace(/&/g, 'and').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
 export async function processOrganisationData(
   repos: GithubRepo[],
   govUkOrgs: GovUkOrg[],
   planningDataOrgs: PlanningDataOrg[] = [],
-  lgaFteData: Map<string, number> = new Map()
+  lgaFteData: Map<string, number> = new Map(),
+  csStatsFteData: Map<string, CsStatsFteEntry> = new Map()
 ): Promise<OrganisationStats[]> {
   const mapping = getOrgMapping();
   const allowedGithubOrgs = getAllMappedGithubOrgs();
@@ -182,6 +188,8 @@ export async function processOrganisationData(
       repos: allOrgRepos,
       webUrl: govOrg.web_url,
       parentSlug,
+      fte: csStatsFteData.get(normaliseOrgName(govOrg.title))?.fte,
+      digitalDataFte: csStatsFteData.get(normaliseOrgName(govOrg.title))?.digitalDataFte,
     });
   }
 
@@ -283,6 +291,7 @@ export function getOrgList(organisations: OrganisationStats[]): OrgEntry[] {
       parentSlug: org.parentSlug,
       githubOrgs: org.githubOrgs,
       fte: org.fte,
+      digitalDataFte: org.digitalDataFte,
     }));
 }
 

@@ -247,6 +247,17 @@ export async function processOrganisationData(
   }
 
   const organisations = Array.from(orgMap.values());
+
+  // Suffix "(Other)" on other-type orgs whose format clashes with gov_uk or english_council
+  const nonOtherFormats = new Set(
+    organisations.filter((o) => o.mappingType !== 'other').map((o) => o.format)
+  );
+  for (const org of organisations) {
+    if (org.mappingType === 'other' && nonOtherFormats.has(org.format)) {
+      org.format = `${org.format} (Other)`;
+    }
+  }
+
   console.log(`✓ Processed ${organisations.length} organisations`);
 
   return organisations;
@@ -281,9 +292,6 @@ export function getGroupedFormats(organisations: OrganisationStats[]): GroupedFo
     else if (org.mappingType === 'english_council') englishCouncil.add(org.format);
     else other.add(org.format);
   }
-  for (const f of govUk) englishCouncil.delete(f);
-  for (const f of govUk) other.delete(f);
-  for (const f of englishCouncil) other.delete(f);
   return {
     govUk: Array.from(govUk).sort(),
     englishCouncil: Array.from(englishCouncil).sort(),

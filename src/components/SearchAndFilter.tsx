@@ -80,7 +80,7 @@ export default function SearchAndFilter({ filters, onFiltersChange, availableFor
             Deselect all
           </button>
         </div>
-        <fieldset className="space-y-4">
+        <fieldset className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {groups.map(({ label, formats }) => (
             <div key={label}>
               <div className="flex items-baseline gap-3 mb-1">

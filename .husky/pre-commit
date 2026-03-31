@@ -3,3 +3,4 @@ npm run type-check
 npm audit --audit-level=high
 npm run build
 git add public/data/org-mapping.csv
+git add public/data/org-mapping.json

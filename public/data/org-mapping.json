@@ -609,7 +609,9 @@
       "wikidata_id": "Q5589070",
       "github_orgs": [
         "Crown-Commercial-Service"
-      ]
+      ],
+      "site_slug": "government-commercial-agency",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/government-commercial-agency"
     },
     {
       "type": "gov_uk",

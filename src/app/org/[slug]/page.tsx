@@ -1,4 +1,4 @@
-import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs } from '@/lib/data-fetcher';
+import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData } from '@/lib/data-fetcher';
 import { isActiveRepo } from '@/utils/format';
 import { processOrganisationData } from '@/lib/data-processor';
 import RepoList from '@/components/RepoList';
@@ -10,8 +10,8 @@ export const dynamic = 'force-static';
 export const revalidate = false;
 
 export async function generateStaticParams() {
-  const [repos, govOrgs, planningOrgs] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs()]);
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs);
+  const [repos, govOrgs, planningOrgs, lgaFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData()]);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData);
   return organisations.map((org) => ({ slug: org.slug }));
 }
 
@@ -21,9 +21,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const [repos, govOrgs, planningOrgs] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs()]);
+  const [repos, govOrgs, planningOrgs, lgaFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData()]);
 
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData);
   const org = organisations.find((d) => d.slug === slug);
 
   if (!org) {
@@ -48,9 +48,9 @@ export default async function OrganisationPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [repos, govOrgs, planningOrgs] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs()]);
+  const [repos, govOrgs, planningOrgs, lgaFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData()]);
 
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData);
   const org = organisations.find((d) => d.slug === slug);
 
   if (!org) {
@@ -79,7 +79,7 @@ export default async function OrganisationPage({
       <h2 className="text-3xl font-bold mb-2">{org.name}</h2>
       <p className="text-gov-grey mb-1">{org.format}</p>
       <p className="text-sm mb-6">
-        <span className="mr-1" aria-hidden="true">🌐</span>
+        <svg className="inline-block w-4 h-4 mr-1 text-gov-blue" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         <a
           href={org.webUrl}
           target="_blank"
@@ -126,7 +126,7 @@ export default async function OrganisationPage({
         );
       })()}
 
-      <div className="bg-gov-light-grey p-6 rounded mb-8 grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className={`bg-gov-light-grey p-6 rounded mb-8 grid grid-cols-1 gap-4 ${org.fte != null ? 'sm:grid-cols-5' : 'sm:grid-cols-4'}`}>
         <div>
           <p className="text-sm text-gov-grey mb-1">Stars of active repositories</p>
           <p className="text-3xl font-bold text-gov-dark-blue">
@@ -145,6 +145,14 @@ export default async function OrganisationPage({
             {org.totalRepoCount.toLocaleString('en-GB')}
           </p>
         </div>
+        {org.fte != null && (
+          <div>
+            <p className="text-sm text-gov-grey mb-1">Total FTE</p>
+            <p className="text-3xl font-bold text-gov-dark-blue">
+              {org.fte.toLocaleString('en-GB')}
+            </p>
+          </div>
+        )}
         <div>
           <p className="text-sm text-gov-grey mb-1">GitHub organisations</p>
           <p className="text-lg font-semibold">

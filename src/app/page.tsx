@@ -1,4 +1,4 @@
-import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs } from '@/lib/data-fetcher';
+import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData } from '@/lib/data-fetcher';
 import { processOrganisationData, getOrgList, getGroupedFormats } from '@/lib/data-processor';
 import OrgDirectory from '@/components/OrgDirectory';
 import { formatDateTime } from '@/utils/format';
@@ -9,9 +9,9 @@ export const revalidate = false;
 
 export default async function HomePage() {
   // Fetch data at build time
-  const [repos, govOrgs, planningOrgs] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs()]);
+  const [repos, govOrgs, planningOrgs, lgaFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData()]);
 
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData);
   const orgList = getOrgList(organisations);
   const formats = getGroupedFormats(organisations);
 

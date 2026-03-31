@@ -1,13 +1,19 @@
 import type { GithubRepo, GovUkOrg, GovUkApiResponse, PlanningDataOrg, PlanningDataApiResponse, WikidataLocalOrg } from './types';
 import { promises as fs } from 'fs';
 import path from 'path';
+import ExcelJS from 'exceljs';
 
 const CACHE_DIR = path.join(process.cwd(), '.cache');
 const REPOS_CACHE_FILE = path.join(CACHE_DIR, 'repos.json');
 const ORGS_CACHE_FILE = path.join(CACHE_DIR, 'orgs.json');
 const PLANNING_DATA_CACHE_FILE = path.join(CACHE_DIR, 'planning-data-local-authorities.json');
 const WIKIDATA_ORGS_DIR = path.join(CACHE_DIR, 'wikidata-orgs');
+const LGA_FTE_CACHE_FILE = path.join(CACHE_DIR, 'lga-fte.json');
 const CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+// Update this URL when a new quarterly release is published
+export const LGA_FTE_URL = 'https://www.local.gov.uk/sites/default/files/documents/QPSES%20Q4%202025.xlsx';
+const ONS_GEOGRAPHY_URL = 'https://open-geography-portalx-ons.hub.arcgis.com/api/download/v1/items/984b3f485d1a4c0f9d9e51617cafc224/csv?layers=0';
 
 /**
  * Check if cache file exists and is fresh
@@ -264,4 +270,90 @@ export async function fetchPlanningDataOrgs(): Promise<PlanningDataOrg[]> {
   console.log('✓ Cached planning data local authorities to disk');
 
   return allOrgs;
+}
+
+/**
+ * Fetch LGA FTE data from the QPSES spreadsheet, returning a map of ONS code → total FTE.
+ * Matches via LGA Name → ONS code using the ONS geography CSV.
+ *
+ * Update LGA_FTE_URL when a new quarterly release is published.
+ */
+export async function fetchLgaFteData(): Promise<Map<string, number>> {
+  if (await isCacheFresh(LGA_FTE_CACHE_FILE)) {
+    const cached = await readCache<[string, number][]>(LGA_FTE_CACHE_FILE);
+    if (cached) {
+      console.log(`✓ Using cached LGA FTE data (${cached.length} entries)`);
+      return new Map(cached);
+    }
+  }
+
+  console.log('Fetching ONS geography (LGA name → ONS code)...');
+  const onsResponse = await fetchWithRetry(ONS_GEOGRAPHY_URL);
+  const onsCsv = await onsResponse.text();
+
+  // Parse CSV: LAD24CD (ONS code), LAD24NM (LGA name)
+  // Must handle quoted fields (e.g. "Bristol, City of") — can't naive-split on comma
+  const lgaNameToOnsCode = new Map<string, string>();
+  // Fallback: maps the part before the first comma (e.g. "Bristol" from "Bristol, City of")
+  const lgaShortNameToOnsCode = new Map<string, string>();
+  for (const line of onsCsv.split('\n').slice(1)) {
+    if (!line.trim()) continue;
+    // Match: onsCode,optionally-quoted-name
+    const m = line.match(/^([^,]+),("([^"]*)"|(.*?))(?:,|$)/);
+    if (!m) continue;
+    const onsCode = m[1].trim().replace(/^\uFEFF/, '');
+    const lgaName = (m[3] ?? m[4] ?? '').trim();
+    if (!onsCode || !lgaName) continue;
+    lgaNameToOnsCode.set(lgaName, onsCode);
+    const shortName = lgaName.split(',')[0].trim();
+    if (shortName !== lgaName) lgaShortNameToOnsCode.set(shortName, onsCode);
+  }
+  console.log(`✓ Parsed ${lgaNameToOnsCode.size} LGA name → ONS code mappings`);
+
+  console.log(`Fetching LGA FTE data from ${LGA_FTE_URL}...`);
+  const xlsxResponse = await fetchWithRetry(LGA_FTE_URL);
+  const xlsxBuffer = await xlsxResponse.arrayBuffer();
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.load(xlsxBuffer);
+
+  const ws = wb.getWorksheet('Final Individual');
+  if (!ws) throw new Error('Sheet "Final Individual" not found in QPSES spreadsheet');
+
+  const allRows = ws.getSheetValues() as (ExcelJS.CellValue[])[];
+  // getSheetValues() is 1-indexed and may have a leading undefined at index 0
+  const rows = allRows.filter(Boolean);
+
+  // Row 0 is headers: find "LGA Name" and "Total FTE" column indices
+  const headers = rows[0].map((h) => (h == null ? '' : String(h)));
+  const lgaNameCol = headers.indexOf('LGA Name');
+  const fteCol = headers.indexOf('Total FTE');
+  if (lgaNameCol === -1 || fteCol === -1) {
+    throw new Error(`Expected columns "LGA Name" and "Total FTE" in QPSES spreadsheet, got: ${headers.join(', ')}`);
+  }
+
+  const onsFteMap = new Map<string, number>();
+  let matched = 0;
+  let unmatched = 0;
+
+  for (const row of rows.slice(1)) {
+    const lgaName = String(row[lgaNameCol] ?? '').trim();
+    const fte = row[fteCol];
+    if (!lgaName || typeof fte !== 'number') continue;
+
+    const onsCode = lgaNameToOnsCode.get(lgaName) ?? lgaShortNameToOnsCode.get(lgaName);
+    if (onsCode) {
+      onsFteMap.set(onsCode, fte);
+      matched++;
+    } else {
+      console.warn(`⚠️  LGA FTE: no ONS code match for "${lgaName}"`);
+      unmatched++;
+    }
+  }
+
+  console.log(`✓ Matched ${matched} LGA FTE entries, ${unmatched} unmatched`);
+
+  await writeCache(LGA_FTE_CACHE_FILE, Array.from(onsFteMap.entries()));
+  console.log('✓ Cached LGA FTE data to disk');
+
+  return onsFteMap;
 }

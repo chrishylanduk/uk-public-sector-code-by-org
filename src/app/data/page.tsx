@@ -228,7 +228,7 @@ edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsecto
       <section className="mb-10">
         <h3 className="text-2xl font-bold mb-3">Related data sources</h3>
         <p className="mb-4 text-gov-grey text-sm">
-          Each field in the mapping is a key into one of these datasets. Use them together to enrich the data.
+          Data sources used to build and enrich this site. Many fields in the mapping are keys into these datasets.
         </p>
         <ul className="space-y-6">
           <li className="border-l-4 border-gov-blue pl-4">
@@ -286,6 +286,22 @@ edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsecto
             </p>
             <p className="text-sm text-gov-grey mb-1">Structured data about organisations including names, websites, and relationships. CC0.</p>
             <p className="text-sm">Use <code className="font-mono bg-gray-100 px-1">wikidata_id</code> to look up an entity directly at <code className="font-mono bg-gray-100 px-1">https://www.wikidata.org/entity/{'{wikidata_id}'}</code>, or query via SPARQL at <code className="font-mono bg-gray-100 px-1">https://query.wikidata.org/sparql</code> using <code className="font-mono bg-gray-100 px-1">BIND(wd:{'{wikidata_id}'} AS ?item)</code>.</p>
+          </li>
+          <li className="border-l-4 border-gov-blue pl-4">
+            <p className="font-bold mb-1">
+              <a
+                href="https://www.local.gov.uk/publications/ons-quarterly-public-sector-employment-survey"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gov-blue underline hover:text-gov-dark-blue"
+              >
+                LGA Quarterly Workforce Survey (QPSES)
+              </a>
+            </p>
+            <p className="text-sm text-gov-grey mb-1">Quarterly headcount and FTE data for English and Welsh local authorities, published by the Local Government Association.</p>
+            <p className="text-sm">Used to populate the Total FTE figures shown for English councils on this site. Matched to councils via{' '}
+              <a href="https://www.data.gov.uk/dataset/cbaf0333-3548-4e42-8a8f-6dc5376bc360/local-authority-districts-december-2024-names-and-codes-in-the-uk" target="_blank" rel="noopener noreferrer" className="text-gov-blue underline hover:text-gov-dark-blue">ONS geography codes</a>.
+            </p>
           </li>
         </ul>
       </section>

@@ -108,6 +108,7 @@ export interface OrganisationStats {
   repos: GithubRepo[];
   webUrl: string;
   parentSlug?: string;
+  fte?: number;
 }
 
 export interface OrgEntry {
@@ -118,10 +119,12 @@ export interface OrgEntry {
   repoCount: number;
   totalRepoCount: number;
   parentSlug?: string;
+  githubOrgs: string[];
+  fte?: number;
 }
 
 // Filter/sort state (client-side)
-export type SortField = 'type' | 'name' | 'stars' | 'repos' | 'total';
+export type SortField = 'type' | 'name' | 'stars' | 'repos' | 'total' | 'fte';
 export type SortDirection = 'asc' | 'desc';
 
 export interface FilterState {

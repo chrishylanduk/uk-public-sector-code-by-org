@@ -36,7 +36,8 @@ const LOCAL_AUTHORITY_TYPE: Record<string, string> = {
 export async function processOrganisationData(
   repos: GithubRepo[],
   govUkOrgs: GovUkOrg[],
-  planningDataOrgs: PlanningDataOrg[] = []
+  planningDataOrgs: PlanningDataOrg[] = [],
+  lgaFteData: Map<string, number> = new Map()
 ): Promise<OrganisationStats[]> {
   const mapping = getOrgMapping();
   const allowedGithubOrgs = getAllMappedGithubOrgs();
@@ -196,6 +197,7 @@ export async function processOrganisationData(
     let webUrl: string;
     let format: string;
     let parentSlug: string | undefined;
+    let fte: number | undefined;
 
     if (entry.type === 'planning_data') {
       const planningOrg = planningDataByRef.get(entry.planningDataReference);
@@ -217,6 +219,7 @@ export async function processOrganisationData(
       if (entry.wikidataId) {
         parentSlug = await resolveParentViaWikidata(entry.wikidataId, wikidataIdToSlug);
       }
+      fte = lgaFteData.get(planningOrg['statistical-geography']);
     } else {
       const wikidataOrg = await fetchWikidataLocalOrg(entry.wikidataId);
       name = wikidataOrg.name;
@@ -243,6 +246,7 @@ export async function processOrganisationData(
       repos: allOrgRepos,
       webUrl,
       parentSlug,
+      fte,
     });
   }
 
@@ -277,6 +281,8 @@ export function getOrgList(organisations: OrganisationStats[]): OrgEntry[] {
       repoCount: org.repoCount,
       totalRepoCount: org.totalRepoCount,
       parentSlug: org.parentSlug,
+      githubOrgs: org.githubOrgs,
+      fte: org.fte,
     }));
 }
 

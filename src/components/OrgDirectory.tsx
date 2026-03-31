@@ -98,6 +98,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         case 'stars': comparison = a.totalStars - b.totalStars; break;
         case 'repos': comparison = a.repoCount - b.repoCount; break;
         case 'total': comparison = a.totalRepoCount - b.totalRepoCount; break;
+        case 'fte':   comparison = (a.fte ?? -1) - (b.fte ?? -1); break;
       }
       return filters.sortDirection === 'asc' ? comparison : -comparison;
     });
@@ -163,6 +164,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
       </td>
       <td className="px-4 py-3 text-right">{entry.repoCount.toLocaleString('en-GB')}</td>
       <td className="px-4 py-3 text-right hidden lg:table-cell">{entry.totalRepoCount.toLocaleString('en-GB')}</td>
+      <td className="px-4 py-3 text-right">{entry.fte != null ? entry.fte.toLocaleString('en-GB') : <span className="text-gov-grey">—</span>}</td>
     </tr>
   );
 
@@ -217,12 +219,17 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
                   Total repos{getSortIcon('total')}
                 </button>
               </th>
+              <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('fte')}>
+                <button onClick={() => handleSort('fte')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by total FTE">
+                  Total FTE{getSortIcon('fte')}
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody>
             {topLevel.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gov-grey">
+                <td colSpan={6} className="px-4 py-8 text-center text-gov-grey">
                   No organisations match your search criteria.
                 </td>
               </tr>

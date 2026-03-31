@@ -96,6 +96,10 @@ export default function RootLayout({
               <a href="https://www.wikidata.org" target="_blank" rel="noopener noreferrer" className="underline hover:text-gov-blue focus:outline-2 focus:outline-gov-blue">
                 Wikidata
               </a>
+              . Workforce data from the{' '}
+              <a href="https://www.local.gov.uk/publications/ons-quarterly-public-sector-employment-survey" target="_blank" rel="noopener noreferrer" className="underline hover:text-gov-blue focus:outline-2 focus:outline-gov-blue">
+                LGA Quarterly Workforce Survey
+              </a>
               .
             </p>
           </div>

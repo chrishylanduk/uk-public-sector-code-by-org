@@ -130,7 +130,7 @@ export default function DataPage() {
 }`}</pre>
 
         <h5 className="font-bold mb-2">Fields</h5>
-        <table className="w-full border-collapse text-sm mb-10">
+        <div className="overflow-x-auto mb-10"><table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-gov-light-grey border-b-2 border-gov-dark-blue">
               <th scope="col" className="px-3 py-2 text-left font-bold">Field</th>
@@ -171,7 +171,7 @@ export default function DataPage() {
               <td className="px-3 py-2">Array of GitHub organisation names belonging to this organisation</td>
             </tr>
           </tbody>
-        </table>
+        </table></div>
 
         <h4 className="text-lg font-bold mb-1">CSV</h4>
         <p className="text-sm text-gov-grey mb-3">One row per GitHub organisation.</p>
@@ -185,7 +185,7 @@ coventry-city-council,english_council,,COV,Q5179058,coventry-city-council,https:
 edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsectorcodebyorg.co.uk/org/city-of-edinburgh-council`}</pre>
 
         <h5 className="font-bold mb-2">Columns</h5>
-        <table className="w-full border-collapse text-sm">
+        <div className="overflow-x-auto"><table className="w-full border-collapse text-sm">
           <thead>
             <tr className="bg-gov-light-grey border-b-2 border-gov-dark-blue">
               <th scope="col" className="px-3 py-2 text-left font-bold">Column</th>
@@ -222,7 +222,7 @@ edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsecto
               <td className="px-3 py-2">URL of the organisation&apos;s page on this site</td>
             </tr>
           </tbody>
-        </table>
+        </table></div>
       </section>
 
       <section className="mb-10">

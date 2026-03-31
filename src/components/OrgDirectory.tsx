@@ -148,6 +148,47 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
     </React.Fragment>
   );
 
+  const renderCards = (entry: OrgEntry, depth = 0): React.ReactNode => (
+    <React.Fragment key={entry.slug}>
+      <OrgCard entry={entry} depth={depth} />
+      {childrenByParent.get(entry.slug)?.map((child) => renderCards(child, depth + 1))}
+    </React.Fragment>
+  );
+
+  const OrgCard = ({ entry, depth = 0 }: { entry: OrgEntry; depth?: number }) => (
+    <div className={`border-b border-gov-border py-3 ${depth === 1 ? 'pl-6' : depth === 2 ? 'pl-12' : depth >= 3 ? 'pl-18' : ''}`}>
+      {depth > 0 && <span className="text-gov-grey mr-1 text-sm" aria-hidden="true">↳</span>}
+      <Link
+        href={`/org/${entry.slug}`}
+        className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue font-semibold"
+      >
+        {entry.name}
+      </Link>
+      <p className="text-xs text-gov-grey mt-0.5">{entry.format}</p>
+      {(entry.fte != null || entry.digitalDataFte != null) && (
+        <p className="text-xs text-gov-grey mt-0.5">
+          {entry.fte != null && <span>Total FTE: {entry.fte.toLocaleString('en-GB')}</span>}
+          {entry.fte != null && entry.digitalDataFte != null && <span> · </span>}
+          {entry.digitalDataFte != null && <span>Digital &amp; data FTE: {entry.digitalDataFte.toLocaleString('en-GB')}</span>}
+        </p>
+      )}
+      <dl className="mt-1.5 text-sm flex flex-wrap gap-x-4 gap-y-1">
+        <div className="flex gap-1">
+          <dt className="text-gov-grey">Stars of active repos:</dt>
+          <dd className="font-semibold">{entry.totalStars.toLocaleString('en-GB')}</dd>
+        </div>
+        <div className="flex gap-1">
+          <dt className="text-gov-grey">Active repos:</dt>
+          <dd>{entry.repoCount.toLocaleString('en-GB')}</dd>
+        </div>
+        <div className="flex gap-1">
+          <dt className="text-gov-grey">Total repos:</dt>
+          <dd>{entry.totalRepoCount.toLocaleString('en-GB')}</dd>
+        </div>
+      </dl>
+    </div>
+  );
+
   const OrgRow = ({ entry, depth = 0 }: { entry: OrgEntry; depth?: number }) => (
     <tr className="border-b border-gov-border hover:bg-gov-light-grey transition-colors">
       <td className={`px-4 py-3 ${depth === 1 ? 'pl-10' : depth >= 2 ? 'pl-16' : ''}`}>
@@ -188,14 +229,49 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         Group sub-organisations under their parent
       </label>
 
-      <div className="overflow-x-auto">
+      {/* Mobile sort controls */}
+      <div className="md:hidden flex items-center gap-2 text-sm">
+        <label htmlFor="mobile-sort" className="text-gov-grey shrink-0">Sort by:</label>
+        <select
+          id="mobile-sort"
+          value={filters.sortField}
+          onChange={(e) => {
+            const field = e.target.value as typeof filters.sortField;
+            if (!groupByParentUserSet) {
+              setGroupByParent(field === 'name' || field === 'type');
+            }
+            setFilters({ ...filters, sortField: field, sortDirection: field === 'name' ? 'asc' : 'desc' });
+          }}
+          className="border border-gov-border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gov-blue bg-white"
+        >
+          <option value="type">Type (default)</option>
+          <option value="name">Name A–Z</option>
+          <option value="stars">Stars</option>
+          <option value="repos">Active repos</option>
+          <option value="total">Total repos</option>
+          <option value="fte">Total FTE</option>
+          <option value="digitalDataFte">Digital &amp; data FTE</option>
+        </select>
+      </div>
+
+      {/* Mobile card layout */}
+      <div className="md:hidden" role="list" aria-label="UK public sector organisations and their GitHub code">
+        {topLevel.length === 0 ? (
+          <p className="py-8 text-center text-gov-grey">No organisations match your search criteria.</p>
+        ) : (
+          topLevel.map((entry) => renderCards(entry))
+        )}
+      </div>
+
+      {/* Desktop table layout */}
+      <div className="hidden md:block overflow-x-clip">
         <table
           className="w-full border-collapse"
           role="table"
           aria-label="UK public sector organisations and their GitHub code"
         >
-          <thead>
-            <tr className="bg-gov-light-grey border-b-2 border-gov-dark-blue">
+          <thead className="sticky top-0 z-10 shadow-[0_2px_0_0_#9a3412]">
+            <tr className="bg-gov-light-grey">
               <th scope="col" className="px-4 py-3 text-left font-bold" aria-sort={getAriaSortValue('name')}>
                 <button onClick={() => handleSort('name')} className="flex items-center hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by organisation name">
                   Organisation{getSortIcon('name')}

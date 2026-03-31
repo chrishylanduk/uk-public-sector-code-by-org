@@ -93,14 +93,6 @@
     },
     {
       "type": "gov_uk",
-      "govuk_slug": "attorney-generals-office",
-      "wikidata_id": "Q2928396",
-      "github_orgs": [],
-      "site_url": "https://publicsectorcodebyorg.co.uk/org/attorney-generals-office",
-      "site_slug": "attorney-generals-office"
-    },
-    {
-      "type": "gov_uk",
       "govuk_slug": "office-for-equality-and-opportunity",
       "wikidata_id": "Q138837814",
       "github_orgs": [

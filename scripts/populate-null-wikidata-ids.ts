@@ -5,7 +5,7 @@
  * - gov_uk entries: matched by GOV.UK URL (P856)
  * - english_council entries: matched by council website URL from planning.data.gov.uk
  *
- * Run with: npx tsx scripts/populate-null-wikidata-ids.ts
+ * Run via prebuild: npm run prebuild
  */
 
 import fs from 'fs';
@@ -172,7 +172,3 @@ export async function main() {
   console.log(`Updated ${DATA_FILE}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});

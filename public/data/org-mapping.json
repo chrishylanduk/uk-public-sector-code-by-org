@@ -252,7 +252,8 @@
         "nhsuk",
         "nhsuk-archive",
         "NHSE-NDRS",
-        "nhsconnect"
+        "nhsconnect",
+        "111Online"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-england",
       "site_slug": "nhs-england"
@@ -523,7 +524,8 @@
       "type": "gov_uk",
       "govuk_slug": "british-museum",
       "github_orgs": [
-        "BritishMuseum"
+        "BritishMuseum",
+        "BritishMuseumDH"
       ],
       "wikidata_id": "Q6373",
       "site_url": "https://publicsectorcodebyorg.co.uk/org/british-museum",
@@ -538,6 +540,26 @@
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/intellectual-property-office",
       "site_slug": "intellectual-property-office"
+    },
+    {
+      "type": "gov_uk",
+      "govuk_slug": "welsh-government",
+      "wikidata_id": "Q3112646",
+      "github_orgs": [
+        "CDPS-Wales"
+      ],
+      "site_slug": "welsh-government",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/welsh-government"
+    },
+    {
+      "type": "gov_uk",
+      "govuk_slug": "single-financial-guidance-body",
+      "wikidata_id": "Q7751985",
+      "github_orgs": [
+        "guidance-guarantee-programme"
+      ],
+      "site_slug": "single-financial-guidance-body",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/single-financial-guidance-body"
     },
     {
       "type": "gov_uk",
@@ -678,6 +700,15 @@
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-energy-security-and-net-zero",
       "site_slug": "department-for-energy-security-and-net-zero"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q918757",
+      "github_orgs": [
+        "antarctica"
+      ],
+      "site_slug": "british-antarctic-survey",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/british-antarctic-survey"
     },
     {
       "type": "gov_uk",
@@ -1118,6 +1149,24 @@
     },
     {
       "type": "other",
+      "wikidata_id": "Q7437713",
+      "github_orgs": [
+        "scottish-environment-protection-agency"
+      ],
+      "site_slug": "scottish-environment-protection-agency",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/scottish-environment-protection-agency"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q206171",
+      "github_orgs": [
+        "ScottishParliament"
+      ],
+      "site_slug": "scottish-parliament",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/scottish-parliament"
+    },
+    {
+      "type": "other",
       "wikidata_id": "Q16993504",
       "github_orgs": [
         "GSTT-CSC"
@@ -1142,6 +1191,15 @@
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/public-health-scotland",
       "site_slug": "public-health-scotland"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q5600639",
+      "github_orgs": [
+        "GMFRS"
+      ],
+      "site_slug": "greater-manchester-fire-and-rescue-service",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/greater-manchester-fire-and-rescue-service"
     },
     {
       "type": "other",

@@ -6,7 +6,7 @@
  *
  * Overwrites any existing site_slug/site_url values.
  *
- * Run with: npx tsx scripts/populate-site-slugs.ts
+ * Run via prebuild: npm run prebuild
  */
 
 import fs from 'fs';

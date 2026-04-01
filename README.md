@@ -64,7 +64,8 @@ A static website that shows UK public sector organisations and their open-source
 ### Available Scripts
 
 - `npm run dev` — Start development server
-- `npm run prebuild` — Fetch and cache all external data, validate mapping, generate CSV
+- `npm run update-mapping` — Populate missing fields in `org-mapping.json` and regenerate the CSV (run locally after adding entries, then commit)
+- `npm run prebuild` — Fetch and cache all external data, validate mapping (runs automatically before build)
 - `npm run build` — Full production build (runs prebuild automatically)
 - `npm run lint` — Run ESLint
 - `npm run type-check` — Run TypeScript type checking
@@ -74,12 +75,9 @@ A static website that shows UK public sector organisations and their open-source
 The build has two steps:
 
 1. **Prebuild** (`scripts/prebuild.ts`):
-   - Populates any missing Wikidata IDs in `org-mapping.json`
    - Fetches and caches data from all external APIs in parallel (GitHub repos, GOV.UK organisations, planning.data.gov.uk, LGA FTE, Civil Service Statistics)
    - Fetches Wikidata organisation metadata sequentially (to respect rate limits), cached per ID
-   - Populates `site_slug` and `site_url` fields in `org-mapping.json`
    - Validates `org-mapping.json` against its JSON Schema and against live API data (fails build if stale)
-   - Generates `public/data/org-mapping.csv`
 
 2. **Next.js build** — generates static pages in `out/` using cached data
 
@@ -189,8 +187,9 @@ All entries have a `type` field and a `github_orgs` array. The `site_slug` and `
 2. For `gov_uk`: find the GOV.UK slug from [https://www.gov.uk/api/organisations](https://www.gov.uk/api/organisations)
 3. For `english_council`: find the reference from [https://www.planning.data.gov.uk/dataset/local-authority](https://www.planning.data.gov.uk/dataset/local-authority)
 4. For `other`: find the Wikidata ID
-5. Add an entry with `type`, the relevant identifier, and `github_orgs` — leave `wikidata_id`, `site_slug`, `site_url` blank if unknown; the prebuild will populate them
-6. Run `npm run build` to validate and verify
+5. Add an entry with `type`, the relevant identifier, and `github_orgs` — leave `wikidata_id`, `site_slug`, `site_url` blank if unknown
+6. Run `npm run update-mapping` to populate missing fields and regenerate the CSV
+7. Review the diff, then commit — `npm run build` will validate the mapping
 
 The mapping data is also available as a CSV download from the `/data` page and is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 

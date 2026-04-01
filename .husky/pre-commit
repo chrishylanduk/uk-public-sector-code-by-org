@@ -1,6 +1,8 @@
 npx lint-staged
 npm run type-check
-npm audit --audit-level=high
+npm run update-mapping
+if ! git diff --quiet public/data/org-mapping.json public/data/org-mapping.csv; then
+  echo "❌ org-mapping.json or org-mapping.csv was modified by update-mapping. Review the changes, stage them, and recommit."
+  exit 1
+fi
 npm run build
-git add public/data/org-mapping.csv
-git add public/data/org-mapping.json

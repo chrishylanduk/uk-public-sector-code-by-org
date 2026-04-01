@@ -9,14 +9,17 @@ A static website that shows UK public sector organisations and their open-source
 - **Directory** of UK central and local government organisations with their open-source GitHub activity
 - **Organisation detail pages** showing all repos, stats, and links
 - **Search and filtering** by organisation name and organisation type
-- **Sortable columns** (name, type, stars, active repos, total repos)
+- **Sortable columns** (name, type, stars, active repos, total repos, total FTE, digital & data FTE)
+- **Workforce data** — Total FTE and Digital & data FTE for civil service departments; Total FTE for English councils
+- **Responsive layout** — table on desktop, card list on mobile with native sort controls
+- **Sticky table header** for easy scrolling through large lists
 - **WCAG 2.2 AA compliant** with full keyboard navigation and screen reader support
 - **Daily automated updates** via GitHub Actions
 - **Static export** hosted on Cloudflare Pages for fast global delivery
 
 ## Tech Stack
 
-- **Next.js** with App Router and static export
+- **Next.js** with App Router and static export (`output: 'export'`)
 - **TypeScript** for type safety
 - **Tailwind CSS** for styling (gov.uk-inspired design)
 - **Cloudflare Pages** for hosting
@@ -24,10 +27,12 @@ A static website that shows UK public sector organisations and their open-source
 
 ## Data Sources
 
-- **GitHub Repos:** [UK X-Gov Open Source Repo Scraper](https://github.com/uk-x-gov-software-community/xgov-opensource-repo-scraper)
+- **GitHub repos:** [UK X-Gov Open Source Repo Scraper](https://github.com/uk-x-gov-software-community/xgov-opensource-repo-scraper)
 - **Central government organisations:** [GOV.UK Organisations API](https://www.gov.uk/api/organisations)
 - **Local government organisations:** [planning.data.gov.uk local authority dataset](https://www.planning.data.gov.uk/dataset/local-authority)
 - **Organisation metadata:** [Wikidata](https://www.wikidata.org/)
+- **Civil service workforce data:** [Civil Service Statistics](https://www.gov.uk/government/collections/civil-service-statistics) (Cabinet Office, Table 8A)
+- **Local authority workforce data:** [LGA Quarterly Workforce Survey](https://www.local.gov.uk/publications/ons-quarterly-public-sector-employment-survey) via ONS geography codes
 
 ## Development
 
@@ -58,28 +63,33 @@ A static website that shows UK public sector organisations and their open-source
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run prebuild` - Fetch and cache data from APIs
-- `npm run build` - Build static site (runs prebuild automatically)
-- `npm run lint` - Run linter
-- `npm run type-check` - Run TypeScript type checking
+- `npm run dev` — Start development server
+- `npm run prebuild` — Fetch and cache all external data, validate mapping, generate CSV
+- `npm run build` — Full production build (runs prebuild automatically)
+- `npm run lint` — Run ESLint
+- `npm run type-check` — Run TypeScript type checking
 
-### Building Locally
+### Build Process
 
-The build process has two steps:
+The build has two steps:
 
-1. **Prebuild:** Validates `org-mapping.json` against its JSON Schema, fetches data from APIs, and generates the CSV export
-2. **Build:** Generates static pages using cached data
+1. **Prebuild** (`scripts/prebuild.ts`):
+   - Populates any missing Wikidata IDs in `org-mapping.json`
+   - Fetches and caches data from all external APIs in parallel (GitHub repos, GOV.UK organisations, planning.data.gov.uk, LGA FTE, Civil Service Statistics)
+   - Fetches Wikidata organisation metadata sequentially (to respect rate limits), cached per ID
+   - Populates `site_slug` and `site_url` fields in `org-mapping.json`
+   - Validates `org-mapping.json` against its JSON Schema and against live API data (fails build if stale)
+   - Generates `public/data/org-mapping.csv`
+
+2. **Next.js build** — generates static pages in `out/` using cached data
 
 ```bash
 npm run build
 ```
 
-This creates an `out/` directory with all static files ready for deployment.
+**Data caching:**
 
-**Data Caching:**
-
-Fetched data is cached to `.cache/` for 24 hours. The prebuild script fetches data once before the build, then all Next.js workers use the cached data.
+All external data is cached to `.cache/` for 24 hours. This means Next.js workers all share the same fetched data rather than making redundant API calls.
 
 To force a fresh fetch:
 ```bash
@@ -88,75 +98,99 @@ rm -rf .cache && npm run build
 
 ### Pre-commit Hooks
 
-Pre-commit hooks are automatically installed when you run `npm install`. They run on every commit:
+Installed automatically via `npm install`. Run on every commit:
 
-- **ESLint** - Auto-fixes linting issues in staged files
-- **Secretlint** - Checks for accidentally committed secrets
+- **ESLint** — auto-fixes linting issues in staged files
+- **Secretlint** — checks for accidentally committed secrets
 
 ## Project Structure
 
 ```
 ├── src/
-│   ├── app/                      # Next.js app router pages
-│   │   ├── layout.tsx            # Root layout with SEO
-│   │   ├── page.tsx              # Home page (organisation directory)
-│   │   ├── data/page.tsx         # Data download and documentation page
-│   │   └── org/[slug]/page.tsx   # Organisation detail pages
-│   ├── components/               # React components
-│   │   ├── OrgDirectory.tsx      # Main table with filtering/sorting
-│   │   ├── SearchAndFilter.tsx   # Search and filter controls
-│   │   ├── RepoList.tsx          # Repo listing with pagination
-│   │   ├── RepoCard.tsx          # Individual repo display
-│   │   ├── AboutTheData.tsx      # Data documentation component
-│   │   └── SkipLink.tsx          # Accessibility skip link
-│   └── lib/                      # Core logic
-│       ├── types.ts              # TypeScript interfaces
-│       ├── data-fetcher.ts       # API fetching with caching
-│       ├── data-processor.ts     # Data aggregation
-│       └── mapping.ts            # Mapping utilities
-├── public/data/
-│   ├── org-mapping.json          # GitHub org → public sector org mapping
-│   ├── org-mapping.schema.json   # JSON Schema for the mapping file
-│   └── org-mapping.csv           # CSV export (generated at build time)
+│   ├── app/                          # Next.js App Router
+│   │   ├── layout.tsx                # Root layout, metadata, header/footer
+│   │   ├── page.tsx                  # Home page (organisation directory)
+│   │   ├── not-found.tsx             # 404 page
+│   │   ├── sitemap.ts                # Generates /sitemap.xml
+│   │   ├── manifest.ts               # Generates /manifest.webmanifest
+│   │   ├── data/page.tsx             # Data download and documentation page
+│   │   └── org/[slug]/page.tsx       # Organisation detail pages
+│   ├── components/
+│   │   ├── OrgDirectory.tsx          # Directory table (desktop) + card list (mobile)
+│   │   ├── SearchAndFilter.tsx       # Search and filter controls
+│   │   ├── RepoList.tsx              # Paginated repo listing
+│   │   ├── RepoCard.tsx              # Individual repo card
+│   │   ├── AboutTheData.tsx          # Data methodology note
+│   │   └── SkipLink.tsx              # Accessibility skip link
+│   └── lib/
+│       ├── types.ts                  # TypeScript interfaces
+│       ├── data-fetcher.ts           # API fetching with caching
+│       ├── data-processor.ts         # Data aggregation and enrichment
+│       └── mapping.ts                # org-mapping.json utilities
 ├── scripts/
-│   └── prebuild.ts               # Pre-build data fetching and validation
-├── .github/workflows/
-│   └── deploy.yml                # Daily rebuild workflow
-└── public/
-    └── robots.txt
+│   ├── prebuild.ts                   # Orchestrates the full prebuild sequence
+│   ├── populate-null-wikidata-ids.ts # Looks up and fills missing Wikidata IDs
+│   ├── populate-site-slugs.ts        # Generates site_slug and site_url fields
+│   └── generate-csv.ts              # Generates org-mapping.csv from JSON
+├── public/
+│   ├── data/
+│   │   ├── org-mapping.json          # GitHub org → public sector org mapping
+│   │   ├── org-mapping.schema.json   # JSON Schema for the mapping file
+│   │   └── org-mapping.csv           # CSV export (generated at build time)
+│   └── robots.txt
+└── .github/workflows/
+    └── deploy.yml                    # Build, type-check, lint, deploy workflow
 ```
 
 ## Mapping File
 
-The [`public/data/org-mapping.json`](public/data/org-mapping.json) file maps GitHub organisations to UK public sector organisations. It is validated against [`public/data/org-mapping.schema.json`](public/data/org-mapping.schema.json) at build time.
+The [`public/data/org-mapping.json`](public/data/org-mapping.json) file maps GitHub organisations to UK public sector organisations. It is validated against [`public/data/org-mapping.schema.json`](public/data/org-mapping.schema.json) and against live API data at build time — the build will fail if any entry references a closed or missing organisation.
 
-The file has two top-level arrays: `central_government` and `local_government`.
+All entries have a `type` field and a `github_orgs` array. The `site_slug` and `site_url` fields are generated automatically and should not be edited by hand.
 
-**Central government entries** use GOV.UK organisation slugs and Wikidata IDs:
+**Central government** (`type: "gov_uk"`) — identified by GOV.UK organisation slug:
 ```json
 {
+  "type": "gov_uk",
   "govuk_slug": "cabinet-office",
-  "wikidata_id": "Q1006053",
-  "github_orgs": ["cabinetoffice", "Civil-Service-Human-Resources"]
+  "wikidata_id": "Q5995",
+  "github_orgs": ["cabinetoffice", "Civil-Service-Human-Resources"],
+  "site_slug": "cabinet-office",
+  "site_url": "https://publicsectorcodebyorg.co.uk/org/cabinet-office"
 }
 ```
 
-**Local government entries** use planning.data.gov.uk local authority references and Wikidata IDs:
+**English councils** (`type: "english_council"`) — identified by planning.data.gov.uk reference:
 ```json
 {
-  "england_planning_data_reference": "COV",
-  "wikidata_id": "Q49202",
-  "github_orgs": ["coventrycc"]
+  "type": "english_council",
+  "england_planning_data_reference": "BAS",
+  "wikidata_id": "Q16966588",
+  "github_orgs": ["BathnesDevelopment"],
+  "site_slug": "bath-and-north-east-somerset-council",
+  "site_url": "https://publicsectorcodebyorg.co.uk/org/bath-and-north-east-somerset-council"
+}
+```
+
+**Other** (`type: "other"`) — identified by Wikidata ID only (Scottish councils, Welsh councils, NHS bodies, etc.):
+```json
+{
+  "type": "other",
+  "wikidata_id": "Q788265",
+  "github_orgs": ["nhsengland"],
+  "site_slug": "nhs-england",
+  "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-england"
 }
 ```
 
 **To add an organisation:**
 
-1. For central government, find the GOV.UK slug from [https://www.gov.uk/api/organisations](https://www.gov.uk/api/organisations)
-2. For local government, find the reference from [https://www.planning.data.gov.uk/dataset/local-authority](https://www.planning.data.gov.uk/dataset/local-authority)
-3. Find their GitHub org(s)
-4. Add an entry to `org-mapping.json`
-5. Run `npm run build` to validate and verify
+1. Find their GitHub org(s)
+2. For `gov_uk`: find the GOV.UK slug from [https://www.gov.uk/api/organisations](https://www.gov.uk/api/organisations)
+3. For `english_council`: find the reference from [https://www.planning.data.gov.uk/dataset/local-authority](https://www.planning.data.gov.uk/dataset/local-authority)
+4. For `other`: find the Wikidata ID
+5. Add an entry with `type`, the relevant identifier, and `github_orgs` — leave `wikidata_id`, `site_slug`, `site_url` blank if unknown; the prebuild will populate them
+6. Run `npm run build` to validate and verify
 
 The mapping data is also available as a CSV download from the `/data` page and is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
@@ -164,34 +198,37 @@ The mapping data is also available as a CSV download from the `/data` page and i
 
 ### Cloudflare Pages Setup
 
-1. **Create a Cloudflare Pages project**
-2. **Get API credentials:**
-   - Account ID: Cloudflare dashboard → Account → Account ID
-   - API Token: Cloudflare dashboard → Profile → API Tokens → Create Token (Pages Edit permissions)
-3. **Add GitHub Secrets:**
-   - `CLOUDFLARE_API_TOKEN`
-   - `CLOUDFLARE_ACCOUNT_ID`
+1. **Create a Cloudflare Pages project** connected to this GitHub repo
+   - Build command: `npm run build`
+   - Build output directory: `out`
+   - Node.js version: `20` (set as environment variable `NODE_VERSION = 20`)
+2. **Add GitHub repository secrets:**
+   - `CLOUDFLARE_API_TOKEN` — create at Cloudflare dashboard → Profile → API Tokens (Pages Edit permissions)
+   - `CLOUDFLARE_ACCOUNT_ID` — found on the Cloudflare dashboard homepage
 
 ### Automated Deployments
 
-GitHub Actions workflow runs:
-- **On push to main** (immediate deployment)
-- **Daily at 6am UTC** (scheduled rebuild with fresh data)
-- **Manual trigger** (via GitHub UI)
+The GitHub Actions workflow (`.github/workflows/deploy.yml`) runs:
+- **On push to `main`** — immediate deployment
+- **Daily at 6am UTC** — scheduled rebuild with fresh data
+- **Manual trigger** — via GitHub Actions UI
+
+Each run performs: type-check → lint → build (including prebuild) → deploy to Cloudflare Pages.
 
 ## Accessibility
 
-WCAG 2.2 AA compliant:
-- Semantic HTML with proper landmarks
+Targeting WCAG 2.2 AA:
+- Semantic HTML with proper landmarks and heading hierarchy
 - Keyboard navigation for all interactive elements
-- ARIA labels and live regions
-- Screen reader tested (VoiceOver/NVDA)
-- 4.5:1 colour contrast
+- ARIA labels, roles, and live regions
+- Sticky table header with accessible sort buttons (`aria-sort`)
+- `<dl>` markup for definition lists on mobile cards
 - Focus indicators (2px, 3:1 contrast)
+- Skip to main content link
 
 ## License
 
-MIT (code) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (data)
+MIT (code) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (mapping data)
 
 ## Contributing
 
@@ -199,11 +236,11 @@ Contributions welcome! Please:
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Run `npm run build` to verify
+4. Run `npm run build` to validate
 5. Submit a pull request
 
 ## Acknowledgements
 
-- Data from [UK X-Gov Software Community](https://www.uk-x-gov-software-community.org.uk/)
+- Repository data from the [UK X-Gov Software Community](https://www.uk-x-gov-software-community.org.uk/)
 - Built with [Next.js](https://nextjs.org/)
 - Hosted on [Cloudflare Pages](https://pages.cloudflare.com/)

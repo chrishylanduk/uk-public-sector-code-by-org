@@ -68,7 +68,7 @@ export default function DataPage() {
         All entries include a <a href="https://www.wikidata.org" target="_blank" rel="noopener noreferrer" className="text-gov-blue underline hover:text-gov-dark-blue">Wikidata</a> ID.
       </p>
 
-      <p className="text-sm text-gov-grey mb-4">Updated daily. The URLs below are permanent — safe to use in automated pipelines.</p>
+      <p className="text-sm text-gov-grey mb-4">The URLs below are permanent - safe to use in automated pipelines.</p>
 
       <div className="flex flex-wrap gap-3 mb-3">
         <a

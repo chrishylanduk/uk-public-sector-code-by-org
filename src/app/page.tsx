@@ -40,7 +40,7 @@ export default async function HomePage() {
           <strong>{totalRepos.toLocaleString('en-GB')} active repositories</strong> (pushed to within the last 180 days).
         </p>
         <p className="text-sm text-gov-grey">
-          Updated daily · Last update: {formatDateTime(buildDate)}
+          Data last updated: {formatDateTime(buildDate)}
         </p>
       </div>
 

@@ -7,7 +7,6 @@
  * Usage: npm run update-mapping
  */
 
-import { main as populateNullWikidataIds } from './populate-null-wikidata-ids';
 import { populateSiteSlugs } from './populate-site-slugs';
 import { generateCsv } from './generate-csv';
 
@@ -15,7 +14,6 @@ async function main() {
   console.log('🔧 Updating mapping...\n');
 
   try {
-    await populateNullWikidataIds();
     await populateSiteSlugs();
     generateCsv();
 

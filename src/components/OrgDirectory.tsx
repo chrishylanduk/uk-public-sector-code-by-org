@@ -10,18 +10,7 @@ interface Props {
   availableFormats: GroupedFormats;
 }
 
-export default function OrgDirectory({ entries, availableFormats }: Props) {
-  const [groupByParent, setGroupByParent] = useState(true);
-  const [groupByParentUserSet, setGroupByParentUserSet] = useState(false);
-
-  const [filters, setFilters] = useState<FilterState>({
-    searchQuery: '',
-    excludedFormats: [],
-    sortField: 'type',
-    sortDirection: 'desc',
-  });
-
-  const TYPE_ORDER: Record<string, number> = {
+const TYPE_ORDER: Record<string, number> = {
     // Central government — higher = more senior
     'Ministerial department': 25,
     'Non-ministerial department': 24,
@@ -51,7 +40,18 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
     'Northern Ireland district': 2,
     'Local authority': 1,
     'Special district': 0,
-  };
+};
+
+export default function OrgDirectory({ entries, availableFormats }: Props) {
+  const [groupByParent, setGroupByParent] = useState(true);
+  const [groupByParentUserSet, setGroupByParentUserSet] = useState(false);
+
+  const [filters, setFilters] = useState<FilterState>({
+    searchQuery: '',
+    excludedFormats: [],
+    sortField: 'type',
+    sortDirection: 'desc',
+  });
 
   const getAriaSortValue = (field: typeof filters.sortField): 'ascending' | 'descending' | 'none' => {
     if (filters.sortField !== field) return 'none';
@@ -141,20 +141,6 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
     });
   };
 
-  const renderRows = (entry: OrgEntry, depth = 0): React.ReactNode => (
-    <React.Fragment key={entry.slug}>
-      <OrgRow entry={entry} depth={depth} />
-      {childrenByParent.get(entry.slug)?.map((child) => renderRows(child, depth + 1))}
-    </React.Fragment>
-  );
-
-  const renderCards = (entry: OrgEntry, depth = 0): React.ReactNode => (
-    <React.Fragment key={entry.slug}>
-      <OrgCard entry={entry} depth={depth} />
-      {childrenByParent.get(entry.slug)?.map((child) => renderCards(child, depth + 1))}
-    </React.Fragment>
-  );
-
   const OrgCard = ({ entry, depth = 0 }: { entry: OrgEntry; depth?: number }) => (
     <div className={`border-b border-gov-border py-3 ${depth === 1 ? 'pl-6' : depth === 2 ? 'pl-12' : depth >= 3 ? 'pl-18' : ''}`}>
       {depth > 0 && <span className="text-gov-grey mr-1 text-sm" aria-hidden="true">↳</span>}
@@ -209,6 +195,20 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
       <td className="px-4 py-3 text-right">{entry.fte != null ? entry.fte.toLocaleString('en-GB') : <span className="text-gov-grey">—</span>}</td>
       <td className="px-4 py-3 text-right">{entry.digitalDataFte != null ? entry.digitalDataFte.toLocaleString('en-GB') : <span className="text-gov-grey">—</span>}</td>
     </tr>
+  );
+
+  const renderRows = (entry: OrgEntry, depth = 0): React.ReactNode => (
+    <React.Fragment key={entry.slug}>
+      <OrgRow entry={entry} depth={depth} />
+      {childrenByParent.get(entry.slug)?.map((child) => renderRows(child, depth + 1))}
+    </React.Fragment>
+  );
+
+  const renderCards = (entry: OrgEntry, depth = 0): React.ReactNode => (
+    <React.Fragment key={entry.slug}>
+      <OrgCard entry={entry} depth={depth} />
+      {childrenByParent.get(entry.slug)?.map((child) => renderCards(child, depth + 1))}
+    </React.Fragment>
   );
 
   return (

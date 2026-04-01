@@ -138,7 +138,7 @@
       "github_orgs": [
         "no10ds"
       ],
-      "wikidata_id": "Q14211",
+      "wikidata_id": "Q96758600",
       "site_url": "https://publicsectorcodebyorg.co.uk/org/prime-ministers-office-10-downing-street",
       "site_slug": "prime-ministers-office-10-downing-street"
     },
@@ -665,7 +665,7 @@
     {
       "type": "gov_uk",
       "govuk_slug": "uk-hydrographic-office",
-      "wikidata_id": "Q5955058",
+      "wikidata_id": "Q2495231",
       "github_orgs": [
         "UKHO"
       ],
@@ -829,7 +829,7 @@
     {
       "type": "english_council",
       "england_planning_data_reference": "DST",
-      "wikidata_id": "Q55231693",
+      "wikidata_id": "Q55609905",
       "github_orgs": [
         "Dorset-Council-UK"
       ],
@@ -839,7 +839,7 @@
     {
       "type": "english_council",
       "england_planning_data_reference": "ESS",
-      "wikidata_id": "Q23240",
+      "wikidata_id": "Q5399679",
       "github_orgs": [
         "essexcountycouncil"
       ],
@@ -969,7 +969,7 @@
     {
       "type": "english_council",
       "england_planning_data_reference": "ROT",
-      "wikidata_id": "Q217039",
+      "wikidata_id": "Q17020059",
       "github_orgs": [
         "rothgov"
       ],
@@ -999,7 +999,7 @@
     {
       "type": "english_council",
       "england_planning_data_reference": "SKP",
-      "wikidata_id": "Q18655",
+      "wikidata_id": "Q7618164",
       "github_orgs": [
         "smbc-digital"
       ],
@@ -1029,7 +1029,7 @@
     {
       "type": "english_council",
       "england_planning_data_reference": "TRF",
-      "wikidata_id": "Q7832588",
+      "wikidata_id": "Q17034839",
       "github_orgs": [
         "TraffordCouncil"
       ],

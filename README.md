@@ -127,7 +127,7 @@ Installed automatically via `npm install`. Run on every commit:
 │       └── mapping.ts                # org-mapping.json utilities
 ├── scripts/
 │   ├── prebuild.ts                   # Orchestrates the full prebuild sequence
-│   ├── populate-null-wikidata-ids.ts # Looks up and fills missing Wikidata IDs
+│   ├── update-mapping.ts             # Developer tool: populate slugs and regenerate CSV
 │   ├── populate-site-slugs.ts        # Generates site_slug and site_url fields
 │   └── generate-csv.ts              # Generates org-mapping.csv from JSON
 ├── public/
@@ -187,8 +187,8 @@ All entries have a `type` field and a `github_orgs` array. The `site_slug` and `
 2. For `gov_uk`: find the GOV.UK slug from [https://www.gov.uk/api/organisations](https://www.gov.uk/api/organisations)
 3. For `english_council`: find the reference from [https://www.planning.data.gov.uk/dataset/local-authority](https://www.planning.data.gov.uk/dataset/local-authority)
 4. For `other`: find the Wikidata ID
-5. Add an entry with `type`, the relevant identifier, and `github_orgs` — leave `wikidata_id`, `site_slug`, `site_url` blank if unknown
-6. Run `npm run update-mapping` to populate missing fields and regenerate the CSV
+5. Add an entry with `type`, the relevant identifier, `github_orgs`, and `wikidata_id` — leave `site_slug` and `site_url` blank
+6. Run `npm run update-mapping` to populate slugs and regenerate the CSV
 7. Review the diff, then commit — `npm run build` will validate the mapping
 
 The mapping data is also available as a CSV download from the `/data` page and is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

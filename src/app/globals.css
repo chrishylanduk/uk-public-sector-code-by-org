@@ -18,3 +18,40 @@ body {
   margin: 0;
   font-family: var(--font-family-sans);
 }
+
+/* Custom checkbox — consistent across browsers */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid var(--color-gov-border);
+  background: white;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  top: 1px;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--color-gov-blue);
+  border-color: var(--color-gov-blue);
+}
+
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 5px;
+  height: 9px;
+  border: 2px solid white;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: 3px solid var(--color-gov-blue);
+  outline-offset: 2px;
+}

@@ -39,9 +39,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-white text-gray-900">
         <SkipLink />
-        <header className="bg-gov-dark-blue text-white py-4">
+        <header className="bg-gov-dark-blue text-white py-3 border-b-4 border-gov-blue">
           <div className="max-w-7xl mx-auto px-4">
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-2xl font-bold tracking-tight">
               <Link
                 href="/"
                 className="hover:underline focus:outline-2 focus:outline-white"
@@ -49,13 +49,9 @@ export default function RootLayout({
                 UK Public Sector Code by Organisation
               </Link>
             </h1>
+            <p className="text-xs text-white/60 mt-0.5">An independent project</p>
           </div>
         </header>
-        <div className="bg-gov-light-grey border-b border-gov-border text-gov-grey text-sm py-2">
-          <div className="max-w-7xl mx-auto px-4">
-            An independently-maintained project, not affiliated with any organisation.
-          </div>
-        </div>
         <main id="main-content" className="w-full max-w-7xl mx-auto px-4 py-8 flex-1">
           {children}
         </main>

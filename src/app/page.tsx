@@ -20,8 +20,8 @@ export default async function HomePage() {
 
   return (
     <div>
-      <div className="bg-gov-light-grey border-l-4 border-gov-blue px-6 py-6 mb-8 rounded">
-        <h2 className="text-3xl font-bold mb-4 leading-tight">
+      <div className="mb-10 max-w-3xl">
+        <h2 className="text-4xl font-bold mb-4 leading-tight tracking-tight">
           Explore the open source code published by UK public sector organisations
         </h2>
         <p className="text-lg mb-3">

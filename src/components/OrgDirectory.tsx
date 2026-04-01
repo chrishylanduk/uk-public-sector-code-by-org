@@ -224,7 +224,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           type="checkbox"
           checked={groupByParent}
           onChange={(e) => { setGroupByParent(e.target.checked); setGroupByParentUserSet(true); }}
-          className="w-4 h-4 border-2 border-gov-border rounded focus:outline-none focus:ring-2 focus:ring-gov-blue"
+          className=""
         />
         Group sub-organisations under their parent
       </label>

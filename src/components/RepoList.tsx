@@ -46,7 +46,7 @@ export default function RepoList({ repos }: Props) {
             type="checkbox"
             checked={activeOnly}
             onChange={(e) => handleFilterChange(e.target.checked)}
-            className="w-4 h-4 border-2 border-gov-border rounded focus:outline-none focus:ring-2 focus:ring-gov-blue"
+            className=""
           />
           Active only (not archived, pushed within last 180 days)
         </label>

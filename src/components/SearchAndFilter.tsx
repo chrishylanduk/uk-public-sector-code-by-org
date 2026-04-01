@@ -27,7 +27,7 @@ function FormatCheckbox({ format, filters, onFiltersChange }: {
             : [...filters.excludedFormats, format];
           onFiltersChange({ ...filters, excludedFormats: newExcluded });
         }}
-        className="w-5 h-5 border-2 border-gov-border rounded focus:outline-none focus:ring-2 focus:ring-gov-blue"
+        className=""
       />
       <label htmlFor={id} className="ml-2 cursor-pointer">{format}</label>
     </div>
@@ -52,7 +52,7 @@ export default function SearchAndFilter({ filters, onFiltersChange, availableFor
     onFiltersChange({ ...filters, excludedFormats: [...new Set([...filters.excludedFormats, ...formats])] });
 
   return (
-    <div className="bg-gov-light-grey p-4 rounded space-y-4">
+    <div className="space-y-4">
       <div>
         <label htmlFor="search" className="block font-bold mb-2">
           Search by organisation name
@@ -65,14 +65,15 @@ export default function SearchAndFilter({ filters, onFiltersChange, availableFor
             onFiltersChange({ ...filters, searchQuery: e.target.value })
           }
           placeholder="Search organisations"
-          className="w-full px-4 py-2 border-2 border-gov-border rounded focus:outline-none focus:border-gov-blue focus:ring-2 focus:ring-gov-blue"
+          className="w-full max-w-md px-3 py-2 border-2 border-gov-border focus:outline-none focus:border-gov-blue focus:ring-2 focus:ring-gov-blue"
           aria-label="Search organisations by name"
         />
       </div>
 
       <details>
-        <summary className="font-bold cursor-pointer">Filter by organisation type</summary>
-        <div className="mt-2 mb-3 flex gap-3">
+        <summary className="font-bold cursor-pointer select-none">Filter by organisation type</summary>
+        <div className="mt-3 pl-4 border-l-2 border-gov-border">
+        <div className="mb-3 flex gap-3">
           <button type="button" className={btnClass} onClick={() => selectGroup(allFormats)}>
             Select all
           </button>
@@ -115,6 +116,7 @@ export default function SearchAndFilter({ filters, onFiltersChange, availableFor
             </div>
           ))}
         </fieldset>
+        </div>
       </details>
     </div>
   );

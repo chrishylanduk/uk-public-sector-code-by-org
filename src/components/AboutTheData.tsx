@@ -46,8 +46,8 @@ export default function AboutTheData() {
 
           <h4 className="font-bold mb-2">The organisation mapping</h4>
           <p className="mb-4">
-            GitHub organisations are manually mapped to their corresponding GOV.UK organisations.
-            Some GOV.UK organisations have multiple GitHub organisations (for example, GDS and i.AI
+            GitHub accounts are manually mapped to their corresponding GOV.UK organisations.
+            Some GOV.UK organisations have multiple GitHub accounts (for example, GDS and i.AI
             are both part of DSIT). The mapping is available as{' '}
             <Link
               href="/data"

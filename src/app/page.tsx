@@ -4,8 +4,6 @@ import OrgDirectory from '@/components/OrgDirectory';
 import { formatDateTime } from '@/utils/format';
 import Link from 'next/link';
 
-export const dynamic = 'force-static';
-export const revalidate = false;
 
 export default async function HomePage() {
   // Fetch data at build time
@@ -22,10 +20,12 @@ export default async function HomePage() {
     <div>
       <div className="mb-10 max-w-3xl">
         <h2 className="text-4xl font-bold mb-4 leading-tight tracking-tight">
-          Explore the open source code published by UK public sector organisations
+          Explore all the open source code from each UK public sector organisation
         </h2>
         <p className="text-lg mb-3">
-          Powered by a mapping of GitHub organisations to UK public sector organisations.
+          Powered by a mapping of UK public sector organisations to their GitHub accounts, because each organisation has as many as 14 accounts.
+        </p>
+        <p className="text-lg mb-3">
           The mapping data is open and available for others to use:{' '}
           <Link
             href="/data"

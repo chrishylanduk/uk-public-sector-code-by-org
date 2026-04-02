@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Data - UK Public Sector Code by Organisation',
-  description: 'Download the mapping of GitHub organisations to UK public sector organisations as open data.',
+  description: 'Download the mapping of GitHub accounts to UK public sector organisations as open data.',
 };
 
 const REPO_RAW_BASE = 'https://raw.githubusercontent.com/chrishylanduk/uk-public-sector-code-by-org/main/public/data';
@@ -15,7 +15,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Dataset',
   name: 'UK Government GitHub Organisation Mapping',
-  description: 'A mapping of GitHub organisations to UK public sector organisations, with references to GOV.UK, planning.data.gov.uk, and Wikidata.',
+  description: 'A mapping of GitHub accounts to UK public sector organisations, with references to GOV.UK, planning.data.gov.uk, and Wikidata.',
   license: 'https://creativecommons.org/licenses/by/4.0/',
   isAccessibleForFree: true,
   keywords: ['UK public sector', 'GitHub', 'open source', 'organisations', 'open data'],
@@ -59,7 +59,7 @@ export default function DataPage() {
 
       <h2 className="text-3xl font-bold mb-3">Organisation mapping</h2>
       <p className="text-lg mb-6">
-        A mapping of GitHub organisations to UK public sector organisations.
+        A mapping of GitHub accounts to UK public sector organisations.
         Each entry has a <code className="font-mono bg-gray-100 px-1">type</code> field:{' '}
         <code className="font-mono bg-gray-100 px-1">gov_uk</code> entries reference the{' '}
         <a href="https://www.gov.uk/api/organisations" target="_blank" rel="noopener noreferrer" className="text-gov-blue underline hover:text-gov-dark-blue">GOV.UK Organisations API</a>.{' '}
@@ -109,7 +109,7 @@ export default function DataPage() {
       "wikidata_id": "Q763388",
       "site_slug": "home-office",
       "site_url": "https://publicsectorcodebyorg.co.uk/org/home-office",
-      "github_orgs": ["UKHomeOffice", "UKHomeOfficeForms", "HO-CTO"]
+      "github_accounts": ["UKHomeOffice", "UKHomeOfficeForms", "HO-CTO"]
     },
     {
       "type": "english_council",
@@ -117,14 +117,14 @@ export default function DataPage() {
       "wikidata_id": "Q5179058",
       "site_slug": "coventry-city-council",
       "site_url": "https://publicsectorcodebyorg.co.uk/org/coventry-city-council",
-      "github_orgs": ["coventry-city-council"]
+      "github_accounts": ["coventry-city-council"]
     },
     {
       "type": "other",
       "wikidata_id": "Q28530250",
       "site_slug": "city-of-edinburgh-council",
       "site_url": "https://publicsectorcodebyorg.co.uk/org/city-of-edinburgh-council",
-      "github_orgs": ["edinburghcouncil"]
+      "github_accounts": ["edinburghcouncil"]
     }
   ]
 }`}</pre>
@@ -167,17 +167,17 @@ export default function DataPage() {
               <td className="px-3 py-2">URL of the organisation&apos;s page on this site</td>
             </tr>
             <tr className="border-b border-gov-border">
-              <td className="px-3 py-2 font-mono">github_orgs</td>
-              <td className="px-3 py-2">Array of GitHub organisation names belonging to this organisation</td>
+              <td className="px-3 py-2 font-mono">github_accounts</td>
+              <td className="px-3 py-2">Array of GitHub account names belonging to this organisation</td>
             </tr>
           </tbody>
         </table></div>
 
         <h4 className="text-lg font-bold mb-1">CSV</h4>
-        <p className="text-sm text-gov-grey mb-3">One row per GitHub organisation.</p>
+        <p className="text-sm text-gov-grey mb-3">One row per GitHub account.</p>
 
         <h5 className="font-bold mb-2">Example</h5>
-        <pre className="bg-gray-100 border border-gov-border rounded p-4 text-sm overflow-x-auto mb-4">{`github_org,org_type,govuk_slug,england_planning_data_reference,wikidata_id,site_slug,site_url
+        <pre className="bg-gray-100 border border-gov-border rounded p-4 text-sm overflow-x-auto mb-4">{`github_account,org_type,govuk_slug,england_planning_data_reference,wikidata_id,site_slug,site_url
 UKHomeOffice,gov_uk,home-office,,Q763388,home-office,https://publicsectorcodebyorg.co.uk/org/home-office
 UKHomeOfficeForms,gov_uk,home-office,,Q763388,home-office,https://publicsectorcodebyorg.co.uk/org/home-office
 HO-CTO,gov_uk,home-office,,Q763388,home-office,https://publicsectorcodebyorg.co.uk/org/home-office
@@ -194,8 +194,8 @@ edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsecto
           </thead>
           <tbody>
             <tr className="border-b border-gov-border">
-              <td className="px-3 py-2 font-mono">github_org</td>
-              <td className="px-3 py-2">GitHub organisation name. Empty if the organisation has no mapped GitHub presence.</td>
+              <td className="px-3 py-2 font-mono">github_account</td>
+              <td className="px-3 py-2">GitHub account name. Empty if the organisation has no mapped GitHub presence.</td>
             </tr>
             <tr className="border-b border-gov-border">
               <td className="px-3 py-2 font-mono">org_type</td>
@@ -243,7 +243,7 @@ edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsecto
               </a>
             </p>
             <p className="text-sm text-gov-grey mb-1">GitHub repository data for UK public sector organisations, maintained by the UK cross-government software community.</p>
-            <p className="text-sm">Use the <code className="font-mono bg-gray-100 px-1">github_orgs</code> field to filter repos by owner. Each entry in the scraper JSON has an <code className="font-mono bg-gray-100 px-1">owner</code> field matching the GitHub organisation name.</p>
+            <p className="text-sm">Use the <code className="font-mono bg-gray-100 px-1">github_accounts</code> field to filter repos by owner. Each entry in the scraper JSON has an <code className="font-mono bg-gray-100 px-1">owner</code> field matching the GitHub account name.</p>
           </li>
           <li className="border-l-4 border-gov-blue pl-4">
             <p className="font-bold mb-1">

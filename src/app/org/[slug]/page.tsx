@@ -6,8 +6,6 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-export const dynamic = 'force-static';
-export const revalidate = false;
 
 export async function generateStaticParams() {
   const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData()]);
@@ -153,7 +151,7 @@ export default async function OrganisationPage({
           </p>
         </div>
         <div>
-          <p className="text-sm text-gov-grey mb-1">GitHub organisations</p>
+          <p className="text-sm text-gov-grey mb-1">GitHub accounts</p>
           <p className="text-lg font-semibold">
             {[...org.githubOrgs].sort((a, b) => {
               const aCount = org.repos.filter((r) => r.owner === a && isActiveRepo(r)).length;

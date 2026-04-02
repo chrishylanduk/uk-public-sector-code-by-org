@@ -7,7 +7,7 @@ interface GovUkEntry {
   govuk_slug: string;
   wikidata_id?: string | null;
   site_slug?: string;
-  github_orgs: string[];
+  github_accounts: string[];
 }
 
 interface EnglishCouncilEntry {
@@ -15,14 +15,14 @@ interface EnglishCouncilEntry {
   england_planning_data_reference: string;
   wikidata_id?: string | null;
   site_slug?: string;
-  github_orgs: string[];
+  github_accounts: string[];
 }
 
 interface OtherEntry {
   type: 'other';
   wikidata_id: string;
   site_slug?: string;
-  github_orgs: string[];
+  github_accounts: string[];
 }
 
 type OrgEntry = GovUkEntry | EnglishCouncilEntry | OtherEntry;
@@ -62,7 +62,7 @@ export function getOrgMapping(): OrgMapping {
   const organisations: OrgMapping = {};
   for (const entry of raw.organisations) {
     if (entry.type === 'gov_uk') {
-      organisations[entry.govuk_slug] = { githubOrgs: entry.github_orgs };
+      organisations[entry.govuk_slug] = { githubOrgs: entry.github_accounts };
     }
   }
   return organisations;
@@ -78,14 +78,14 @@ export function getLocalGovEntries(): LocalGovEntry[] {
         planningDataReference: entry.england_planning_data_reference,
         wikidataId: entry.wikidata_id ?? null,
         siteSlug: entry.site_slug,
-        githubOrgs: entry.github_orgs,
+        githubOrgs: entry.github_accounts,
       });
     } else if (entry.type === 'other') {
       entries.push({
         type: 'wikidata' as const,
         wikidataId: entry.wikidata_id,
         siteSlug: entry.site_slug,
-        githubOrgs: entry.github_orgs,
+        githubOrgs: entry.github_accounts,
       });
     }
   }

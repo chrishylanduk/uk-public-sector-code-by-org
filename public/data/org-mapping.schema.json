@@ -30,7 +30,7 @@
       "description": "All mapped public sector organisations.",
       "items": {
         "type": "object",
-        "required": ["type", "wikidata_id", "github_orgs"],
+        "required": ["type", "wikidata_id", "github_accounts"],
         "additionalProperties": false,
         "properties": {
           "type": {
@@ -66,7 +66,7 @@
             "description": "URL of the organisation's page on publicsectorcodebyorg.co.uk",
             "pattern": "^https://publicsectorcodebyorg\\.co\\.uk/org/[a-z0-9-]+$"
           },
-          "github_orgs": {
+          "github_accounts": {
             "type": "array",
             "description": "GitHub organisation names belonging to this organisation. Match against the 'owner' field in the UK X-Gov Open Source Repo Scraper dataset.",
             "items": {

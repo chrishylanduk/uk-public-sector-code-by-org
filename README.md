@@ -132,7 +132,7 @@ Installed automatically via `npm install`. Run on every commit:
 │   └── generate-csv.ts              # Generates org-mapping.csv from JSON
 ├── public/
 │   ├── data/
-│   │   ├── org-mapping.json          # GitHub org → public sector org mapping
+│   │   ├── org-mapping.json          # GitHub account → public sector org mapping
 │   │   ├── org-mapping.schema.json   # JSON Schema for the mapping file
 │   │   └── org-mapping.csv           # CSV export (generated at build time)
 │   └── robots.txt
@@ -142,9 +142,9 @@ Installed automatically via `npm install`. Run on every commit:
 
 ## Mapping File
 
-The [`public/data/org-mapping.json`](public/data/org-mapping.json) file maps GitHub organisations to UK public sector organisations. It is validated against [`public/data/org-mapping.schema.json`](public/data/org-mapping.schema.json) and against live API data at build time — the build will fail if any entry references a closed or missing organisation.
+The [`public/data/org-mapping.json`](public/data/org-mapping.json) file maps GitHub accounts to UK public sector organisations. It is validated against [`public/data/org-mapping.schema.json`](public/data/org-mapping.schema.json) and against live API data at build time — the build will fail if any entry references a closed or missing organisation.
 
-All entries have a `type` field and a `github_orgs` array. The `site_slug` and `site_url` fields are generated automatically and should not be edited by hand.
+All entries have a `type` field and a `github_accounts` array. The `site_slug` and `site_url` fields are generated automatically and should not be edited by hand.
 
 **Central government** (`type: "gov_uk"`) — identified by GOV.UK organisation slug:
 ```json
@@ -152,7 +152,7 @@ All entries have a `type` field and a `github_orgs` array. The `site_slug` and `
   "type": "gov_uk",
   "govuk_slug": "cabinet-office",
   "wikidata_id": "Q5995",
-  "github_orgs": ["cabinetoffice", "Civil-Service-Human-Resources"],
+  "github_accounts": ["cabinetoffice", "Civil-Service-Human-Resources"],
   "site_slug": "cabinet-office",
   "site_url": "https://publicsectorcodebyorg.co.uk/org/cabinet-office"
 }
@@ -164,7 +164,7 @@ All entries have a `type` field and a `github_orgs` array. The `site_slug` and `
   "type": "english_council",
   "england_planning_data_reference": "BAS",
   "wikidata_id": "Q16966588",
-  "github_orgs": ["BathnesDevelopment"],
+  "github_accounts": ["BathnesDevelopment"],
   "site_slug": "bath-and-north-east-somerset-council",
   "site_url": "https://publicsectorcodebyorg.co.uk/org/bath-and-north-east-somerset-council"
 }
@@ -175,7 +175,7 @@ All entries have a `type` field and a `github_orgs` array. The `site_slug` and `
 {
   "type": "other",
   "wikidata_id": "Q788265",
-  "github_orgs": ["nhsengland"],
+  "github_accounts": ["nhsengland"],
   "site_slug": "nhs-england",
   "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-england"
 }
@@ -183,11 +183,11 @@ All entries have a `type` field and a `github_orgs` array. The `site_slug` and `
 
 **To add an organisation:**
 
-1. Find their GitHub org(s)
+1. Find their GitHub account(s)
 2. For `gov_uk`: find the GOV.UK slug from [https://www.gov.uk/api/organisations](https://www.gov.uk/api/organisations)
 3. For `english_council`: find the reference from [https://www.planning.data.gov.uk/dataset/local-authority](https://www.planning.data.gov.uk/dataset/local-authority)
 4. For `other`: find the Wikidata ID
-5. Add an entry with `type`, the relevant identifier, `github_orgs`, and `wikidata_id` — leave `site_slug` and `site_url` blank
+5. Add an entry with `type`, the relevant identifier, `github_accounts`, and `wikidata_id` — leave `site_slug` and `site_url` blank
 6. Run `npm run update-mapping` to populate slugs and regenerate the CSV
 7. Review the diff, then commit — `npm run build` will validate the mapping
 

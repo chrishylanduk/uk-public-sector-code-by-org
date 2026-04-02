@@ -2,10 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import SkipLink from '@/components/SkipLink';
 import Link from 'next/link';
-
-export const SITE_NAME = 'UK Public Sector Code by Organisation';
-export const SITE_URL = 'https://publicsectorcodebyorg.co.uk';
-export const SITE_DESCRIPTION = 'Explore the open source code published by UK public sector organisations.';
+import { SITE_NAME, SITE_URL, SITE_DESCRIPTION } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: SITE_NAME,

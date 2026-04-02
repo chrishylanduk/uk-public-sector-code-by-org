@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "rm -rf .next && next dev --webpack",
     "update-mapping": "tsx scripts/update-mapping.ts",
     "prebuild": "tsx scripts/prebuild.ts",
     "build": "npm run prebuild && next build",

@@ -1,13 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
-  images: {
-    unoptimized: true,
-  },
-  trailingSlash: true,
-  typescript: {
-    ignoreBuildErrors: false,
-  },
-};
+import { PHASE_PRODUCTION_BUILD } from 'next/constants.js';
 
-export default nextConfig;
+/** @param {string} phase @returns {import('next').NextConfig} */
+export default function config(phase) {
+  return {
+    output: phase === PHASE_PRODUCTION_BUILD ? 'export' : undefined,
+    images: {
+      unoptimized: true,
+    },
+    trailingSlash: true,
+    typescript: {
+      ignoreBuildErrors: false,
+    },
+  };
+}

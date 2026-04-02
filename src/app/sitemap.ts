@@ -3,7 +3,7 @@ export const dynamic = 'force-static';
 import type { MetadataRoute } from 'next';
 import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData, fetchCsStatsFteData } from '@/lib/data-fetcher';
 import { processOrganisationData } from '@/lib/data-processor';
-import { SITE_URL } from './layout';
+import { SITE_URL } from '@/lib/constants';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([

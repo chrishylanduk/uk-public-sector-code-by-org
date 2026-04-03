@@ -29,7 +29,7 @@ export default async function HomePage() {
           The mapping data is open and available for others to use:{' '}
           <Link
             href="/data"
-            className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+            className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
           >
             get the mapping data
           </Link>
@@ -39,7 +39,7 @@ export default async function HomePage() {
           Currently tracking <strong>{orgList.length} organisations</strong> and{' '}
           <strong>{totalRepos.toLocaleString('en-GB')} active repositories</strong> (not archived, pushed to within the last 180 days).
         </p>
-        <p className="text-sm text-gov-grey">
+        <p className="text-sm text-grey">
           Data last updated: {formatDateTime(buildDate)}
         </p>
       </div>

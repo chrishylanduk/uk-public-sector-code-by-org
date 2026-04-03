@@ -34,7 +34,7 @@ function FormatCheckbox({ format, filters, onFiltersChange }: {
   );
 }
 
-const btnClass = 'text-xs underline hover:text-gov-blue focus:outline-2 focus:outline-gov-blue text-gov-grey';
+const btnClass = 'text-xs underline hover:text-orange focus:outline-2 focus:outline-orange text-grey';
 
 export default function SearchAndFilter({ filters, onFiltersChange, availableFormats }: Props) {
   const groups: { label: string; formats: string[] }[] = [
@@ -65,14 +65,14 @@ export default function SearchAndFilter({ filters, onFiltersChange, availableFor
             onFiltersChange({ ...filters, searchQuery: e.target.value })
           }
           placeholder="Search organisations"
-          className="w-full max-w-md px-3 py-2 border-2 border-gov-border focus:outline-none focus:border-gov-blue focus:ring-2 focus:ring-gov-blue"
+          className="w-full max-w-md px-3 py-2 border-2 border-mid-grey focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange"
           aria-label="Search organisations by name"
         />
       </div>
 
       <details>
         <summary className="font-bold cursor-pointer select-none">Filter by organisation type</summary>
-        <div className="mt-3 pl-4 border-l-2 border-gov-border">
+        <div className="mt-3 pl-4 border-l-2 border-mid-grey">
         <div className="mb-3 flex gap-3">
           <button type="button" className={btnClass} onClick={() => selectGroup(allFormats)}>
             Select all
@@ -85,7 +85,7 @@ export default function SearchAndFilter({ filters, onFiltersChange, availableFor
           {groups.map(({ label, formats }) => (
             <div key={label}>
               <div className="flex items-baseline gap-3 mb-1">
-                <p className="text-sm font-semibold text-gov-grey">{label}</p>
+                <p className="text-sm font-semibold text-grey">{label}</p>
                 <button
                   type="button"
                   className={btnClass}

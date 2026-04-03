@@ -60,7 +60,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
 
   const getSortIcon = (field: typeof filters.sortField) => {
     if (filters.sortField !== field) {
-      return <span className="ml-1 text-gov-grey opacity-50" aria-hidden="true">↕</span>;
+      return <span className="ml-1 text-grey opacity-50" aria-hidden="true">↕</span>;
     }
     return filters.sortDirection === 'asc' ? (
       <span className="ml-1" aria-hidden="true">↑</span>
@@ -142,17 +142,17 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
   };
 
   const OrgCard = ({ entry, depth = 0 }: { entry: OrgEntry; depth?: number }) => (
-    <div className={`border-b border-gov-border py-3 ${depth === 1 ? 'pl-6' : depth === 2 ? 'pl-12' : depth >= 3 ? 'pl-18' : ''}`}>
-      {depth > 0 && <span className="text-gov-grey mr-1 text-sm" aria-hidden="true">↳</span>}
+    <div className={`border-b border-mid-grey py-3 ${depth === 1 ? 'pl-6' : depth === 2 ? 'pl-12' : depth >= 3 ? 'pl-18' : ''}`}>
+      {depth > 0 && <span className="text-grey mr-1 text-sm" aria-hidden="true">↳</span>}
       <Link
         href={`/org/${entry.slug}`}
-        className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue font-semibold"
+        className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange font-semibold"
       >
         {entry.name}
       </Link>
-      <p className="text-xs text-gov-grey mt-0.5">{entry.format}</p>
+      <p className="text-xs text-grey mt-0.5">{entry.format}</p>
       {(entry.fte != null || entry.digitalDataFte != null) && (
-        <p className="text-xs text-gov-grey mt-0.5">
+        <p className="text-xs text-grey mt-0.5">
           {entry.fte != null && <span>Total FTE: {entry.fte.toLocaleString('en-GB')}</span>}
           {entry.fte != null && entry.digitalDataFte != null && <span> · </span>}
           {entry.digitalDataFte != null && <span>Digital &amp; data FTE: {entry.digitalDataFte.toLocaleString('en-GB')}</span>}
@@ -160,15 +160,15 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
       )}
       <dl className="mt-1.5 text-sm flex flex-wrap gap-x-4 gap-y-1">
         <div className="flex gap-1">
-          <dt className="text-gov-grey">Stars of active repos:</dt>
+          <dt className="text-grey">Stars of active repos:</dt>
           <dd className="font-semibold">{entry.totalStars.toLocaleString('en-GB')}</dd>
         </div>
         <div className="flex gap-1">
-          <dt className="text-gov-grey">Active repos:</dt>
+          <dt className="text-grey">Active repos:</dt>
           <dd>{entry.repoCount.toLocaleString('en-GB')}</dd>
         </div>
         <div className="flex gap-1">
-          <dt className="text-gov-grey">Total repos:</dt>
+          <dt className="text-grey">Total repos:</dt>
           <dd>{entry.totalRepoCount.toLocaleString('en-GB')}</dd>
         </div>
       </dl>
@@ -176,24 +176,24 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
   );
 
   const OrgRow = ({ entry, depth = 0 }: { entry: OrgEntry; depth?: number }) => (
-    <tr className="border-b border-gov-border hover:bg-gov-light-grey transition-colors">
+    <tr className="border-b border-mid-grey hover:bg-light-grey transition-colors">
       <td className={`px-4 py-3 ${depth === 1 ? 'pl-10' : depth >= 2 ? 'pl-16' : ''}`}>
-        {depth > 0 && <span className="text-gov-grey mr-2" aria-hidden="true">↳</span>}
+        {depth > 0 && <span className="text-grey mr-2" aria-hidden="true">↳</span>}
         <Link
           href={`/org/${entry.slug}`}
-          className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+          className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
         >
           {entry.name}
         </Link>
       </td>
-      <td className="px-4 py-3 text-sm text-gov-grey hidden md:table-cell">{entry.format}</td>
+      <td className="px-4 py-3 text-sm text-grey hidden md:table-cell">{entry.format}</td>
       <td className="px-4 py-3 text-right font-semibold">
         {entry.totalStars.toLocaleString('en-GB')}
       </td>
       <td className="px-4 py-3 text-right">{entry.repoCount.toLocaleString('en-GB')}</td>
       <td className="px-4 py-3 text-right hidden lg:table-cell">{entry.totalRepoCount.toLocaleString('en-GB')}</td>
-      <td className="px-4 py-3 text-right">{entry.fte != null ? entry.fte.toLocaleString('en-GB') : <span className="text-gov-grey">—</span>}</td>
-      <td className="px-4 py-3 text-right">{entry.digitalDataFte != null ? entry.digitalDataFte.toLocaleString('en-GB') : <span className="text-gov-grey">—</span>}</td>
+      <td className="px-4 py-3 text-right">{entry.fte != null ? entry.fte.toLocaleString('en-GB') : <span className="text-grey">—</span>}</td>
+      <td className="px-4 py-3 text-right">{entry.digitalDataFte != null ? entry.digitalDataFte.toLocaleString('en-GB') : <span className="text-grey">—</span>}</td>
     </tr>
   );
 
@@ -231,7 +231,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
 
       {/* Mobile sort controls */}
       <div className="md:hidden flex items-center gap-2 text-sm">
-        <label htmlFor="mobile-sort" className="text-gov-grey shrink-0">Sort by:</label>
+        <label htmlFor="mobile-sort" className="text-grey shrink-0">Sort by:</label>
         <select
           id="mobile-sort"
           value={filters.sortField}
@@ -242,7 +242,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
             }
             setFilters({ ...filters, sortField: field, sortDirection: field === 'name' ? 'asc' : 'desc' });
           }}
-          className="border border-gov-border rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gov-blue bg-white"
+          className="border border-mid-grey rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-orange bg-white"
         >
           <option value="type">Type (default)</option>
           <option value="name">Name A–Z</option>
@@ -257,7 +257,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
       {/* Mobile card layout */}
       <div className="md:hidden" role="list" aria-label="UK public sector organisations and their GitHub code">
         {topLevel.length === 0 ? (
-          <p className="py-8 text-center text-gov-grey">No organisations match your search criteria.</p>
+          <p className="py-8 text-center text-grey">No organisations match your search criteria.</p>
         ) : (
           topLevel.map((entry) => renderCards(entry))
         )}
@@ -271,39 +271,39 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           aria-label="UK public sector organisations and their GitHub code"
         >
           <thead className="sticky top-0 z-10 shadow-[0_2px_0_0_#9a3412]">
-            <tr className="bg-gov-light-grey">
+            <tr className="bg-light-grey">
               <th scope="col" className="px-4 py-3 text-left font-bold" aria-sort={getAriaSortValue('name')}>
-                <button onClick={() => handleSort('name')} className="flex items-center hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by organisation name">
+                <button onClick={() => handleSort('name')} className="flex items-center hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by organisation name">
                   Organisation{getSortIcon('name')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-left font-bold hidden md:table-cell" aria-sort={getAriaSortValue('type')}>
-                <button onClick={() => handleSort('type')} className="flex items-center hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by organisation type">
+                <button onClick={() => handleSort('type')} className="flex items-center hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by organisation type">
                   Type{getSortIcon('type')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('stars')}>
-                <button onClick={() => handleSort('stars')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by total stars">
+                <button onClick={() => handleSort('stars')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by total stars">
                   Stars of active repos{getSortIcon('stars')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('repos')}>
-                <button onClick={() => handleSort('repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by active repository count">
+                <button onClick={() => handleSort('repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by active repository count">
                   Active repos{getSortIcon('repos')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold hidden lg:table-cell" aria-sort={getAriaSortValue('total')}>
-                <button onClick={() => handleSort('total')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by total repository count">
+                <button onClick={() => handleSort('total')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by total repository count">
                   Total repos{getSortIcon('total')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('fte')}>
-                <button onClick={() => handleSort('fte')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by total FTE">
+                <button onClick={() => handleSort('fte')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by total FTE">
                   Total FTE{getSortIcon('fte')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('digitalDataFte')}>
-                <button onClick={() => handleSort('digitalDataFte')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-gov-blue" aria-label="Sort by digital and data FTE">
+                <button onClick={() => handleSort('digitalDataFte')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by digital and data FTE">
                   Digital &amp; data FTE{getSortIcon('digitalDataFte')}
                 </button>
               </th>
@@ -312,7 +312,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           <tbody>
             {topLevel.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-gov-grey">
+                <td colSpan={7} className="px-4 py-8 text-center text-grey">
                   No organisations match your search criteria.
                 </td>
               </tr>
@@ -323,7 +323,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         </table>
       </div>
 
-      <p className="text-sm text-gov-grey" role="status" aria-live="polite">
+      <p className="text-sm text-grey" role="status" aria-live="polite">
         Showing {filteredAndSorted.length} of {entries.length} organisations
       </p>
     </div>

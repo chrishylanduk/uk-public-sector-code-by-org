@@ -7,10 +7,10 @@ interface Props {
 
 export default function RepoCard({ repo }: Props) {
   return (
-    <article className="border border-gov-border rounded p-4 hover:border-gov-blue transition-colors">
+    <article className="border border-mid-grey rounded p-4 hover:border-orange transition-colors">
       <div className="flex items-center gap-4">
         <div className="flex-shrink-0 flex flex-col items-center justify-center min-w-[4rem]">
-          <span className="flex items-center font-bold text-gov-dark-blue text-sm" title={`${repo.stargazersCount} stars`}>
+          <span className="flex items-center font-bold text-dark-orange text-sm" title={`${repo.stargazersCount} stars`}>
             <svg
               className="w-4 h-4 mr-1 text-yellow-500"
               fill="currentColor"
@@ -31,7 +31,7 @@ export default function RepoCard({ repo }: Props) {
                   href={repo.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+                  className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
                 >
                   {repo.name}
                 </a>
@@ -43,16 +43,16 @@ export default function RepoCard({ repo }: Props) {
               )}
             </div>
             {repo.language && (
-              <span className="flex items-center text-sm text-gov-grey">
-                <span className="w-3 h-3 rounded-full bg-gov-blue mr-1" aria-hidden="true" />
+              <span className="flex items-center text-sm text-grey">
+                <span className="w-3 h-3 rounded-full bg-orange mr-1" aria-hidden="true" />
                 {repo.language}
               </span>
             )}
           </div>
 
-          {repo.description && <p className="text-gov-grey mb-2">{repo.description}</p>}
+          {repo.description && <p className="text-grey mb-2">{repo.description}</p>}
 
-          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm text-gov-grey">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm text-grey">
             <div className="flex flex-wrap gap-x-4 gap-y-1">
               <span>Last pushed: {formatDate(new Date(repo.pushedAt))}</span>
               {repo.license && (
@@ -63,7 +63,7 @@ export default function RepoCard({ repo }: Props) {
               href={`https://github.com/${repo.owner}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+              className="hover:text-dark-orange focus:outline-2 focus:outline-orange"
             >
               github.com/{repo.owner}
             </a>

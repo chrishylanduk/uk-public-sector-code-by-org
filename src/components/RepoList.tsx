@@ -35,7 +35,7 @@ export default function RepoList({ repos }: Props) {
   };
 
   if (repos.length === 0) {
-    return <p className="text-gov-grey">This organisation has no public repositories.</p>;
+    return <p className="text-grey">This organisation has no public repositories.</p>;
   }
 
   return (
@@ -50,7 +50,7 @@ export default function RepoList({ repos }: Props) {
           />
           Active only (not archived, pushed to within the last 180 days)
         </label>
-        <p className="text-sm text-gov-grey">
+        <p className="text-sm text-grey">
           Showing {startIndex + 1}–{Math.min(startIndex + REPOS_PER_PAGE, sorted.length)} of {sorted.length}{' '}
           repositories, sorted by stars
         </p>
@@ -63,20 +63,20 @@ export default function RepoList({ repos }: Props) {
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-gov-border pt-4">
+        <div className="flex items-center justify-between border-t border-mid-grey pt-4">
           <button
             onClick={() => { setCurrentPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-gov-blue text-white rounded hover:bg-gov-dark-blue disabled:bg-gov-grey disabled:cursor-not-allowed focus:outline-2 focus:outline-gov-blue"
+            className="px-4 py-2 bg-orange text-white rounded hover:bg-dark-orange disabled:bg-grey disabled:cursor-not-allowed focus:outline-2 focus:outline-orange"
             aria-label="Previous page"
           >
             Previous
           </button>
-          <span className="text-sm text-gov-grey">Page {currentPage} of {totalPages}</span>
+          <span className="text-sm text-grey">Page {currentPage} of {totalPages}</span>
           <button
             onClick={() => { setCurrentPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gov-blue text-white rounded hover:bg-gov-dark-blue disabled:bg-gov-grey disabled:cursor-not-allowed focus:outline-2 focus:outline-gov-blue"
+            className="px-4 py-2 bg-orange text-white rounded hover:bg-dark-orange disabled:bg-grey disabled:cursor-not-allowed focus:outline-2 focus:outline-orange"
             aria-label="Next page"
           >
             Next

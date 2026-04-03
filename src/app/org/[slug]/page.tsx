@@ -62,7 +62,7 @@ export default async function OrganisationPage({
           <li>
             <Link
               href="/"
-              className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+              className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
             >
               Home
             </Link>
@@ -75,23 +75,23 @@ export default async function OrganisationPage({
       </nav>
 
       <h2 className="text-3xl font-bold mb-2">{org.name}</h2>
-      <p className="text-gov-grey mb-1">{org.format}</p>
+      <p className="text-grey mb-1">{org.format}</p>
       <p className={`text-sm ${org.fte == null && org.digitalDataFte == null ? 'mb-6' : 'mb-1'}`}>
-        <svg className="inline-block w-4 h-4 mr-1 text-gov-blue" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <svg className="inline-block w-4 h-4 mr-1 text-orange" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         <a
           href={org.webUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+          className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
         >
           {org.webUrl}
         </a>
       </p>
       {(org.fte != null || org.digitalDataFte != null) && (
-        <p className="text-sm mb-6 text-gov-grey">
-          {org.fte != null && <span>Total FTE: <span className="font-semibold text-gov-dark-blue">{org.fte.toLocaleString('en-GB')}</span></span>}
+        <p className="text-sm mb-6 text-grey">
+          {org.fte != null && <span>Total FTE: <span className="font-semibold text-dark-orange">{org.fte.toLocaleString('en-GB')}</span></span>}
           {org.fte != null && org.digitalDataFte != null && <span className="mx-2">·</span>}
-          {org.digitalDataFte != null && <span>Digital &amp; data FTE: <span className="font-semibold text-gov-dark-blue">{org.digitalDataFte.toLocaleString('en-GB')}</span></span>}
+          {org.digitalDataFte != null && <span>Digital &amp; data FTE: <span className="font-semibold text-dark-orange">{org.digitalDataFte.toLocaleString('en-GB')}</span></span>}
         </p>
       )}
       {(() => {
@@ -99,13 +99,13 @@ export default async function OrganisationPage({
         const subs = organisations.filter((o) => o.parentSlug === org.slug);
         if (!parent && subs.length === 0) return null;
         return (
-          <div className="text-sm text-gov-grey mb-6 space-y-1">
+          <div className="text-sm text-grey mb-6 space-y-1">
             {parent && (
               <p>
                 Part of{' '}
                 <Link
                   href={`/org/${parent.slug}`}
-                  className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+                  className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
                 >
                   {parent.name}
                 </Link>
@@ -119,7 +119,7 @@ export default async function OrganisationPage({
                     {i > 0 && ', '}
                     <Link
                       href={`/org/${sub.slug}`}
-                      className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+                      className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
                     >
                       {sub.name}
                     </Link>
@@ -131,27 +131,27 @@ export default async function OrganisationPage({
         );
       })()}
 
-      <div className="bg-gov-light-grey p-6 rounded mb-8 grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="bg-light-grey p-6 rounded mb-8 grid grid-cols-1 sm:grid-cols-4 gap-4">
         <div>
-          <p className="text-sm text-gov-grey mb-1">Stars of active repositories</p>
-          <p className="text-3xl font-bold text-gov-dark-blue">
+          <p className="text-sm text-grey mb-1">Stars of active repositories</p>
+          <p className="text-3xl font-bold text-dark-orange">
             {org.totalStars.toLocaleString('en-GB')}
           </p>
         </div>
         <div>
-          <p className="text-sm text-gov-grey mb-1">Active repositories</p>
-          <p className="text-3xl font-bold text-gov-dark-blue">
+          <p className="text-sm text-grey mb-1">Active repositories</p>
+          <p className="text-3xl font-bold text-dark-orange">
             {org.repoCount.toLocaleString('en-GB')}
           </p>
         </div>
         <div>
-          <p className="text-sm text-gov-grey mb-1">Total repositories</p>
-          <p className="text-3xl font-bold text-gov-dark-blue">
+          <p className="text-sm text-grey mb-1">Total repositories</p>
+          <p className="text-3xl font-bold text-dark-orange">
             {org.totalRepoCount.toLocaleString('en-GB')}
           </p>
         </div>
         <div>
-          <p className="text-sm text-gov-grey mb-1">GitHub accounts</p>
+          <p className="text-sm text-grey mb-1">GitHub accounts</p>
           <p className="text-lg font-semibold">
             {[...org.githubOrgs].sort((a, b) => {
               const aCount = org.repos.filter((r) => r.owner === a && isActiveRepo(r)).length;
@@ -169,11 +169,11 @@ export default async function OrganisationPage({
                       href={`https://github.com/${githubOrg}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gov-blue underline hover:text-gov-dark-blue focus:outline-2 focus:outline-gov-blue"
+                      className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
                     >
                       {githubOrg}
                     </a>
-                    {isInactive && <span className="text-sm font-normal text-gov-grey"> (inactive)</span>}
+                    {isInactive && <span className="text-sm font-normal text-grey"> (inactive)</span>}
                   </span>
                 </span>
               );

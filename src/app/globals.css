@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-gov-blue: #c2410c;
-  --color-gov-dark-blue: #9a3412;
-  --color-gov-light-blue: #fb923c;
-  --color-gov-green: #00703c;
-  --color-gov-red: #d4351c;
-  --color-gov-grey: #505a5f;
-  --color-gov-light-grey: #f3f2f1;
-  --color-gov-border: #b1b4b6;
+  --color-orange: #c2410c;
+  --color-dark-orange: #9a3412;
+  --color-light-orange: #fb923c;
+  --color-green: #00703c;
+  --color-red: #d4351c;
+  --color-grey: #505a5f;
+  --color-light-grey: #f3f2f1;
+  --color-mid-grey: #b1b4b6;
 
   /* System fonts */
   --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -25,7 +25,7 @@ input[type="checkbox"] {
   -webkit-appearance: none;
   width: 1.125rem;
   height: 1.125rem;
-  border: 2px solid var(--color-gov-border);
+  border: 2px solid var(--color-mid-grey);
   background: white;
   flex-shrink: 0;
   cursor: pointer;
@@ -34,8 +34,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  background: var(--color-gov-blue);
-  border-color: var(--color-gov-blue);
+  background: var(--color-orange);
+  border-color: var(--color-orange);
 }
 
 input[type="checkbox"]:checked::after {
@@ -52,6 +52,6 @@ input[type="checkbox"]:checked::after {
 }
 
 input[type="checkbox"]:focus-visible {
-  outline: 3px solid var(--color-gov-blue);
+  outline: 3px solid var(--color-orange);
   outline-offset: 2px;
 }

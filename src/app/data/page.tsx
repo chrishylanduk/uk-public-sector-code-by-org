@@ -16,7 +16,7 @@ const jsonLd = {
   '@type': 'Dataset',
   name: 'UK Government GitHub Organisation Mapping',
   description: 'A mapping of GitHub accounts to UK public sector organisations, with references to GOV.UK, planning.data.gov.uk, and Wikidata.',
-  license: 'https://creativecommons.org/licenses/by/4.0/',
+  license: 'https://opensource.org/licenses/MIT',
   isAccessibleForFree: true,
   keywords: ['UK public sector', 'GitHub', 'open source', 'organisations', 'open data'],
   url: 'https://publicsectorcodebyorg.co.uk/data',
@@ -86,7 +86,7 @@ export default function DataPage() {
       </div>
       <p className="text-sm text-gov-grey mb-8">
         Licence:{' '}
-        <a href="https://creativecommons.org/licenses/by/4.0/" className="underline hover:text-gov-blue" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>
+        <a href="https://opensource.org/licenses/MIT" className="underline hover:text-gov-blue" target="_blank" rel="noopener noreferrer">MIT</a>
       </p>
 
       <section className="mb-10">

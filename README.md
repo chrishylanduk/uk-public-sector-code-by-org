@@ -190,7 +190,7 @@ All entries have a `type` field and a `github_accounts` array. The `site_slug` a
 6. Run `npm run update-mapping` to populate slugs and regenerate the CSV
 7. Review the diff, then commit — `npm run build` will validate the mapping
 
-The mapping data is also available as a CSV download from the `/data` page and is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+The mapping data is also available as a CSV download from the `/data` page and is licensed under [MIT](https://opensource.org/licenses/MIT).
 
 ## Deployment
 
@@ -226,7 +226,7 @@ Targeting WCAG 2.2 AA:
 
 ## License
 
-MIT (code) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) (mapping data)
+MIT
 
 ## Contributing
 

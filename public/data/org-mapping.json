@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/chrishylanduk/uk-public-sector-code-by-org/main/public/data/org-mapping.schema.json",
   "description": "Mapping of GitHub organisations to UK public sector organisations. Each entry has a type field: gov_uk (identified by GOV.UK organisation slug), english_council (identified by planning.data.gov.uk local authority reference), or other (identified by Wikidata ID only).",
-  "licence": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
+  "licence": "MIT (https://opensource.org/licenses/MIT)",
   "source": "https://publicsectorcodebyorg.co.uk/data",
   "last_updated": "2026-03-30",
   "organisations": [

@@ -101,7 +101,6 @@ export async function fetchGithubRepos(): Promise<GithubRepo[]> {
   if (await isCacheFresh(REPOS_CACHE_FILE)) {
     const cached = await readCache<GithubRepo[]>(REPOS_CACHE_FILE);
     if (cached) {
-      console.log(`✓ Using cached GitHub repos (${cached.length} repos)`);
       return cached;
     }
   }
@@ -133,7 +132,6 @@ export async function fetchAllGovUkOrgs(): Promise<GovUkOrg[]> {
   if (await isCacheFresh(ORGS_CACHE_FILE)) {
     const cached = await readCache<GovUkOrg[]>(ORGS_CACHE_FILE);
     if (cached) {
-      console.log(`✓ Using cached gov.uk organisations (${cached.length} orgs)`);
       return cached;
     }
   }
@@ -247,7 +245,6 @@ export async function fetchPlanningDataOrgs(): Promise<PlanningDataOrg[]> {
   if (await isCacheFresh(PLANNING_DATA_CACHE_FILE)) {
     const cached = await readCache<PlanningDataOrg[]>(PLANNING_DATA_CACHE_FILE);
     if (cached) {
-      console.log(`✓ Using cached planning data local authorities (${cached.length} orgs)`);
       return cached;
     }
   }
@@ -286,7 +283,6 @@ export async function fetchLgaFteData(): Promise<Map<string, number>> {
   if (await isCacheFresh(LGA_FTE_CACHE_FILE)) {
     const cached = await readCache<[string, number][]>(LGA_FTE_CACHE_FILE);
     if (cached) {
-      console.log(`✓ Using cached LGA FTE data (${cached.length} entries)`);
       return new Map(cached);
     }
   }
@@ -381,7 +377,6 @@ export async function fetchCsStatsFteData(): Promise<Map<string, CsStatsFteEntry
   if (await isCacheFresh(CS_STATS_FTE_CACHE_FILE)) {
     const cached = await readCache<[string, CsStatsFteEntry][]>(CS_STATS_FTE_CACHE_FILE);
     if (cached) {
-      console.log(`✓ Using cached Civil Service FTE data (${cached.length} entries)`);
       return new Map(cached);
     }
   }

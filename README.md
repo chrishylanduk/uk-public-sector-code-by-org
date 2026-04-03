@@ -118,7 +118,6 @@ Installed automatically via `npm install`. Run on every commit:
 │   │   ├── SearchAndFilter.tsx       # Search and filter controls
 │   │   ├── RepoList.tsx              # Paginated repo listing
 │   │   ├── RepoCard.tsx              # Individual repo card
-│   │   ├── AboutTheData.tsx          # Data methodology note
 │   │   └── SkipLink.tsx              # Accessibility skip link
 │   └── lib/
 │       ├── types.ts                  # TypeScript interfaces

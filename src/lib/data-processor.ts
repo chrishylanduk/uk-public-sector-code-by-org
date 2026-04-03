@@ -38,15 +38,113 @@ function normaliseOrgName(s: string): string {
   return s.replace(/&/g, 'and').replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-export async function processOrganisationData(
+/**
+ * Run data quality checks. Call from prebuild only — not during page rendering.
+ * Throws on critical errors; warns on issues that don't block builds.
+ */
+export function validateDataQuality(repos: GithubRepo[], govUkOrgs: GovUkOrg[], planningDataOrgs: PlanningDataOrg[]): void {
+  const mapping = getOrgMapping();
+  const allowedGithubOrgs = getAllMappedGithubOrgs();
+  const localGovEntries = getLocalGovEntries();
+
+  // FAIL: Same GitHub org mapped to multiple orgs
+  const githubOrgToSlugs = new Map<string, string[]>();
+  for (const [slug, config] of Object.entries(mapping)) {
+    for (const githubOrg of config.githubOrgs) {
+      const existing = githubOrgToSlugs.get(githubOrg) ?? [];
+      existing.push(slug);
+      githubOrgToSlugs.set(githubOrg, existing);
+    }
+  }
+  for (const [githubOrg, slugs] of githubOrgToSlugs) {
+    if (slugs.length > 1) {
+      throw new Error(`❌ GitHub org "${githubOrg}" is mapped to multiple orgs: ${slugs.join(', ')}`);
+    }
+  }
+
+  // FAIL: Orgs missing Wikidata IDs
+  for (const id of getMissingWikidataOrgs()) {
+    throw new Error(`❌ "${id}" has no wikidata_id`);
+  }
+
+  // FAIL: Duplicate Wikidata IDs
+  for (const { wikidataId, orgs } of getDuplicateWikidataOrgs()) {
+    throw new Error(`❌ wikidata_id "${wikidataId}" is shared by multiple entries: ${orgs.join(', ')}`);
+  }
+
+  // FAIL: Mapped gov.uk slugs that don't exist or are closed/devolved
+  const govOrgBySlug = new Map<string, GovUkOrg>();
+  for (const org of govUkOrgs) govOrgBySlug.set(org.details.slug, org);
+  for (const slug of Object.keys(mapping)) {
+    const org = govOrgBySlug.get(slug);
+    if (!org) {
+      throw new Error(`❌ Gov.uk slug "${slug}" not found in gov.uk API — mapping may be stale`);
+    }
+    if (org.details.govuk_status === 'closed') {
+      throw new Error(`❌ Gov.uk org "${slug}" is closed — mapping may be stale`);
+    }
+    if (org.details.govuk_status === 'devolved' && org.details.govuk_closed_status === 'devolved') {
+      throw new Error(`❌ Gov.uk org "${slug}" is devolved — mapping may be stale`);
+    }
+  }
+
+  // FAIL: Planning data references that don't exist or have an end-date
+  const planningDataByRef = new Map<string, PlanningDataOrg>();
+  for (const org of planningDataOrgs) planningDataByRef.set(org.reference, org);
+  for (const entry of localGovEntries) {
+    if (entry.type !== 'planning_data') continue;
+    const planningOrg = planningDataByRef.get(entry.planningDataReference);
+    if (!planningOrg) {
+      throw new Error(`❌ england_planning_data_reference "${entry.planningDataReference}" not found in planning.data.gov.uk`);
+    }
+    if (planningOrg['end-date']) {
+      throw new Error(`❌ Local authority "${entry.planningDataReference}" (${planningOrg.name}) has end-date "${planningOrg['end-date']}"`);
+    }
+  }
+
+  // WARN: GitHub orgs in the data that aren't in the mapping
+  const allGithubOrgsInData = new Set(repos.map((repo) => repo.owner));
+  for (const githubOrg of allGithubOrgsInData) {
+    if (!allowedGithubOrgs.includes(githubOrg)) {
+      console.warn(`⚠️  Warning: GitHub org "${githubOrg}" is not in org-mapping.json`);
+    }
+  }
+
+  // WARN: Gov.uk orgs whose parent isn't in the mapping
+  for (const slug of Object.keys(mapping)) {
+    const govOrg = govOrgBySlug.get(slug);
+    if (!govOrg) continue;
+    for (const p of (govOrg.parent_organisations ?? []).map((po) => po.id.split('/').pop()!)) {
+      if (!(p in mapping)) {
+        console.warn(`⚠️  Warning: "${slug}" has parent "${p}" on GOV.UK but "${p}" is not in org-mapping.json`);
+      }
+    }
+  }
+}
+
+let _organisationDataPromise: Promise<OrganisationStats[]> | null = null;
+
+export function processOrganisationData(
   repos: GithubRepo[],
   govUkOrgs: GovUkOrg[],
   planningDataOrgs: PlanningDataOrg[] = [],
   lgaFteData: Map<string, number> = new Map(),
   csStatsFteData: Map<string, CsStatsFteEntry> = new Map()
 ): Promise<OrganisationStats[]> {
+  if (!_organisationDataPromise) {
+    _organisationDataPromise = _processOrganisationData(repos, govUkOrgs, planningDataOrgs, lgaFteData, csStatsFteData);
+  }
+  return _organisationDataPromise;
+}
+
+async function _processOrganisationData(
+  repos: GithubRepo[],
+  govUkOrgs: GovUkOrg[],
+  planningDataOrgs: PlanningDataOrg[],
+  lgaFteData: Map<string, number>,
+  csStatsFteData: Map<string, CsStatsFteEntry>
+): Promise<OrganisationStats[]> {
   const mapping = getOrgMapping();
-  const allowedGithubOrgs = getAllMappedGithubOrgs();
   const wikidataIdToSlug = getWikidataIdToSlug();
   const govUkWikidataIds = getGovUkWikidataIds();
 
@@ -64,81 +162,10 @@ export async function processOrganisationData(
     if (org.details.govuk_status === 'devolved' && org.details.govuk_closed_status === 'devolved') return false;
     return true;
   });
-  console.log(`Filtered to ${liveGovUkOrgs.length} active gov.uk organisations (excluded ${govUkOrgs.length - liveGovUkOrgs.length} closed/devolved)`);
-
-  // Filter repos: exclude archived, exclude repos not pushed in 180 days, exclude unmapped orgs
-  const validRepos = repos.filter(
-    (repo) => isActiveRepo(repo) && allowedGithubOrgs.includes(repo.owner)
-  );
-
-  console.log(`Filtered to ${validRepos.length} active repositories (non-archived, pushed within 180 days)`);
-
-  // WARNING: Same GitHub org mapped to multiple gov.uk orgs
-  const githubOrgToGovSlugs = new Map<string, string[]>();
-  for (const [slug, config] of Object.entries(mapping)) {
-    for (const githubOrg of config.githubOrgs) {
-      const existing = githubOrgToGovSlugs.get(githubOrg) ?? [];
-      existing.push(slug);
-      githubOrgToGovSlugs.set(githubOrg, existing);
-    }
-  }
-  for (const [githubOrg, slugs] of githubOrgToGovSlugs) {
-    if (slugs.length > 1) {
-      console.warn(`⚠️  Warning: GitHub org "${githubOrg}" is mapped to multiple gov.uk orgs: ${slugs.join(', ')}`);
-    }
-  }
-
-  // WARNING: Orgs missing Wikidata IDs
-  for (const id of getMissingWikidataOrgs()) {
-    console.warn(`⚠️  Warning: "${id}" has no wikidata_id`);
-  }
-
-  // WARNING: Duplicate Wikidata IDs
-  for (const { wikidataId, orgs } of getDuplicateWikidataOrgs()) {
-    console.warn(`⚠️  Warning: wikidata_id "${wikidataId}" is shared by multiple entries: ${orgs.join(', ')}`);
-  }
-
-  // WARNING: GitHub orgs in the data that aren't in the mapping
-  const allGithubOrgsInData = new Set(repos.map((repo) => repo.owner));
-  for (const githubOrg of allGithubOrgsInData) {
-    if (!allowedGithubOrgs.includes(githubOrg)) {
-      console.warn(`⚠️  Warning: GitHub org "${githubOrg}" is not in org-mapping.json`);
-    }
-  }
-
   // Create gov.uk org lookup (live orgs only)
   const govOrgBySlug = new Map<string, GovUkOrg>();
   for (const org of liveGovUkOrgs) {
     govOrgBySlug.set(org.details.slug, org);
-  }
-
-  // Also create a lookup for all orgs (to check if a mapped org is closed)
-  const allGovOrgBySlug = new Map<string, GovUkOrg>();
-  for (const org of govUkOrgs) {
-    allGovOrgBySlug.set(org.details.slug, org);
-  }
-
-  // VALIDATION: Check that all mapped gov.uk slugs exist and are live
-  for (const slug of Object.keys(mapping)) {
-    const org = allGovOrgBySlug.get(slug);
-    if (!org) {
-      throw new Error(
-        `❌ BUILD FAILED: Gov.uk slug "${slug}" in mapping file not found in gov.uk API. ` +
-        `The mapping file may be stale. Please update public/data/org-mapping.json`
-      );
-    }
-    if (org.details.govuk_status === 'closed') {
-      throw new Error(
-        `❌ BUILD FAILED: Gov.uk org "${slug}" in mapping file is closed. ` +
-        `The mapping file may be stale. Please update public/data/org-mapping.json`
-      );
-    }
-    if (org.details.govuk_status === 'devolved' && org.details.govuk_closed_status === 'devolved') {
-      throw new Error(
-        `❌ BUILD FAILED: Gov.uk org "${slug}" in mapping file is devolved. ` +
-        `The mapping file may be stale. Please update public/data/org-mapping.json`
-      );
-    }
   }
 
   // Aggregate by gov.uk org slug
@@ -155,13 +182,6 @@ export async function processOrganisationData(
     // Find parent slug via GOV.UK API first, then fall back to Wikidata P749
     const parentSlugs = (govOrg.parent_organisations ?? []).map((p) => p.id.split('/').pop()!);
     let parentSlug = parentSlugs.find((s) => s in mapping);
-
-    // Warn if this org has a parent on GOV.UK but the parent isn't in our mapping
-    for (const p of parentSlugs) {
-      if (!(p in mapping)) {
-        console.warn(`⚠️  Warning: "${slug}" has parent "${p}" on GOV.UK but "${p}" is not in org-mapping.json`);
-      }
-    }
 
     // Fall back to Wikidata if no parent found via GOV.UK
     if (!parentSlug) {
@@ -208,19 +228,7 @@ export async function processOrganisationData(
     let fte: number | undefined;
 
     if (entry.type === 'planning_data') {
-      const planningOrg = planningDataByRef.get(entry.planningDataReference);
-      if (!planningOrg) {
-        throw new Error(
-          `❌ BUILD FAILED: england_planning_data_reference "${entry.planningDataReference}" not found in planning.data.gov.uk. ` +
-          `Please update public/data/org-mapping.json`
-        );
-      }
-      if (planningOrg['end-date']) {
-        throw new Error(
-          `❌ BUILD FAILED: Local authority "${entry.planningDataReference}" (${planningOrg.name}) has end-date "${planningOrg['end-date']}". ` +
-          `Please update public/data/org-mapping.json`
-        );
-      }
+      const planningOrg = planningDataByRef.get(entry.planningDataReference)!;
       name = planningOrg.name;
       webUrl = planningOrg.website;
       format = LOCAL_AUTHORITY_TYPE[planningOrg['local-authority-type']] ?? planningOrg['local-authority-type'];

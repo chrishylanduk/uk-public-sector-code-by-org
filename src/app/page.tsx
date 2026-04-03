@@ -37,7 +37,7 @@ export default async function HomePage() {
         </p>
         <p className="text-base mb-3">
           Currently tracking <strong>{orgList.length} organisations</strong> and{' '}
-          <strong>{totalRepos.toLocaleString('en-GB')} active repositories</strong> (pushed to within the last 180 days).
+          <strong>{totalRepos.toLocaleString('en-GB')} active repositories</strong> (not archived, pushed to within the last 180 days).
         </p>
         <p className="text-sm text-gov-grey">
           Data last updated: {formatDateTime(buildDate)}

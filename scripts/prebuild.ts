@@ -10,6 +10,7 @@ import path from 'path';
 import Ajv from 'ajv/dist/2020';
 import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchWikidataLocalOrg, fetchLgaFteData, fetchCsStatsFteData } from '../src/lib/data-fetcher';
 import { getRawOrganisations } from '../src/lib/mapping';
+import { validateDataQuality } from '../src/lib/data-processor';
 
 function validateOrgMapping() {
   const dataFile = path.join(process.cwd(), 'public/data/org-mapping.json');
@@ -40,7 +41,7 @@ async function main() {
         .filter((id): id is string => typeof id === 'string')
     )];
 
-    await Promise.all([
+    const [repos, govUkOrgs, planningDataOrgs] = await Promise.all([
       fetchGithubRepos(),
       fetchAllGovUkOrgs(),
       fetchPlanningDataOrgs(),
@@ -54,6 +55,7 @@ async function main() {
     }
 
     validateOrgMapping();
+    validateDataQuality(repos, govUkOrgs, planningDataOrgs);
 
     console.log('\n✅ Pre-build complete: Data cached to .cache/\n');
   } catch (error) {

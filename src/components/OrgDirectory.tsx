@@ -246,7 +246,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         >
           <option value="type">Type (default)</option>
           <option value="name">Name A–Z</option>
-          <option value="stars">Stars</option>
+          <option value="stars">Stars of active repos</option>
           <option value="repos">Active repos</option>
           <option value="total">Total repos</option>
           <option value="fte">Total FTE</option>

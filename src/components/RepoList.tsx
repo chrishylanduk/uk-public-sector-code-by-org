@@ -48,7 +48,7 @@ export default function RepoList({ repos }: Props) {
             onChange={(e) => handleFilterChange(e.target.checked)}
             className=""
           />
-          Active only (not archived, pushed within last 180 days)
+          Active only (not archived, pushed to within the last 180 days)
         </label>
         <p className="text-sm text-gov-grey">
           Showing {startIndex + 1}–{Math.min(startIndex + REPOS_PER_PAGE, sorted.length)} of {sorted.length}{' '}

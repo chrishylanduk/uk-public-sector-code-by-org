@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { OrgEntry, FilterState, GroupedFormats } from '@/lib/types';
 import SearchAndFilter from './SearchAndFilter';
 
@@ -54,6 +55,48 @@ const TYPE_ORDER: Record<string, number> = {
 };
 
 export default function OrgDirectory({ entries, availableFormats }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const SORT_FIELDS = ['name', 'type', 'stars', 'active-repos', 'all-repos', 'fte', 'digitalDataFte'] as const;
+  const sortField = (SORT_FIELDS.includes(searchParams.get('sort') as typeof SORT_FIELDS[number]) ? searchParams.get('sort') : 'type') as FilterState['sortField'];
+  const sortDirection = searchParams.get('dir') === 'asc' ? 'asc' : 'desc';
+  const searchQuery = searchParams.get('q') ?? '';
+  const excludedFormats = searchParams.getAll('ex');
+  const groupByParentParam = searchParams.get('group');
+  const groupByParentUserSet = groupByParentParam !== null;
+  const groupByParent = groupByParentParam !== null ? groupByParentParam !== '0' : (sortField === 'name' || sortField === 'type');
+
+  const filters: FilterState = { searchQuery, excludedFormats, sortField, sortDirection };
+
+  const updateParams = (updates: Record<string, string | string[] | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    for (const [key, value] of Object.entries(updates)) {
+      params.delete(key);
+      if (value === null) continue;
+      if (Array.isArray(value)) {
+        for (const v of value) params.append(key, v);
+      } else {
+        params.set(key, value);
+      }
+    }
+    const qs = params.toString();
+    router.replace(qs ? `/?${qs}` : '/', { scroll: false });
+  };
+
+  const setFilters = (next: FilterState) => {
+    updateParams({
+      q: next.searchQuery || null,
+      sort: next.sortField !== 'type' ? next.sortField : null,
+      dir: next.sortDirection !== 'desc' ? next.sortDirection : null,
+      ex: next.excludedFormats,
+    });
+  };
+
+  const setGroupByParent = (value: boolean, userSet = true) => {
+    updateParams({ group: userSet ? (value ? '1' : '0') : (groupByParentUserSet ? (value ? '1' : '0') : null) });
+  };
+
   const formatCounts = useMemo(() => {
     const counts = new Map<string, number>();
     for (const entry of entries) {
@@ -61,16 +104,6 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
     }
     return counts;
   }, [entries]);
-
-  const [groupByParent, setGroupByParent] = useState(true);
-  const [groupByParentUserSet, setGroupByParentUserSet] = useState(false);
-
-  const [filters, setFilters] = useState<FilterState>({
-    searchQuery: '',
-    excludedFormats: [],
-    sortField: 'type',
-    sortDirection: 'desc',
-  });
 
   const getAriaSortValue = (field: typeof filters.sortField): 'ascending' | 'descending' | 'none' => {
     if (filters.sortField !== field) return 'none';
@@ -115,8 +148,8 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         }
         case 'name':  comparison = a.name.localeCompare(b.name); break;
         case 'stars': comparison = a.totalStars - b.totalStars; break;
-        case 'repos': comparison = a.repoCount - b.repoCount; break;
-        case 'total': comparison = a.totalRepoCount - b.totalRepoCount; break;
+        case 'active-repos': comparison = a.repoCount - b.repoCount; break;
+        case 'all-repos': comparison = a.totalRepoCount - b.totalRepoCount; break;
         case 'fte':           comparison = (a.fte ?? -1) - (b.fte ?? -1); break;
         case 'digitalDataFte': comparison = (a.digitalDataFte ?? -1) - (b.digitalDataFte ?? -1); break;
       }
@@ -150,7 +183,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
 
   const handleSort = (field: typeof filters.sortField) => {
     if (!groupByParentUserSet) {
-      setGroupByParent(field === 'name' || field === 'type');
+      setGroupByParent(field === 'name' || field === 'type', false);
     }
     setFilters({
       ...filters,
@@ -243,7 +276,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         <input
           type="checkbox"
           checked={groupByParent}
-          onChange={(e) => { setGroupByParent(e.target.checked); setGroupByParentUserSet(true); }}
+          onChange={(e) => { setGroupByParent(e.target.checked); }}
           className=""
         />
         Group sub-organisations under their parent
@@ -258,7 +291,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           onChange={(e) => {
             const field = e.target.value as typeof filters.sortField;
             if (!groupByParentUserSet) {
-              setGroupByParent(field === 'name' || field === 'type');
+              setGroupByParent(field === 'name' || field === 'type', false);
             }
             setFilters({ ...filters, sortField: field, sortDirection: field === 'name' ? 'asc' : 'desc' });
           }}
@@ -307,14 +340,14 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
                   Stars of active repos{getSortIcon('stars')}
                 </button>
               </th>
-              <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('repos')}>
-                <button onClick={() => handleSort('repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by active repository count">
-                  Active repos{getSortIcon('repos')}
+              <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('active-repos')}>
+                <button onClick={() => handleSort('active-repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by active repository count">
+                  Active repos{getSortIcon('active-repos')}
                 </button>
               </th>
-              <th scope="col" className="px-4 py-3 text-right font-bold hidden lg:table-cell" aria-sort={getAriaSortValue('total')}>
-                <button onClick={() => handleSort('total')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by total repository count">
-                  Total repos{getSortIcon('total')}
+              <th scope="col" className="px-4 py-3 text-right font-bold hidden lg:table-cell" aria-sort={getAriaSortValue('all-repos')}>
+                <button onClick={() => handleSort('all-repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by total repository count">
+                  Total repos{getSortIcon('all-repos')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('fte')}>

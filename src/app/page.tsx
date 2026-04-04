@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData, fetchCsStatsFteData } from '@/lib/data-fetcher';
 import { processOrganisationData, getOrgList, getGroupedFormats } from '@/lib/data-processor';
 import OrgDirectory from '@/components/OrgDirectory';
@@ -44,7 +45,9 @@ export default async function HomePage() {
         </p>
       </div>
 
-      <OrgDirectory entries={orgList} availableFormats={formats} />
+      <Suspense>
+        <OrgDirectory entries={orgList} availableFormats={formats} />
+      </Suspense>
     </div>
   );
 }

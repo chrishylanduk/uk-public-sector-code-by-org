@@ -126,7 +126,7 @@ export interface OrgEntry {
 }
 
 // Filter/sort state (client-side)
-export type SortField = 'type' | 'name' | 'stars' | 'repos' | 'total' | 'fte' | 'digitalDataFte';
+export type SortField = 'type' | 'name' | 'stars' | 'active-repos' | 'all-repos' | 'fte' | 'digitalDataFte';
 export type SortDirection = 'asc' | 'desc';
 
 export interface FilterState {

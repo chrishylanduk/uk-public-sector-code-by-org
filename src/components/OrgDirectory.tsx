@@ -308,7 +308,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
       </div>
 
       {/* Mobile card layout */}
-      <div className="md:hidden" role="list" aria-label="UK public sector organisations and their GitHub code">
+      <div className="md:hidden">
         {topLevel.length === 0 ? (
           <p className="py-8 text-center text-grey">No organisations match your search criteria.</p>
         ) : (

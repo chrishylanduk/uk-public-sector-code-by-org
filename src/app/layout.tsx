@@ -46,7 +46,6 @@ export default function RootLayout({
                 UK Public Sector Code by Organisation
               </Link>
             </h1>
-            <p className="text-xs text-white/60 mt-0.5">An independent project</p>
           </div>
         </header>
         <main id="main-content" className="w-full max-w-7xl mx-auto px-4 py-8 flex-1">

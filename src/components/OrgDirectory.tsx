@@ -43,6 +43,14 @@ const TYPE_ORDER: Record<string, number> = {
 };
 
 export default function OrgDirectory({ entries, availableFormats }: Props) {
+  const formatCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const entry of entries) {
+      counts.set(entry.format, (counts.get(entry.format) ?? 0) + 1);
+    }
+    return counts;
+  }, [entries]);
+
   const [groupByParent, setGroupByParent] = useState(true);
   const [groupByParentUserSet, setGroupByParentUserSet] = useState(false);
 
@@ -217,6 +225,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         filters={filters}
         onFiltersChange={setFilters}
         availableFormats={availableFormats}
+        formatCounts={formatCounts}
       />
 
       <label className="flex items-center gap-2 text-sm cursor-pointer">

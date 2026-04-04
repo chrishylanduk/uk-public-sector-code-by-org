@@ -6,10 +6,12 @@ interface Props {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   availableFormats: GroupedFormats;
+  formatCounts: Map<string, number>;
 }
 
-function FormatCheckbox({ format, filters, onFiltersChange }: {
+function FormatCheckbox({ format, count, filters, onFiltersChange }: {
   format: string;
+  count: number;
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
 }) {
@@ -29,14 +31,14 @@ function FormatCheckbox({ format, filters, onFiltersChange }: {
         }}
         className=""
       />
-      <label htmlFor={id} className="ml-2 cursor-pointer">{format}</label>
+      <label htmlFor={id} className="ml-2 cursor-pointer">{format} <span className="text-grey">[{count}]</span></label>
     </div>
   );
 }
 
 const btnClass = 'text-xs underline hover:text-orange focus:outline-2 focus:outline-orange text-grey';
 
-export default function SearchAndFilter({ filters, onFiltersChange, availableFormats }: Props) {
+export default function SearchAndFilter({ filters, onFiltersChange, availableFormats, formatCounts }: Props) {
   const groups: { label: string; formats: string[] }[] = [
     { label: 'GOV.UK organisations', formats: availableFormats.govUk },
     { label: 'English councils', formats: availableFormats.englishCouncil },
@@ -108,6 +110,7 @@ export default function SearchAndFilter({ filters, onFiltersChange, availableFor
                   <FormatCheckbox
                     key={format}
                     format={format}
+                    count={formatCounts.get(format) ?? 0}
                     filters={filters}
                     onFiltersChange={onFiltersChange}
                   />

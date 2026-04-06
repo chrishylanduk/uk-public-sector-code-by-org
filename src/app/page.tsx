@@ -25,7 +25,7 @@ export default async function HomePage() {
           Explore all the open source code from each UK public sector organisation
         </h2>
         <p className="text-lg mb-3">
-          Powered by a mapping of UK public sector organisations to their GitHub accounts, because each organisation has as many as 14 accounts.
+          Powered by a mapping of UK public sector organisations to their GitHub accounts, because each organisation has up to 14 accounts.
         </p>
         <p className="text-lg mb-3">
           The mapping data is open and available for others to use:{' '}

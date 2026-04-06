@@ -38,6 +38,8 @@ export default function RepoList({ repos }: Props) {
     return <p className="text-grey">This organisation has no public repositories.</p>;
   }
 
+  const scrollToList = () => document.getElementById('repositories')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
   return (
     <div>
       <div className="mb-4 space-y-2">
@@ -65,7 +67,7 @@ export default function RepoList({ repos }: Props) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-mid-grey pt-4">
           <button
-            onClick={() => { setCurrentPage((p) => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            onClick={() => { setCurrentPage((p) => Math.max(1, p - 1)); scrollToList(); }}
             disabled={currentPage === 1}
             className="px-4 py-2 bg-orange text-white rounded hover:bg-dark-orange disabled:bg-grey disabled:cursor-not-allowed focus:outline-2 focus:outline-orange"
             aria-label="Previous page"
@@ -74,7 +76,7 @@ export default function RepoList({ repos }: Props) {
           </button>
           <span className="text-sm text-grey">Page {currentPage} of {totalPages}</span>
           <button
-            onClick={() => { setCurrentPage((p) => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            onClick={() => { setCurrentPage((p) => Math.min(totalPages, p + 1)); scrollToList(); }}
             disabled={currentPage === totalPages}
             className="px-4 py-2 bg-orange text-white rounded hover:bg-dark-orange disabled:bg-grey disabled:cursor-not-allowed focus:outline-2 focus:outline-orange"
             aria-label="Next page"

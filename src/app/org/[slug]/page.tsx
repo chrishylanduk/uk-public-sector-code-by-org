@@ -182,7 +182,7 @@ export default async function OrganisationPage({
         </div>
       </div>
 
-      <h3 className="text-2xl font-bold mb-4">Repositories</h3>
+      <h3 id="repositories" className="text-2xl font-bold mb-4">Repositories</h3>
       <RepoList repos={org.repos} />
     </div>
   );

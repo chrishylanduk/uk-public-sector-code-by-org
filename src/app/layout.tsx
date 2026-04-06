@@ -3,6 +3,7 @@ import './globals.css';
 import SkipLink from '@/components/SkipLink';
 import Link from 'next/link';
 import { SITE_NAME, SITE_URL, SITE_DESCRIPTION } from '@/lib/constants';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export const metadata: Metadata = {
   title: SITE_NAME,
@@ -49,7 +50,7 @@ export default function RootLayout({
           </div>
         </header>
         <main id="main-content" className="w-full max-w-7xl mx-auto px-4 py-8 flex-1">
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
         </main>
         <footer className="bg-light-grey border-t border-mid-grey mt-16 py-8">
           <div className="max-w-7xl mx-auto px-4 text-sm text-grey space-y-3">
@@ -95,6 +96,10 @@ export default function RootLayout({
               {' '}and{' '}
               <a href="https://www.gov.uk/government/collections/civil-service-statistics" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange focus:outline-2 focus:outline-orange">
                 Civil Service Statistics
+              </a>
+              . Contains public sector information licensed under the{' '}
+              <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange focus:outline-2 focus:outline-orange">
+                Open Government Licence v3.0
               </a>
               .
             </p>

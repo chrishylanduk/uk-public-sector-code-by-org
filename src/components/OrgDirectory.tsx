@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useQueryState, parseAsString, parseAsArrayOf, parseAsStringLiteral } from 'nuqs';
 import type { OrgEntry, FilterState, GroupedFormats } from '@/lib/types';
 import SearchAndFilter from './SearchAndFilter';
 
@@ -54,47 +54,30 @@ const TYPE_ORDER: Record<string, number> = {
   'Fire service in the United Kingdom': -2,
 };
 
+const SORT_FIELDS = ['name', 'type', 'stars', 'active-repos', 'all-repos', 'fte', 'digitalDataFte'] as const;
+const URL_OPTIONS = { history: 'replace', shallow: true, scroll: false } as const;
+
 export default function OrgDirectory({ entries, availableFormats }: Props) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [q, setQ] = useQueryState('q', parseAsString.withDefault('').withOptions(URL_OPTIONS));
+  const [sort, setSort] = useQueryState('sort', parseAsStringLiteral(SORT_FIELDS).withDefault('type').withOptions(URL_OPTIONS));
+  const [dir, setDir] = useQueryState('dir', parseAsStringLiteral(['asc', 'desc'] as const).withDefault('desc').withOptions(URL_OPTIONS));
+  const [ex, setEx] = useQueryState('ex', parseAsArrayOf(parseAsString).withDefault([]).withOptions(URL_OPTIONS));
+  const [group, setGroup] = useQueryState('group', parseAsString.withOptions(URL_OPTIONS));
 
-  const SORT_FIELDS = ['name', 'type', 'stars', 'active-repos', 'all-repos', 'fte', 'digitalDataFte'] as const;
-  const sortField = (SORT_FIELDS.includes(searchParams.get('sort') as typeof SORT_FIELDS[number]) ? searchParams.get('sort') : 'type') as FilterState['sortField'];
-  const sortDirection = searchParams.get('dir') === 'asc' ? 'asc' : 'desc';
-  const searchQuery = searchParams.get('q') ?? '';
-  const excludedFormats = searchParams.getAll('ex');
-  const groupByParentParam = searchParams.get('group');
-  const groupByParentUserSet = groupByParentParam !== null;
-  const groupByParent = groupByParentParam !== null ? groupByParentParam !== '0' : (sortField === 'name' || sortField === 'type');
+  const groupByParentUserSet = group !== null;
+  const groupByParent = group !== null ? group !== '0' : (sort === 'name' || sort === 'type');
 
-  const filters: FilterState = { searchQuery, excludedFormats, sortField, sortDirection };
-
-  const updateParams = (updates: Record<string, string | string[] | null>) => {
-    const params = new URLSearchParams(searchParams.toString());
-    for (const [key, value] of Object.entries(updates)) {
-      params.delete(key);
-      if (value === null) continue;
-      if (Array.isArray(value)) {
-        for (const v of value) params.append(key, v);
-      } else {
-        params.set(key, value);
-      }
-    }
-    const qs = params.toString();
-    router.replace(qs ? `/?${qs}` : '/', { scroll: false });
-  };
+  const filters: FilterState = { searchQuery: q, excludedFormats: ex, sortField: sort, sortDirection: dir };
 
   const setFilters = (next: FilterState) => {
-    updateParams({
-      q: next.searchQuery || null,
-      sort: next.sortField !== 'type' ? next.sortField : null,
-      dir: next.sortDirection !== 'desc' ? next.sortDirection : null,
-      ex: next.excludedFormats,
-    });
+    setQ(next.searchQuery || null);
+    setSort(next.sortField !== 'type' ? next.sortField : null);
+    setDir(next.sortDirection !== 'desc' ? next.sortDirection : null);
+    setEx(next.excludedFormats.length > 0 ? next.excludedFormats : null);
   };
 
   const setGroupByParent = (value: boolean, userSet = true) => {
-    updateParams({ group: userSet ? (value ? '1' : '0') : (groupByParentUserSet ? (value ? '1' : '0') : null) });
+    setGroup(userSet ? (value ? '1' : '0') : (groupByParentUserSet ? (value ? '1' : '0') : null));
   };
 
   const formatCounts = useMemo(() => {
@@ -300,8 +283,8 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           <option value="type">Type (default)</option>
           <option value="name">Name A–Z</option>
           <option value="stars">Stars of active repos</option>
-          <option value="repos">Active repos</option>
-          <option value="total">Total repos</option>
+          <option value="active-repos">Active repos</option>
+          <option value="all-repos">Total repos</option>
           <option value="fte">Total FTE</option>
           <option value="digitalDataFte">Digital &amp; data FTE</option>
         </select>

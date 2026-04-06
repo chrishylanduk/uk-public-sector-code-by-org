@@ -39,6 +39,7 @@ function FormatCheckbox({ format, count, filters, onFiltersChange }: {
 const btnClass = 'text-xs underline hover:text-orange focus:outline-2 focus:outline-orange text-grey';
 
 export default function SearchAndFilter({ filters, onFiltersChange, availableFormats, formatCounts }: Props) {
+
   const groups: { label: string; formats: string[] }[] = [
     { label: 'GOV.UK organisations', formats: availableFormats.govUk },
     { label: 'English councils', formats: availableFormats.englishCouncil },
@@ -63,9 +64,7 @@ export default function SearchAndFilter({ filters, onFiltersChange, availableFor
           id="search"
           type="text"
           value={filters.searchQuery}
-          onChange={(e) =>
-            onFiltersChange({ ...filters, searchQuery: e.target.value })
-          }
+          onChange={(e) => onFiltersChange({ ...filters, searchQuery: e.target.value })}
           placeholder="Search organisations"
           className="w-full max-w-md px-3 py-2 border-2 border-mid-grey focus:outline-none focus:border-orange focus:ring-2 focus:ring-orange"
           aria-label="Search organisations by name"

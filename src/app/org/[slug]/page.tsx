@@ -165,7 +165,22 @@ export default async function OrganisationPage({
             const languages = [...langCounts.entries()]
               .sort((a, b) => a[0] === 'Unknown' ? 1 : b[0] === 'Unknown' ? -1 : b[1] - a[1])
               .map(([name, count]) => ({ name, pct: Math.round(count / activeRepos.length * 100) }));
-            return <LanguageList languages={languages} />;
+            const staticList = (
+              <ol className="mt-1 space-y-0.5">
+                {languages.slice(0, 3).map(({ name, pct }, i) => (
+                  <li key={name} className="text-sm">
+                    <span className="text-grey mr-1">{i + 1}.</span>
+                    <span className="font-semibold">{name}</span>
+                    <span className="text-grey"> ({pct}%)</span>
+                  </li>
+                ))}
+              </ol>
+            );
+            return (
+              <Suspense fallback={staticList}>
+                <LanguageList languages={languages} />
+              </Suspense>
+            );
           })()}
         </div>
         <div>

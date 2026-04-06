@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useQueryState, parseAsBoolean } from 'nuqs';
 
 interface Props {
   languages: { name: string; pct: number }[];
 }
 
 export default function LanguageList({ languages }: Props) {
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useQueryState('show-langs', parseAsBoolean.withDefault(false).withOptions({ history: 'replace', shallow: true, scroll: false }));
   const visible = showAll ? languages : languages.slice(0, 3);
 
   if (languages.length === 0) return <p className="text-sm text-grey mt-1">None recorded</p>;
@@ -26,7 +26,7 @@ export default function LanguageList({ languages }: Props) {
       {languages.length > 3 && (
         <button
           onClick={() => setShowAll((v) => !v)}
-          className="js-only mt-1 text-xs text-grey underline hover:text-orange focus:outline-2 focus:outline-orange"
+          className="mt-1 text-xs text-grey underline hover:text-orange focus:outline-2 focus:outline-orange"
         >
           {showAll ? 'Show less' : `Show all ${languages.length}`}
         </button>

@@ -64,6 +64,12 @@ export default function RootLayout({
               <a href="https://github.com/chrishylanduk/uk-public-sector-code-by-org/issues" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange focus:outline-2 focus:outline-orange">
                 Report an issue
               </a>
+              <a href="https://www.chrishyland.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange focus:outline-2 focus:outline-orange">
+                Privacy policy
+              </a>
+              <a href="https://www.chrishyland.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange focus:outline-2 focus:outline-orange">
+                Terms and conditions
+              </a>
             </nav>
             <p>
               Maintained by{' '}

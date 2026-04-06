@@ -4,6 +4,7 @@ import { processOrganisationData } from '@/lib/data-processor';
 import RepoList from '@/components/RepoList';
 import StaticRepoList from '@/components/StaticRepoList';
 import LanguageList from '@/components/LanguageList';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -200,8 +201,9 @@ export default async function OrganisationPage({
       </div>
 
       <h3 id="repositories" className="text-2xl font-bold mb-4">Repositories</h3>
-      <div className="js-hidden"><StaticRepoList repos={org.repos} /></div>
-      <div className="js-only"><RepoList repos={org.repos} /></div>
+      <Suspense fallback={<StaticRepoList repos={org.repos} />}>
+        <RepoList repos={org.repos} />
+      </Suspense>
     </div>
   );
 }

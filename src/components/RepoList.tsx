@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
+import { useQueryState, parseAsInteger, parseAsBoolean } from 'nuqs';
 import type { GithubRepo } from '@/lib/types';
 import { isActiveRepo } from '@/utils/format';
 import RepoCard from './RepoCard';
@@ -10,10 +11,11 @@ interface Props {
 }
 
 const REPOS_PER_PAGE = 10;
+const URL_OPTIONS = { history: 'replace', shallow: true, scroll: false } as const;
 
 export default function RepoList({ repos }: Props) {
-  const [activeOnly, setActiveOnly] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [activeOnly, setActiveOnly] = useQueryState('active', parseAsBoolean.withDefault(true).withOptions(URL_OPTIONS));
+  const [currentPage, setCurrentPage] = useQueryState('page', parseAsInteger.withDefault(1).withOptions(URL_OPTIONS));
 
   const filtered = useMemo(
     () => activeOnly ? repos.filter(isActiveRepo) : repos,
@@ -38,7 +40,7 @@ export default function RepoList({ repos }: Props) {
     return <p className="text-grey">This organisation has no public repositories.</p>;
   }
 
-  const scrollToList = () => document.getElementById('repositories')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const scrollToRepos = () => document.getElementById('repositories')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return (
     <div>
@@ -67,7 +69,7 @@ export default function RepoList({ repos }: Props) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-mid-grey pt-4">
           <button
-            onClick={() => { setCurrentPage((p) => Math.max(1, p - 1)); scrollToList(); }}
+            onClick={() => { setCurrentPage((p) => Math.max(1, p - 1)); scrollToRepos(); }}
             disabled={currentPage === 1}
             className="px-4 py-2 bg-orange text-white rounded hover:bg-dark-orange disabled:bg-grey disabled:cursor-not-allowed focus:outline-2 focus:outline-orange"
             aria-label="Previous page"
@@ -76,7 +78,7 @@ export default function RepoList({ repos }: Props) {
           </button>
           <span className="text-sm text-grey">Page {currentPage} of {totalPages}</span>
           <button
-            onClick={() => { setCurrentPage((p) => Math.min(totalPages, p + 1)); scrollToList(); }}
+            onClick={() => { setCurrentPage((p) => Math.min(totalPages, p + 1)); scrollToRepos(); }}
             disabled={currentPage === totalPages}
             className="px-4 py-2 bg-orange text-white rounded hover:bg-dark-orange disabled:bg-grey disabled:cursor-not-allowed focus:outline-2 focus:outline-orange"
             aria-label="Next page"

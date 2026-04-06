@@ -11,7 +11,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fetchPlanningDataOrgs, fetchWikidataLocalOrg } from '../src/lib/data-fetcher';
+import { fetchPlanningDataOrgs, fetchWikidataLocalOrgs } from '../src/lib/data-fetcher';
 import { slugify } from '../src/utils/format';
 
 const DATA_FILE = path.join(process.cwd(), 'public/data/org-mapping.json');
@@ -54,6 +54,11 @@ export async function populateSiteSlugs(): Promise<void> {
   const planningOrgs = await fetchPlanningDataOrgs();
   const planningByRef = new Map(planningOrgs.map((o) => [o.reference, o]));
 
+  const otherIds = raw.organisations
+    .filter((e) => e.type === 'other')
+    .map((e) => (e as { wikidata_id: string }).wikidata_id);
+  const wikidataOrgs = await fetchWikidataLocalOrgs(otherIds);
+
   for (const entry of raw.organisations) {
     let slug: string;
 
@@ -67,7 +72,8 @@ export async function populateSiteSlugs(): Promise<void> {
       }
       slug = slugify(planningOrg.name);
     } else {
-      const wikidataOrg = await fetchWikidataLocalOrg(entry.wikidata_id);
+      const wikidataOrg = wikidataOrgs.get((entry as { wikidata_id: string }).wikidata_id);
+      if (!wikidataOrg) { console.warn(`  -  ${(entry as { wikidata_id: string }).wikidata_id} not found in Wikidata, skipping`); continue; }
       slug = slugify(wikidataOrg.name);
     }
 

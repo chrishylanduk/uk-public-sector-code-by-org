@@ -8,7 +8,7 @@
 import fs from 'fs';
 import path from 'path';
 import Ajv from 'ajv/dist/2020';
-import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchWikidataLocalOrg, fetchLgaFteData, fetchCsStatsFteData } from '../src/lib/data-fetcher';
+import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchWikidataLocalOrgs, fetchLgaFteData, fetchCsStatsFteData } from '../src/lib/data-fetcher';
 import { getRawOrganisations } from '../src/lib/mapping';
 import { validateDataQuality } from '../src/lib/data-processor';
 
@@ -49,10 +49,7 @@ async function main() {
       fetchCsStatsFteData(),
     ]);
 
-    // Wikidata SPARQL has rate limits — fetch sequentially to avoid 429s
-    for (const id of wikidataIds) {
-      await fetchWikidataLocalOrg(id);
-    }
+    await fetchWikidataLocalOrgs(wikidataIds);
 
     validateOrgMapping();
     validateDataQuality(repos, govUkOrgs, planningDataOrgs);

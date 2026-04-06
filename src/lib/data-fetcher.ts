@@ -176,64 +176,92 @@ export async function fetchAllGovUkOrgs(): Promise<GovUkOrg[]> {
  * Fetch org metadata (name, website) for a single Wikidata entity, cached per ID.
  * Uses SPARQL to fetch rdfs:label (en) and P856 (official website).
  */
-export async function fetchWikidataLocalOrg(wikidataId: string): Promise<WikidataLocalOrg> {
-  const cacheFile = path.join(WIKIDATA_ORGS_DIR, `${wikidataId}.json`);
+/**
+ * Fetch metadata for multiple Wikidata entities in a single SPARQL query.
+ * Checks per-ID cache first; only fetches IDs that are missing or stale.
+ * Fetches in batches of 100 to avoid query size limits.
+ */
+export async function fetchWikidataLocalOrgs(wikidataIds: string[]): Promise<Map<string, WikidataLocalOrg>> {
+  await fs.mkdir(WIKIDATA_ORGS_DIR, { recursive: true });
 
-  if (await isCacheFresh(cacheFile)) {
-    const cached = await readCache<WikidataLocalOrg>(cacheFile);
-    if (cached) return cached;
+  const result = new Map<string, WikidataLocalOrg>();
+  const toFetch: string[] = [];
+
+  for (const id of wikidataIds) {
+    const cacheFile = path.join(WIKIDATA_ORGS_DIR, `${id}.json`);
+    if (await isCacheFresh(cacheFile)) {
+      const cached = await readCache<WikidataLocalOrg>(cacheFile);
+      if (cached) { result.set(id, cached); continue; }
+    }
+    toFetch.push(id);
   }
 
-  const query = `
-    SELECT ?label ?website ?instanceOfLabel ?parentOrg WHERE {
-      BIND(wd:${wikidataId} AS ?item)
-      ?item rdfs:label ?label . FILTER(LANG(?label) = "en")
-      OPTIONAL { ?item wdt:P856 ?website . }
-      OPTIONAL {
-        ?item wdt:P31 ?instanceOf .
-        ?instanceOf rdfs:label ?instanceOfLabel . FILTER(LANG(?instanceOfLabel) = "en")
+  if (toFetch.length === 0) return result;
+
+  console.log(`Fetching ${toFetch.length} Wikidata orgs in batch...`);
+
+  type Binding = {
+    item: { value: string };
+    label: { value: string };
+    website?: { value: string };
+    instanceOfLabel?: { value: string };
+    parentOrg?: { value: string };
+  };
+
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < toFetch.length; i += BATCH_SIZE) {
+    const batch = toFetch.slice(i, i + BATCH_SIZE);
+    const values = batch.map((id) => `wd:${id}`).join(' ');
+
+    const query = `
+      SELECT ?item ?label ?website ?instanceOfLabel ?parentOrg WHERE {
+        VALUES ?item { ${values} }
+        ?item rdfs:label ?label . FILTER(LANG(?label) = "en")
+        OPTIONAL { ?item wdt:P856 ?website . }
+        OPTIONAL {
+          ?item wdt:P31 ?instanceOf .
+          ?instanceOf rdfs:label ?instanceOfLabel . FILTER(LANG(?instanceOfLabel) = "en")
+        }
+        OPTIONAL { ?item wdt:P749 ?parentOrg . }
+        OPTIONAL { ?item wdt:P361 ?parentOrg . }
       }
-      OPTIONAL { ?item wdt:P749 ?parentOrg . }
-      OPTIONAL { ?item wdt:P361 ?parentOrg . }
-    } LIMIT 1
-  `;
+    `;
 
-  const response = await fetchWithRetry(
-    `https://query.wikidata.org/sparql?query=${encodeURIComponent(query)}&format=json`,
-    3, 1000,
-    {
-      'User-Agent': 'publicsectorcodebyorg.co.uk/1.0 (https://github.com/chrishylanduk/uk-public-sector-code-by-org)',
-      'Accept': 'application/json',
+    const response = await fetchWithRetry(
+      `https://query.wikidata.org/sparql?query=${encodeURIComponent(query)}&format=json`,
+      3, 2000,
+      {
+        'User-Agent': 'publicsectorcodebyorg.co.uk/1.0 (https://github.com/chrishylanduk/uk-public-sector-code-by-org)',
+        'Accept': 'application/json',
+      }
+    );
+
+    const data = await response.json() as { results: { bindings: Binding[] } };
+
+    // Group by item — take first row per ID (multiple rows arise from multiple instanceOf values)
+    const byId = new Map<string, WikidataLocalOrg>();
+    for (const binding of data.results.bindings) {
+      const id = binding.item.value.replace('http://www.wikidata.org/entity/', '');
+      if (byId.has(id)) continue;
+      const rawFormat = binding.instanceOfLabel?.value;
+      byId.set(id, {
+        wikidataId: id,
+        name: binding.label.value,
+        webUrl: binding.website?.value ?? '',
+        format: rawFormat ? rawFormat.charAt(0).toUpperCase() + rawFormat.slice(1) : undefined,
+        parentWikidataId: binding.parentOrg?.value?.replace('http://www.wikidata.org/entity/', ''),
+      });
     }
-  );
 
-  const data = await response.json() as {
-    results: { bindings: { label: { value: string }; website?: { value: string }; instanceOfLabel?: { value: string }; parentOrg?: { value: string } }[] };
-  };
+    for (const id of batch) {
+      const org = byId.get(id);
+      if (!org) { console.warn(`⚠ Wikidata entity ${id} not found or has no English label`); continue; }
+      await writeCache(path.join(WIKIDATA_ORGS_DIR, `${id}.json`), org);
+      result.set(id, org);
+    }
 
-  const binding = data.results.bindings[0];
-  if (!binding) throw new Error(`Wikidata entity ${wikidataId} not found or has no English label`);
-
-  const rawFormat = binding.instanceOfLabel?.value;
-  const format = rawFormat
-    ? rawFormat.charAt(0).toUpperCase() + rawFormat.slice(1)
-    : undefined;
-
-  const parentWikidataId = binding.parentOrg?.value
-    ? binding.parentOrg.value.replace('http://www.wikidata.org/entity/', '')
-    : undefined;
-
-  const result: WikidataLocalOrg = {
-    wikidataId,
-    name: binding.label.value,
-    webUrl: binding.website?.value ?? '',
-    format,
-    parentWikidataId,
-  };
-
-  await fs.mkdir(WIKIDATA_ORGS_DIR, { recursive: true });
-  await writeCache(cacheFile, result);
-  console.log(`✓ Fetched Wikidata org ${wikidataId}: ${result.name}`);
+    console.log(`✓ Fetched batch of ${batch.length} Wikidata orgs`);
+  }
 
   return result;
 }

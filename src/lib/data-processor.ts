@@ -1,17 +1,16 @@
 import type { GithubRepo, GovUkOrg, PlanningDataOrg, OrganisationStats, OrgEntry, GroupedFormats } from './types';
 import { getOrgMapping, getLocalGovEntries, getAllMappedGithubOrgs, getMissingWikidataOrgs, getDuplicateWikidataOrgs, getWikidataIdToSlug, getGovUkWikidataIds } from './mapping';
-import { fetchWikidataLocalOrg } from './data-fetcher';
+import { fetchWikidataLocalOrgs } from './data-fetcher';
 import type { CsStatsFteEntry } from './data-fetcher';
 import { isActiveRepo } from '@/utils/format';
 
-async function resolveParentViaWikidata(
+function resolveParentViaWikidata(
   wikidataId: string,
+  wikidataOrgs: Map<string, import('./types').WikidataLocalOrg>,
   wikidataIdToSlug: Map<string, string>
-): Promise<string | undefined> {
-  const wikidataOrg = await fetchWikidataLocalOrg(wikidataId);
-  return wikidataOrg.parentWikidataId
-    ? wikidataIdToSlug.get(wikidataOrg.parentWikidataId)
-    : undefined;
+): string | undefined {
+  const org = wikidataOrgs.get(wikidataId);
+  return org?.parentWikidataId ? wikidataIdToSlug.get(org.parentWikidataId) : undefined;
 }
 
 const LOCAL_AUTHORITY_TYPE: Record<string, string> = {
@@ -168,6 +167,14 @@ async function _processOrganisationData(
     govOrgBySlug.set(org.details.slug, org);
   }
 
+  // Pre-fetch all Wikidata orgs needed (gov.uk parent fallbacks + local gov entries) in one batch
+  const localGovEntriesEarly = getLocalGovEntries();
+  const allWikidataIds = [...new Set([
+    ...[...govUkWikidataIds.values()],
+    ...localGovEntriesEarly.map((e) => e.wikidataId).filter((id): id is string => !!id),
+  ])];
+  const wikidataOrgs = await fetchWikidataLocalOrgs(allWikidataIds);
+
   // Aggregate by gov.uk org slug
   const orgMap = new Map<string, OrganisationStats>();
 
@@ -187,7 +194,7 @@ async function _processOrganisationData(
     if (!parentSlug) {
       const wikidataId = govUkWikidataIds.get(slug);
       if (wikidataId) {
-        parentSlug = await resolveParentViaWikidata(wikidataId, wikidataIdToSlug);
+        parentSlug = resolveParentViaWikidata(wikidataId, wikidataOrgs, wikidataIdToSlug);
       }
     }
 
@@ -214,7 +221,7 @@ async function _processOrganisationData(
   }
 
   // Process local government / other entries
-  const localGovEntries = getLocalGovEntries();
+  const localGovEntries = localGovEntriesEarly;
   const planningDataByRef = new Map<string, PlanningDataOrg>();
   for (const org of planningDataOrgs) {
     planningDataByRef.set(org.reference, org);
@@ -233,15 +240,15 @@ async function _processOrganisationData(
       webUrl = planningOrg.website;
       format = LOCAL_AUTHORITY_TYPE[planningOrg['local-authority-type']] ?? planningOrg['local-authority-type'];
       if (entry.wikidataId) {
-        parentSlug = await resolveParentViaWikidata(entry.wikidataId, wikidataIdToSlug);
+        parentSlug = resolveParentViaWikidata(entry.wikidataId, wikidataOrgs, wikidataIdToSlug);
       }
       fte = lgaFteData.get(planningOrg['statistical-geography']);
     } else {
-      const wikidataOrg = await fetchWikidataLocalOrg(entry.wikidataId);
+      const wikidataOrg = wikidataOrgs.get(entry.wikidataId)!;
       name = wikidataOrg.name;
       webUrl = wikidataOrg.webUrl;
       format = wikidataOrg.format ?? 'Other';
-      parentSlug = await resolveParentViaWikidata(entry.wikidataId, wikidataIdToSlug);
+      parentSlug = resolveParentViaWikidata(entry.wikidataId, wikidataOrgs, wikidataIdToSlug);
     }
 
     const slug = entry.siteSlug!;

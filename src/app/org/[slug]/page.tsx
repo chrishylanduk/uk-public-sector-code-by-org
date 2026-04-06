@@ -157,10 +157,11 @@ export default async function OrganisationPage({
             const activeRepos = org.repos.filter(isActiveRepo);
             const langCounts = new Map<string, number>();
             for (const repo of activeRepos) {
-              if (repo.language) langCounts.set(repo.language, (langCounts.get(repo.language) ?? 0) + 1);
+              const lang = repo.language ?? 'Unknown';
+              langCounts.set(lang, (langCounts.get(lang) ?? 0) + 1);
             }
             const languages = [...langCounts.entries()]
-              .sort((a, b) => b[1] - a[1])
+              .sort((a, b) => a[0] === 'Unknown' ? 1 : b[0] === 'Unknown' ? -1 : b[1] - a[1])
               .map(([name, count]) => ({ name, pct: Math.round(count / activeRepos.length * 100) }));
             return <LanguageList languages={languages} />;
           })()}

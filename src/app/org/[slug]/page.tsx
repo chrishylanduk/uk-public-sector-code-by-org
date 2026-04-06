@@ -2,6 +2,7 @@ import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFte
 import { isActiveRepo } from '@/utils/format';
 import { processOrganisationData } from '@/lib/data-processor';
 import RepoList from '@/components/RepoList';
+import StaticRepoList from '@/components/StaticRepoList';
 import LanguageList from '@/components/LanguageList';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -199,7 +200,8 @@ export default async function OrganisationPage({
       </div>
 
       <h3 id="repositories" className="text-2xl font-bold mb-4">Repositories</h3>
-      <RepoList repos={org.repos} />
+      <div className="js-hidden"><StaticRepoList repos={org.repos} /></div>
+      <div className="js-only"><RepoList repos={org.repos} /></div>
     </div>
   );
 }

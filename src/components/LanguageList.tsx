@@ -26,7 +26,7 @@ export default function LanguageList({ languages }: Props) {
       {languages.length > 3 && (
         <button
           onClick={() => setShowAll((v) => !v)}
-          className="mt-1 text-xs text-grey underline hover:text-orange focus:outline-2 focus:outline-orange"
+          className="js-only mt-1 text-xs text-grey underline hover:text-orange focus:outline-2 focus:outline-orange"
         >
           {showAll ? 'Show less' : `Show all ${languages.length}`}
         </button>

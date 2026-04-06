@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData, fetchCsStatsFteData } from '@/lib/data-fetcher';
 import { processOrganisationData, getOrgList, getGroupedFormats } from '@/lib/data-processor';
 import OrgDirectory from '@/components/OrgDirectory';
+import StaticOrgTable from '@/components/StaticOrgTable';
 import { formatDateTime } from '@/utils/format';
 import Link from 'next/link';
 
@@ -45,7 +46,7 @@ export default async function HomePage() {
         </p>
       </div>
 
-      <Suspense>
+      <Suspense fallback={<StaticOrgTable entries={orgList} />}>
         <OrgDirectory entries={orgList} availableFormats={formats} />
       </Suspense>
     </div>

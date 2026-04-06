@@ -14,6 +14,11 @@
   --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
 }
 
+/* Progressive enhancement — elements only meaningful with JS */
+.js-only { display: none; }
+.has-js .js-only { display: revert; }
+.has-js .js-hidden { display: none; }
+
 body {
   margin: 0;
   font-family: var(--font-family-sans);

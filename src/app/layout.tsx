@@ -34,8 +34,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen flex flex-col bg-white text-gray-900">
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('has-js')" }} />
         <SkipLink />
         <header className="bg-dark-orange text-white py-3">
           <div className="max-w-7xl mx-auto px-4">

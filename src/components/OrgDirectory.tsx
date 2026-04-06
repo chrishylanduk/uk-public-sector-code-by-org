@@ -306,8 +306,8 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           role="table"
           aria-label="UK public sector organisations and their GitHub code"
         >
-          <thead className="sticky top-0 z-10 shadow-[0_2px_0_0_#9a3412]">
-            <tr className="bg-light-grey">
+          <thead className="sticky top-0 z-10">
+            <tr className="bg-light-grey shadow-[0_2px_0_0_#9a3412]">
               <th scope="col" className="px-4 py-3 text-left font-bold" aria-sort={getAriaSortValue('name')}>
                 <button onClick={() => handleSort('name')} className="flex items-center hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by organisation name">
                   Organisation{getSortIcon('name')}

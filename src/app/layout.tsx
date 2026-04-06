@@ -70,7 +70,7 @@ export default function RootLayout({
               <a href="https://www.chrishyland.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange focus:outline-2 focus:outline-orange">
                 Chris Hyland
               </a>
-              {' '}in a personal capacity, with community contributions. Not affiliated with any of the organisations listed.
+              {' '}in a personal capacity, with community contributions. Not affiliated with any organisation.
             </p>
             <p>
               Repository data from the{' '}

@@ -2,6 +2,7 @@ import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFte
 import { isActiveRepo } from '@/utils/format';
 import { processOrganisationData } from '@/lib/data-processor';
 import RepoList from '@/components/RepoList';
+import LanguageList from '@/components/LanguageList';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -131,7 +132,7 @@ export default async function OrganisationPage({
         );
       })()}
 
-      <div className="bg-light-grey p-6 rounded mb-8 grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="bg-light-grey p-6 rounded mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div>
           <p className="text-sm text-grey mb-1">Stars of active repositories</p>
           <p className="text-3xl font-bold text-dark-orange">
@@ -151,8 +152,22 @@ export default async function OrganisationPage({
           </p>
         </div>
         <div>
+          <p className="text-sm text-grey mb-1">Languages of active repositories</p>
+          {(() => {
+            const activeRepos = org.repos.filter(isActiveRepo);
+            const langCounts = new Map<string, number>();
+            for (const repo of activeRepos) {
+              if (repo.language) langCounts.set(repo.language, (langCounts.get(repo.language) ?? 0) + 1);
+            }
+            const languages = [...langCounts.entries()]
+              .sort((a, b) => b[1] - a[1])
+              .map(([name, count]) => ({ name, pct: Math.round(count / activeRepos.length * 100) }));
+            return <LanguageList languages={languages} />;
+          })()}
+        </div>
+        <div>
           <p className="text-sm text-grey mb-1">GitHub accounts</p>
-          <p className="text-lg font-semibold">
+          <p className="text-lg font-semibold [overflow-wrap:anywhere]">
             {[...org.githubOrgs].sort((a, b) => {
               const aCount = org.repos.filter((r) => r.owner === a && isActiveRepo(r)).length;
               const bCount = org.repos.filter((r) => r.owner === b && isActiveRepo(r)).length;
@@ -164,7 +179,7 @@ export default async function OrganisationPage({
               return (
                 <span key={githubOrg}>
                   {index > 0 && ', '}
-                  <span className="whitespace-nowrap">
+                  <span>
                     <a
                       href={`https://github.com/${githubOrg}`}
                       target="_blank"

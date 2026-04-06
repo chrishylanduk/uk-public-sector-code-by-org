@@ -3,7 +3,7 @@ import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFte
 import { processOrganisationData, getOrgList, getGroupedFormats } from '@/lib/data-processor';
 import OrgDirectory from '@/components/OrgDirectory';
 import StaticOrgTable from '@/components/StaticOrgTable';
-import { formatDateTime } from '@/utils/format';
+import LocalTime from '@/components/LocalTime';
 import Link from 'next/link';
 
 
@@ -42,7 +42,7 @@ export default async function HomePage() {
           <strong>{totalRepos.toLocaleString('en-GB')} active repositories</strong> (not archived, pushed to within the last 180 days).
         </p>
         <p className="text-sm text-grey">
-          Data last updated: {formatDateTime(buildDate)}
+          Data last updated: <LocalTime iso={buildDate.toISOString()} />
         </p>
       </div>
 

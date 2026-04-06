@@ -85,7 +85,7 @@ export default async function OrganisationPage({
           href={org.webUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange"
+          className="text-orange underline hover:text-dark-orange focus:outline-2 focus:outline-orange break-all"
         >
           {org.webUrl}
         </a>

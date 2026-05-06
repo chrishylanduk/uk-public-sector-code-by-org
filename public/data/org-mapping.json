@@ -194,7 +194,8 @@
       "github_accounts": [
         "UKHomeOffice",
         "UKHomeOfficeForms",
-        "HO-CTO"
+        "HO-CTO",
+        "UKHomeOffice-attic"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/home-office",
       "site_slug": "home-office"
@@ -245,7 +246,18 @@
         "nhsuk-archive",
         "NHSE-NDRS",
         "nhsconnect",
-        "111Online"
+        "111Online",
+        "iuec",
+        "nhs-digital-gp-it-futures",
+        "NHS-digital-website",
+        "nhsd-a2si",
+        "nhsd-exeter",
+        "NHSLeadership",
+        "NHSE-Dementia",
+        "NHSE-Talking-Therapies",
+        "nhsalpha",
+        "NHS-NEY-Analytics",
+        "TechnologyEnhancedLearning"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-england",
       "site_slug": "nhs-england"
@@ -457,7 +469,8 @@
       "wikidata_id": "Q104336949",
       "github_accounts": [
         "ukhsa-collaboration",
-        "UKHSA-Internal"
+        "UKHSA-Internal",
+        "NHS-Test-Digital-Design"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/uk-health-security-agency",
       "site_slug": "uk-health-security-agency"
@@ -1197,7 +1210,8 @@
       "type": "other",
       "wikidata_id": "Q6954180",
       "github_accounts": [
-        "nhscymru"
+        "nhscymru",
+        "nwisbeta"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-wales",
       "site_slug": "nhs-wales"
@@ -1219,6 +1233,33 @@
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/nottinghamshire-healthcare-nhs-foundation-trust",
       "site_slug": "nottinghamshire-healthcare-nhs-foundation-trust"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q19873658",
+      "github_accounts": [
+        "gosh-dre"
+      ],
+      "site_slug": "great-ormond-street-hospital-for-children-nhs-foundation-trust",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/great-ormond-street-hospital-for-children-nhs-foundation-trust"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q112411610",
+      "github_accounts": [
+        "nhs-bnssg-analytics"
+      ],
+      "site_slug": "nhs-bristol-north-somerset-and-south-gloucestershire-integrated-care-board",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/nhs-bristol-north-somerset-and-south-gloucestershire-integrated-care-board"
+    },
+    {
+      "type": "other",
+      "wikidata_id": "Q7063709",
+      "github_accounts": [
+        "nottmhospitals"
+      ],
+      "site_slug": "nottingham-university-hospitals-nhs-trust",
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/nottingham-university-hospitals-nhs-trust"
     },
     {
       "type": "other",

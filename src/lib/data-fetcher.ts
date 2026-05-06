@@ -107,7 +107,7 @@ export async function fetchGithubRepos(): Promise<GithubRepo[]> {
 
   console.log('Fetching GitHub repos...');
   const response = await fetchWithRetry(
-    'https://www.uk-x-gov-software-community.org.uk/xgov-opensource-repo-scraper/repos.json'
+    'https://chrishylanduk.github.io/xgov-opensource-repo-scraper/repos.json'
   );
 
   if (!response.ok) {

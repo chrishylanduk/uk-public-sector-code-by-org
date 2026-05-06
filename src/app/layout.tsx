@@ -80,7 +80,7 @@ export default function RootLayout({
             </p>
             <p>
               Repository data from the{' '}
-              <a href="https://github.com/uk-x-gov-software-community/xgov-opensource-repo-scraper" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange focus:outline-2 focus:outline-orange">
+              <a href="https://github.com/chrishylanduk/xgov-opensource-repo-scraper" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange focus:outline-2 focus:outline-orange">
                 UK X-Gov Open Source Repo Scraper
               </a>
               . Organisation data from the{' '}

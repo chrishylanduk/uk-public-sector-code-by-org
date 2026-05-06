@@ -234,7 +234,7 @@ edinburghcouncil,other,,,Q28530250,city-of-edinburgh-council,https://publicsecto
           <li className="border-l-4 border-orange pl-4">
             <p className="font-bold mb-1">
               <a
-                href="https://github.com/uk-x-gov-software-community/xgov-opensource-repo-scraper"
+                href="https://github.com/chrishylanduk/xgov-opensource-repo-scraper"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-orange underline hover:text-dark-orange"

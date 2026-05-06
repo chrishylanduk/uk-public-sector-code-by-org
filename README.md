@@ -27,7 +27,7 @@ A static website that shows UK public sector organisations and their open-source
 
 ## Data Sources
 
-- **GitHub repos:** [UK X-Gov Open Source Repo Scraper](https://github.com/uk-x-gov-software-community/xgov-opensource-repo-scraper)
+- **GitHub repos:** [UK X-Gov Open Source Repo Scraper](https://github.com/chrishylanduk/xgov-opensource-repo-scraper)
 - **Central government organisations:** [GOV.UK Organisations API](https://www.gov.uk/api/organisations)
 - **Local government organisations:** [planning.data.gov.uk local authority dataset](https://www.planning.data.gov.uk/dataset/local-authority)
 - **Organisation metadata:** [Wikidata](https://www.wikidata.org/)

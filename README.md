@@ -236,9 +236,3 @@ Contributions welcome! Please:
 3. Make your changes
 4. Run `npm run build` to validate
 5. Submit a pull request
-
-## Acknowledgements
-
-- Repository data from the [UK X-Gov Software Community](https://www.uk-x-gov-software-community.org.uk/)
-- Built with [Next.js](https://nextjs.org/)
-- Hosted on [Cloudflare Pages](https://pages.cloudflare.com/)

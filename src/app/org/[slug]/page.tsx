@@ -146,20 +146,20 @@ export default async function OrganisationPage({
           <div>
             <p className="text-sm text-grey mb-1">Active repositories</p>
             <p className="text-3xl font-bold text-dark-orange">
-              <StatLink href="?filter=active#repositories">{org.repoCount.toLocaleString('en-GB')}</StatLink>
+              <StatLink filterValue="active" scrollTarget="repositories">{org.repoCount.toLocaleString('en-GB')}</StatLink>
             </p>
           </div>
           <div>
             <p className="text-sm text-grey mb-1">Live repositories</p>
             <p className="text-3xl font-bold text-dark-orange">
-              <StatLink href="?filter=all#repositories">{org.totalRepoCount.toLocaleString('en-GB')}</StatLink>
+              <StatLink filterValue="all" scrollTarget="repositories">{org.totalRepoCount.toLocaleString('en-GB')}</StatLink>
             </p>
           </div>
           {org.unavailableRepos?.length ? (
             <div>
               <p className="text-sm text-grey mb-1">Unavailable repositories</p>
               <p className="text-3xl font-bold text-dark-orange">
-                <StatLink href="?filter=unavailable#repositories">{org.unavailableRepos.length.toLocaleString('en-GB')}</StatLink>
+                <StatLink filterValue="unavailable" scrollTarget="repositories">{org.unavailableRepos.length.toLocaleString('en-GB')}</StatLink>
               </p>
             </div>
           ) : null}

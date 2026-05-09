@@ -514,6 +514,18 @@ export async function fetchCsStatsFteData(): Promise<Map<string, CsStatsFteEntry
 }
 
 export async function fetchUnavailableRepos(): Promise<UnavailableRepo[] | null> {
+  const localFile = process.env.UNAVAILABLE_REPOS_FILE;
+  if (localFile) {
+    try {
+      const raw: UnavailableRepo[] = JSON.parse(await fs.readFile(localFile, 'utf-8'));
+      console.log(`✓ Loaded ${raw.length} entries from local file`);
+      return raw;
+    } catch (error) {
+      console.warn('⚠ Could not read local unavailable repos file:', error instanceof Error ? error.message : error);
+      return null;
+    }
+  }
+
   const keyId = process.env.B2_KEY_ID;
   const appKey = process.env.B2_APPLICATION_KEY;
   const endpoint = process.env.B2_ENDPOINT;

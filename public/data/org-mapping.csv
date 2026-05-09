@@ -67,6 +67,7 @@ TechnologyEnhancedLearning,gov_uk,nhs-england,,Q19382273,nhs-england,https://pub
 Public-Health-Wales,gov_uk,public-health-wales,,Q17018314,public-health-wales,https://publicsectorcodebyorg.co.uk/org/public-health-wales
 DEFRA,gov_uk,department-for-environment-food-rural-affairs,,Q3044721,department-for-environment-food-rural-affairs,https://publicsectorcodebyorg.co.uk/org/department-for-environment-food-rural-affairs
 defra-design,gov_uk,department-for-environment-food-rural-affairs,,Q3044721,department-for-environment-food-rural-affairs,https://publicsectorcodebyorg.co.uk/org/department-for-environment-food-rural-affairs
+Defra-CAPD,gov_uk,department-for-environment-food-rural-affairs,,Q3044721,department-for-environment-food-rural-affairs,https://publicsectorcodebyorg.co.uk/org/department-for-environment-food-rural-affairs
 dwp,gov_uk,department-for-work-pensions,,Q1191394,department-for-work-pensions,https://publicsectorcodebyorg.co.uk/org/department-for-work-pensions
 dwpdigital,gov_uk,department-for-work-pensions,,Q1191394,department-for-work-pensions,https://publicsectorcodebyorg.co.uk/org/department-for-work-pensions
 hmrc,gov_uk,hm-revenue-customs,,Q166559,hm-revenue-customs,https://publicsectorcodebyorg.co.uk/org/hm-revenue-customs
@@ -80,8 +81,10 @@ ONSBigData,gov_uk,office-for-national-statistics,,Q1334971,office-for-national-s
 ONS-OpenData,gov_uk,office-for-national-statistics,,Q1334971,office-for-national-statistics,https://publicsectorcodebyorg.co.uk/org/office-for-national-statistics
 datasciencecampus,gov_uk,office-for-national-statistics,,Q1334971,office-for-national-statistics,https://publicsectorcodebyorg.co.uk/org/office-for-national-statistics
 best-practice-and-impact,gov_uk,office-for-national-statistics,,Q1334971,office-for-national-statistics,https://publicsectorcodebyorg.co.uk/org/office-for-national-statistics
+GSS-Cogs,gov_uk,office-for-national-statistics,,Q1334971,office-for-national-statistics,https://publicsectorcodebyorg.co.uk/org/office-for-national-statistics
 companieshouse,gov_uk,companies-house,,Q257303,companies-house,https://publicsectorcodebyorg.co.uk/org/companies-house
 LandRegistry,gov_uk,land-registry,,Q5635120,land-registry,https://publicsectorcodebyorg.co.uk/org/land-registry
+LandRegistry-Attic,gov_uk,land-registry,,Q5635120,land-registry,https://publicsectorcodebyorg.co.uk/org/land-registry
 UKForeignOffice,gov_uk,foreign-commonwealth-development-office,,Q358834,foreign-commonwealth-development-office,https://publicsectorcodebyorg.co.uk/org/foreign-commonwealth-development-office
 DFID,gov_uk,foreign-commonwealth-development-office,,Q358834,foreign-commonwealth-development-office,https://publicsectorcodebyorg.co.uk/org/foreign-commonwealth-development-office
 nationalarchives,gov_uk,the-national-archives,,Q392703,the-national-archives,https://publicsectorcodebyorg.co.uk/org/the-national-archives

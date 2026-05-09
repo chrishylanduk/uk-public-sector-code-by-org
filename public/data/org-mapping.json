@@ -278,7 +278,8 @@
       "wikidata_id": "Q3044721",
       "github_accounts": [
         "DEFRA",
-        "defra-design"
+        "defra-design",
+        "Defra-CAPD"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-environment-food-rural-affairs",
       "site_slug": "department-for-environment-food-rural-affairs"
@@ -345,7 +346,8 @@
         "ONSBigData",
         "ONS-OpenData",
         "datasciencecampus",
-        "best-practice-and-impact"
+        "best-practice-and-impact",
+        "GSS-Cogs"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/office-for-national-statistics",
       "site_slug": "office-for-national-statistics"
@@ -365,7 +367,8 @@
       "govuk_slug": "land-registry",
       "wikidata_id": "Q5635120",
       "github_accounts": [
-        "LandRegistry"
+        "LandRegistry",
+        "LandRegistry-Attic"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/land-registry",
       "site_slug": "land-registry"

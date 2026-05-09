@@ -25,6 +25,7 @@ export default function StaticRepoList({ repos }: Props) {
           <RepoCard key={repo.url} repo={repo} />
         ))}
       </div>
+
     </div>
   );
 }

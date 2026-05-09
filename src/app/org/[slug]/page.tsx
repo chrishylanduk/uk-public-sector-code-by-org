@@ -1,4 +1,4 @@
-import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData, fetchCsStatsFteData } from '@/lib/data-fetcher';
+import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData, fetchCsStatsFteData, fetchUnavailableRepos } from '@/lib/data-fetcher';
 import { isActiveRepo } from '@/utils/format';
 import { processOrganisationData } from '@/lib/data-processor';
 import RepoList from '@/components/RepoList';
@@ -6,13 +6,14 @@ import StaticRepoList from '@/components/StaticRepoList';
 import LanguageList from '@/components/LanguageList';
 import { Suspense } from 'react';
 import Link from 'next/link';
+import StatLink from '@/components/StatLink';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 
 export async function generateStaticParams() {
-  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData()]);
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData);
+  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData, unavailableRepos] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData(), fetchUnavailableRepos()]);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData, unavailableRepos);
   return organisations.map((org) => ({ slug: org.slug }));
 }
 
@@ -22,9 +23,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData()]);
+  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData, unavailableRepos] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData(), fetchUnavailableRepos()]);
 
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData, unavailableRepos);
   const org = organisations.find((d) => d.slug === slug);
 
   if (!org) {
@@ -49,9 +50,9 @@ export default async function OrganisationPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData()]);
+  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData, unavailableRepos] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData(), fetchUnavailableRepos()]);
 
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData, unavailableRepos);
   const org = organisations.find((d) => d.slug === slug);
 
   if (!org) {
@@ -134,58 +135,72 @@ export default async function OrganisationPage({
         );
       })()}
 
-      <div className="bg-light-grey p-6 rounded mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div>
-          <p className="text-sm text-grey mb-1">Stars of active repositories</p>
-          <p className="text-3xl font-bold text-dark-orange">
-            {org.totalStars.toLocaleString('en-GB')}
-          </p>
+      <div className="bg-light-grey p-6 rounded mb-8">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 ${org.unavailableRepos?.length ? 'lg:grid-cols-5' : 'lg:grid-cols-4'}`}>
+          <div>
+            <p className="text-sm text-grey mb-1">Stars of active repositories</p>
+            <p className="text-3xl font-bold text-dark-orange">
+              {org.totalStars.toLocaleString('en-GB')}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-grey mb-1">Active repositories</p>
+            <p className="text-3xl font-bold text-dark-orange">
+              <StatLink href="?filter=active#repositories">{org.repoCount.toLocaleString('en-GB')}</StatLink>
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-grey mb-1">Live repositories</p>
+            <p className="text-3xl font-bold text-dark-orange">
+              <StatLink href="?filter=all#repositories">{org.totalRepoCount.toLocaleString('en-GB')}</StatLink>
+            </p>
+          </div>
+          {org.unavailableRepos?.length ? (
+            <div>
+              <p className="text-sm text-grey mb-1">Unavailable repositories</p>
+              <p className="text-3xl font-bold text-dark-orange">
+                <StatLink href="?filter=unavailable#repositories">{org.unavailableRepos.length.toLocaleString('en-GB')}</StatLink>
+              </p>
+            </div>
+          ) : null}
+          <div>
+            <p className="text-sm text-grey mb-1">Languages of active repositories</p>
+            {(() => {
+              const activeRepos = org.repos.filter(isActiveRepo);
+              const langCounts = new Map<string, number>();
+              for (const repo of activeRepos) {
+                const lang = repo.language ?? 'Unknown';
+                langCounts.set(lang, (langCounts.get(lang) ?? 0) + 1);
+              }
+              const languages = [...langCounts.entries()]
+                .sort((a, b) => a[0] === 'Unknown' ? 1 : b[0] === 'Unknown' ? -1 : b[1] - a[1])
+                .map(([name, count]) => ({ name, pct: Math.round(count / activeRepos.length * 100) }));
+              const staticList = (
+                <ol className="mt-1 space-y-0.5">
+                  {languages.slice(0, 3).map(({ name, pct }, i) => (
+                    <li key={name} className="text-sm">
+                      <span className="text-grey mr-1">{i + 1}.</span>
+                      <span className="font-semibold">{name}</span>
+                      <span className="text-grey"> ({pct}%)</span>
+                    </li>
+                  ))}
+                </ol>
+              );
+              return (
+                <Suspense fallback={staticList}>
+                  <LanguageList languages={languages} />
+                </Suspense>
+              );
+            })()}
+          </div>
         </div>
-        <div>
-          <p className="text-sm text-grey mb-1">Active repositories</p>
-          <p className="text-3xl font-bold text-dark-orange">
-            {org.repoCount.toLocaleString('en-GB')}
-          </p>
-        </div>
-        <div>
-          <p className="text-sm text-grey mb-1">Total repositories</p>
-          <p className="text-3xl font-bold text-dark-orange">
-            {org.totalRepoCount.toLocaleString('en-GB')}
-          </p>
-        </div>
-        <div>
-          <p className="text-sm text-grey mb-1">Languages of active repositories</p>
-          {(() => {
-            const activeRepos = org.repos.filter(isActiveRepo);
-            const langCounts = new Map<string, number>();
-            for (const repo of activeRepos) {
-              const lang = repo.language ?? 'Unknown';
-              langCounts.set(lang, (langCounts.get(lang) ?? 0) + 1);
-            }
-            const languages = [...langCounts.entries()]
-              .sort((a, b) => a[0] === 'Unknown' ? 1 : b[0] === 'Unknown' ? -1 : b[1] - a[1])
-              .map(([name, count]) => ({ name, pct: Math.round(count / activeRepos.length * 100) }));
-            const staticList = (
-              <ol className="mt-1 space-y-0.5">
-                {languages.slice(0, 3).map(({ name, pct }, i) => (
-                  <li key={name} className="text-sm">
-                    <span className="text-grey mr-1">{i + 1}.</span>
-                    <span className="font-semibold">{name}</span>
-                    <span className="text-grey"> ({pct}%)</span>
-                  </li>
-                ))}
-              </ol>
-            );
-            return (
-              <Suspense fallback={staticList}>
-                <LanguageList languages={languages} />
-              </Suspense>
-            );
-          })()}
-        </div>
-        <div>
+        <p className="text-xs text-grey mb-2">
+          <strong>Active:</strong> currently on GitHub, not archived, and pushed to within 180 days. <strong>Live:</strong> currently on GitHub.
+          {org.unavailableRepos?.length ? <> <strong>Unavailable:</strong> previously on GitHub but not currently found.</> : null}
+        </p>
+        <div className="border-t border-mid-grey pt-4">
           <p className="text-sm text-grey mb-1">GitHub accounts</p>
-          <p className="text-lg font-semibold [overflow-wrap:anywhere]">
+          <p className="text-base font-semibold [overflow-wrap:anywhere]">
             {[...org.githubOrgs].sort((a, b) => {
               const aCount = org.repos.filter((r) => r.owner === a && isActiveRepo(r)).length;
               const bCount = org.repos.filter((r) => r.owner === b && isActiveRepo(r)).length;
@@ -217,7 +232,7 @@ export default async function OrganisationPage({
 
       <h3 id="repositories" className="text-2xl font-bold mb-4">Repositories</h3>
       <Suspense fallback={<StaticRepoList repos={org.repos} />}>
-        <RepoList repos={org.repos} />
+        <RepoList repos={org.repos} unavailableRepos={org.unavailableRepos} />
       </Suspense>
     </div>
   );

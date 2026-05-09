@@ -1,3 +1,9 @@
+export interface UnavailableRepo {
+  owner: string;
+  name: string;
+  url: string;
+}
+
 // Raw API types
 export interface GithubRepo {
   owner: string;
@@ -110,6 +116,7 @@ export interface OrganisationStats {
   parentSlug?: string;
   fte?: number;
   digitalDataFte?: number;
+  unavailableRepos?: UnavailableRepo[];
 }
 
 export interface OrgEntry {
@@ -123,10 +130,11 @@ export interface OrgEntry {
   githubOrgs: string[];
   fte?: number;
   digitalDataFte?: number;
+  unavailableRepoCount?: number;
 }
 
 // Filter/sort state (client-side)
-export type SortField = 'type' | 'name' | 'stars' | 'active-repos' | 'all-repos' | 'fte' | 'digitalDataFte';
+export type SortField = 'type' | 'name' | 'stars' | 'active-repos' | 'all-repos' | 'fte' | 'digitalDataFte' | 'unavailable-repos';
 export type SortDirection = 'asc' | 'desc';
 
 export interface FilterState {

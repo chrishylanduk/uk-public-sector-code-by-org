@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData, fetchCsStatsFteData } from '@/lib/data-fetcher';
+import { fetchGithubRepos, fetchAllGovUkOrgs, fetchPlanningDataOrgs, fetchLgaFteData, fetchCsStatsFteData, fetchUnavailableRepos } from '@/lib/data-fetcher';
 import { processOrganisationData, getOrgList, getGroupedFormats } from '@/lib/data-processor';
 import OrgDirectory from '@/components/OrgDirectory';
 import StaticOrgTable from '@/components/StaticOrgTable';
@@ -8,15 +8,19 @@ import Link from 'next/link';
 
 
 export default async function HomePage() {
-  // Fetch data at build time
-  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData] = await Promise.all([fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData()]);
+  const [repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData, unavailableRepos] = await Promise.all([
+    fetchGithubRepos(), fetchAllGovUkOrgs(), fetchPlanningDataOrgs(), fetchLgaFteData(), fetchCsStatsFteData(), fetchUnavailableRepos(),
+  ]);
 
-  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData);
+  const organisations = await processOrganisationData(repos, govOrgs, planningOrgs, lgaFteData, csStatsFteData, unavailableRepos);
   const orgList = getOrgList(organisations);
   const formats = getGroupedFormats(organisations);
 
   const buildDate = new Date();
-  const totalRepos = orgList.reduce((sum, entry) => sum + entry.repoCount, 0);
+  const totalActiveRepos = orgList.reduce((sum, entry) => sum + entry.repoCount, 0);
+  const totalLiveRepos = orgList.reduce((sum, entry) => sum + entry.totalRepoCount, 0);
+  const totalUnavailableRepos = orgList.reduce((sum, entry) => sum + (entry.unavailableRepoCount ?? 0), 0);
+  const hasUnavailableData = totalUnavailableRepos > 0;
 
   return (
     <div>
@@ -39,15 +43,16 @@ export default async function HomePage() {
         </p>
         <p className="text-base mb-3">
           Currently tracking <strong>{orgList.length} organisations</strong> and{' '}
-          <strong>{totalRepos.toLocaleString('en-GB')} active repositories</strong> (not archived, pushed to within the last 180 days).
+          <strong>{totalLiveRepos.toLocaleString('en-GB')} live repositories</strong>, of which{' '}
+          <strong>{totalActiveRepos.toLocaleString('en-GB')} are active</strong> (not archived, pushed to within 180 days).
         </p>
         <p className="text-sm text-grey">
           Data last updated: <LocalTime iso={buildDate.toISOString()} />
         </p>
       </div>
 
-      <Suspense fallback={<StaticOrgTable entries={orgList} />}>
-        <OrgDirectory entries={orgList} availableFormats={formats} />
+      <Suspense fallback={<StaticOrgTable entries={orgList} hasUnavailableData={hasUnavailableData} />}>
+        <OrgDirectory entries={orgList} availableFormats={formats} hasUnavailableData={hasUnavailableData} />
       </Suspense>
     </div>
   );

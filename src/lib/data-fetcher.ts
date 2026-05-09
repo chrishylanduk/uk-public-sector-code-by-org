@@ -1,4 +1,4 @@
-import type { GithubRepo, GovUkOrg, GovUkApiResponse, PlanningDataOrg, PlanningDataApiResponse, WikidataLocalOrg } from './types';
+import type { GithubRepo, GovUkOrg, GovUkApiResponse, PlanningDataOrg, PlanningDataApiResponse, WikidataLocalOrg, UnavailableRepo } from './types';
 import { promises as fs } from 'fs';
 import path from 'path';
 import ExcelJS from 'exceljs';
@@ -11,6 +11,7 @@ const PLANNING_DATA_CACHE_FILE = path.join(CACHE_DIR, 'planning-data-local-autho
 const WIKIDATA_ORGS_DIR = path.join(CACHE_DIR, 'wikidata-orgs');
 const LGA_FTE_CACHE_FILE = path.join(CACHE_DIR, 'lga-fte.json');
 const CS_STATS_FTE_CACHE_FILE = path.join(CACHE_DIR, 'cs-stats-fte.json');
+const UNAVAILABLE_REPOS_CACHE_FILE = path.join(CACHE_DIR, 'missing-repos.json');
 const CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Update this URL when a new quarterly release is published
@@ -510,4 +511,44 @@ export async function fetchCsStatsFteData(): Promise<Map<string, CsStatsFteEntry
   console.log('✓ Cached Civil Service FTE data to disk');
 
   return fteMap;
+}
+
+export async function fetchUnavailableRepos(): Promise<UnavailableRepo[] | null> {
+  const keyId = process.env.B2_KEY_ID;
+  const appKey = process.env.B2_APPLICATION_KEY;
+  const endpoint = process.env.B2_ENDPOINT;
+  const bucket = process.env.B2_BUCKET;
+
+  if (!keyId || !appKey || !endpoint || !bucket) return null;
+
+  if (await isCacheFresh(UNAVAILABLE_REPOS_CACHE_FILE)) {
+    const cached = await readCache<UnavailableRepo[]>(UNAVAILABLE_REPOS_CACHE_FILE);
+    if (cached) return cached;
+  }
+
+  try {
+    const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
+
+    const regionMatch = endpoint.match(/s3\.([^.]+)\.backblazeb2\.com/);
+    const region = regionMatch?.[1] ?? 'auto';
+
+    const s3 = new S3Client({
+      endpoint,
+      region,
+      credentials: { accessKeyId: keyId, secretAccessKey: appKey },
+      forcePathStyle: true,
+    });
+
+    const { Body } = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: 'missing_repos.json' }));
+    if (!Body) return null;
+
+    const raw: UnavailableRepo[] = JSON.parse(await Body.transformToString());
+    console.log(`✓ Fetched ${raw.length} entries`);
+
+    await writeCache(UNAVAILABLE_REPOS_CACHE_FILE, raw);
+    return raw;
+  } catch (error) {
+    console.warn('⚠ Could not fetch supplementary data:', error instanceof Error ? error.message : error);
+    return null;
+  }
 }

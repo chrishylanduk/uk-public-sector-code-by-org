@@ -1,4 +1,4 @@
-import type { GithubRepo, GovUkOrg, PlanningDataOrg, OrganisationStats, OrgEntry, GroupedFormats } from './types';
+import type { GithubRepo, GovUkOrg, PlanningDataOrg, OrganisationStats, OrgEntry, GroupedFormats, UnavailableRepo } from './types';
 import { getOrgMapping, getLocalGovEntries, getAllMappedGithubOrgs, getMissingWikidataOrgs, getDuplicateWikidataOrgs, getWikidataIdToSlug, getGovUkWikidataIds } from './mapping';
 import { fetchWikidataLocalOrgs } from './data-fetcher';
 import type { CsStatsFteEntry } from './data-fetcher';
@@ -128,10 +128,11 @@ export function processOrganisationData(
   govUkOrgs: GovUkOrg[],
   planningDataOrgs: PlanningDataOrg[] = [],
   lgaFteData: Map<string, number> = new Map(),
-  csStatsFteData: Map<string, CsStatsFteEntry> = new Map()
+  csStatsFteData: Map<string, CsStatsFteEntry> = new Map(),
+  unavailableRepos: UnavailableRepo[] | null = null
 ): Promise<OrganisationStats[]> {
   if (!_organisationDataPromise) {
-    _organisationDataPromise = _processOrganisationData(repos, govUkOrgs, planningDataOrgs, lgaFteData, csStatsFteData);
+    _organisationDataPromise = _processOrganisationData(repos, govUkOrgs, planningDataOrgs, lgaFteData, csStatsFteData, unavailableRepos);
   }
   return _organisationDataPromise;
 }
@@ -141,7 +142,8 @@ async function _processOrganisationData(
   govUkOrgs: GovUkOrg[],
   planningDataOrgs: PlanningDataOrg[],
   lgaFteData: Map<string, number>,
-  csStatsFteData: Map<string, CsStatsFteEntry>
+  csStatsFteData: Map<string, CsStatsFteEntry>,
+  unavailableRepos: UnavailableRepo[] | null
 ): Promise<OrganisationStats[]> {
   const mapping = getOrgMapping();
   const wikidataIdToSlug = getWikidataIdToSlug();
@@ -154,6 +156,16 @@ async function _processOrganisationData(
     seen.add(repo.url);
     return true;
   });
+
+  // Deduplicate missing repos against live scrape (live is authoritative)
+  const liveRepoKeys = new Set(repos.map((r) => `${r.owner}/${r.name}`));
+  const dedupedUnavailable = (unavailableRepos ?? []).filter((r) => !liveRepoKeys.has(`${r.owner}/${r.name}`));
+  const unavailableByOwner = new Map<string, UnavailableRepo[]>();
+  for (const repo of dedupedUnavailable) {
+    const list = unavailableByOwner.get(repo.owner) ?? [];
+    list.push(repo);
+    unavailableByOwner.set(repo.owner, list);
+  }
 
   // Filter out closed/devolved gov.uk orgs
   const liveGovUkOrgs = govUkOrgs.filter((org) => {
@@ -203,6 +215,8 @@ async function _processOrganisationData(
       ? `${govOrg.title} (${abbr})`
       : govOrg.title;
 
+    const orgUnavailable = config.githubOrgs.flatMap((o) => unavailableByOwner.get(o) ?? []);
+
     orgMap.set(slug, {
       slug,
       name,
@@ -217,6 +231,7 @@ async function _processOrganisationData(
       parentSlug,
       fte: csStatsFteData.get(normaliseOrgName(govOrg.title))?.fte,
       digitalDataFte: csStatsFteData.get(normaliseOrgName(govOrg.title))?.digitalDataFte,
+      unavailableRepos: orgUnavailable.length > 0 ? orgUnavailable : undefined,
     });
   }
 
@@ -256,6 +271,7 @@ async function _processOrganisationData(
     const allOrgRepos = repos.filter((repo) => entry.githubOrgs.includes(repo.owner));
     const activeOrgRepos = allOrgRepos.filter(isActiveRepo);
     const totalStars = activeOrgRepos.reduce((sum, repo) => sum + repo.stargazersCount, 0);
+    const localUnavailable = entry.githubOrgs.flatMap((o) => unavailableByOwner.get(o) ?? []);
 
     orgMap.set(slug, {
       slug,
@@ -270,6 +286,7 @@ async function _processOrganisationData(
       webUrl,
       parentSlug,
       fte,
+      unavailableRepos: localUnavailable.length > 0 ? localUnavailable : undefined,
     });
   }
 
@@ -307,6 +324,7 @@ export function getOrgList(organisations: OrganisationStats[]): OrgEntry[] {
       githubOrgs: org.githubOrgs,
       fte: org.fte,
       digitalDataFte: org.digitalDataFte,
+      unavailableRepoCount: org.unavailableRepos?.length,
     }));
 }
 

@@ -10,13 +10,14 @@ import SearchAndFilter from './SearchAndFilter';
 interface Props {
   entries: OrgEntry[];
   availableFormats: GroupedFormats;
+  hasUnavailableData: boolean;
 }
 
 
-const SORT_FIELDS = ['name', 'type', 'stars', 'active-repos', 'all-repos', 'fte', 'digitalDataFte'] as const;
+const SORT_FIELDS = ['name', 'type', 'stars', 'active-repos', 'all-repos', 'fte', 'digitalDataFte', 'unavailable-repos'] as const;
 const URL_OPTIONS = { history: 'replace', shallow: true, scroll: false } as const;
 
-export default function OrgDirectory({ entries, availableFormats }: Props) {
+export default function OrgDirectory({ entries, availableFormats, hasUnavailableData }: Props) {
   const [q, setQ] = useQueryState('q', parseAsString.withDefault('').withOptions(URL_OPTIONS));
   const [sort, setSort] = useQueryState('sort', parseAsStringLiteral(SORT_FIELDS).withDefault('type').withOptions(URL_OPTIONS));
   const [dir, setDir] = useQueryState('dir', parseAsStringLiteral(['asc', 'desc'] as const).withDefault('desc').withOptions(URL_OPTIONS));
@@ -26,7 +27,10 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
   const groupByParentUserSet = group !== null;
   const groupByParent = group !== null ? group !== '0' : (sort === 'name' || sort === 'type');
 
-  const filters: FilterState = { searchQuery: q, excludedFormats: ex, sortField: sort, sortDirection: dir };
+  const filters: FilterState = useMemo(
+    () => ({ searchQuery: q, excludedFormats: ex, sortField: sort, sortDirection: dir }),
+    [q, ex, sort, dir]
+  );
 
   const setFilters = (next: FilterState) => {
     setQ(next.searchQuery || null);
@@ -94,6 +98,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
         case 'all-repos': comparison = a.totalRepoCount - b.totalRepoCount; break;
         case 'fte':           comparison = (a.fte ?? -1) - (b.fte ?? -1); break;
         case 'digitalDataFte': comparison = (a.digitalDataFte ?? -1) - (b.digitalDataFte ?? -1); break;
+        case 'unavailable-repos': comparison = (a.unavailableRepoCount ?? 0) - (b.unavailableRepoCount ?? 0); break;
       }
       return filters.sortDirection === 'asc' ? comparison : -comparison;
     });
@@ -162,9 +167,15 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           <dd>{entry.repoCount.toLocaleString('en-GB')}</dd>
         </div>
         <div className="flex gap-1">
-          <dt className="text-grey">Total repos:</dt>
+          <dt className="text-grey">Live repos:</dt>
           <dd>{entry.totalRepoCount.toLocaleString('en-GB')}</dd>
         </div>
+        {hasUnavailableData && (entry.unavailableRepoCount ?? 0) > 0 && (
+          <div className="flex gap-1">
+            <dt className="text-grey">Unavailable repos:</dt>
+            <dd>{(entry.unavailableRepoCount ?? 0).toLocaleString('en-GB')}</dd>
+          </div>
+        )}
       </dl>
     </div>
   );
@@ -186,8 +197,13 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
       </td>
       <td className="px-4 py-3 text-right">{entry.repoCount.toLocaleString('en-GB')}</td>
       <td className="px-4 py-3 text-right hidden lg:table-cell">{entry.totalRepoCount.toLocaleString('en-GB')}</td>
+      {hasUnavailableData && (
+        <td className="px-4 py-3 text-right">
+          {(entry.unavailableRepoCount ?? 0) > 0 ? (entry.unavailableRepoCount ?? 0).toLocaleString('en-GB') : <span className="text-grey">—</span>}
+        </td>
+      )}
       <td className="px-4 py-3 text-right">{entry.fte != null ? entry.fte.toLocaleString('en-GB') : <span className="text-grey">—</span>}</td>
-      <td className="px-4 py-3 text-right">{entry.digitalDataFte != null ? entry.digitalDataFte.toLocaleString('en-GB') : <span className="text-grey">—</span>}</td>
+      <td className="px-4 py-3 text-right hidden lg:table-cell">{entry.digitalDataFte != null ? entry.digitalDataFte.toLocaleString('en-GB') : <span className="text-grey">—</span>}</td>
     </tr>
   );
 
@@ -243,7 +259,8 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           <option value="name">Name A–Z</option>
           <option value="stars">Stars of active repos</option>
           <option value="active-repos">Active repos</option>
-          <option value="all-repos">Total repos</option>
+          <option value="all-repos">Live repos</option>
+          {hasUnavailableData && <option value="unavailable-repos">Unavailable repos</option>}
           <option value="fte">Total FTE</option>
           <option value="digitalDataFte">Digital &amp; data FTE</option>
         </select>
@@ -262,9 +279,12 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
       <div className="hidden md:block overflow-x-clip">
         <table
           className="w-full border-collapse"
-          role="table"
-          aria-label="UK public sector organisations and their GitHub code"
         >
+          <caption className="text-xs text-grey pb-2 text-left">
+            {hasUnavailableData
+              ? <><strong>Active:</strong> currently on GitHub, not archived, and pushed to within 180 days. <strong>Live:</strong> currently on GitHub. <strong>Unavailable:</strong> previously on GitHub but not currently found.</>
+              : <><strong>Active:</strong> currently on GitHub, not archived, and pushed to within 180 days. <strong>Live:</strong> currently on GitHub.</>}
+          </caption>
           <thead className="sticky top-0 z-10">
             <tr className="bg-light-grey shadow-[0_2px_0_0_#9a3412]">
               <th scope="col" className="px-4 py-3 text-left font-bold" aria-sort={getAriaSortValue('name')}>
@@ -278,26 +298,33 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('stars')}>
-                <button onClick={() => handleSort('stars')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by total stars">
+                <button onClick={() => handleSort('stars')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by stars of active repositories">
                   Stars of active repos{getSortIcon('stars')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('active-repos')}>
-                <button onClick={() => handleSort('active-repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by active repository count">
+                <button onClick={() => handleSort('active-repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by active repositories — currently on GitHub, not archived, and pushed to within 180 days">
                   Active repos{getSortIcon('active-repos')}
                 </button>
               </th>
               <th scope="col" className="px-4 py-3 text-right font-bold hidden lg:table-cell" aria-sort={getAriaSortValue('all-repos')}>
-                <button onClick={() => handleSort('all-repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by total repository count">
-                  Total repos{getSortIcon('all-repos')}
+                <button onClick={() => handleSort('all-repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by live repositories — currently on GitHub">
+                  Live repos{getSortIcon('all-repos')}
                 </button>
               </th>
+              {hasUnavailableData && (
+                <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('unavailable-repos')}>
+                  <button onClick={() => handleSort('unavailable-repos')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by unavailable repositories — previously on GitHub but not currently found">
+                    Unavailable repos{getSortIcon('unavailable-repos')}
+                  </button>
+                </th>
+              )}
               <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('fte')}>
                 <button onClick={() => handleSort('fte')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by total FTE">
                   Total FTE{getSortIcon('fte')}
                 </button>
               </th>
-              <th scope="col" className="px-4 py-3 text-right font-bold" aria-sort={getAriaSortValue('digitalDataFte')}>
+              <th scope="col" className="px-4 py-3 text-right font-bold hidden lg:table-cell" aria-sort={getAriaSortValue('digitalDataFte')}>
                 <button onClick={() => handleSort('digitalDataFte')} className="flex items-center justify-end w-full hover:underline focus:outline-2 focus:outline-orange" aria-label="Sort by digital and data FTE">
                   Digital &amp; data FTE{getSortIcon('digitalDataFte')}
                 </button>
@@ -307,7 +334,7 @@ export default function OrgDirectory({ entries, availableFormats }: Props) {
           <tbody>
             {topLevel.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-grey">
+                <td colSpan={hasUnavailableData ? 8 : 7} className="px-4 py-8 text-center text-grey">
                   No organisations match your search criteria.
                 </td>
               </tr>

@@ -49,6 +49,11 @@ export default function RootLayout({
             </h1>
           </div>
         </header>
+        <noscript>
+          <div className="bg-light-grey border-b border-mid-grey px-4 py-2 text-sm text-grey text-center">
+            JavaScript is not enabled so some interactive features will not work.
+          </div>
+        </noscript>
         <main id="main-content" className="w-full max-w-7xl mx-auto px-4 py-8 flex-1">
           <NuqsAdapter>{children}</NuqsAdapter>
         </main>

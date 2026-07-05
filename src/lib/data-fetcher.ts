@@ -15,7 +15,7 @@ const UNAVAILABLE_REPOS_CACHE_FILE = path.join(CACHE_DIR, 'missing-repos.json');
 const CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Update this URL when a new quarterly release is published
-export const LGA_FTE_URL = 'https://www.local.gov.uk/sites/default/files/documents/QPSES%20Q4%202025.xlsx';
+export const LGA_FTE_URL = 'https://www.local.gov.uk/sites/default/files/documents/QPSES%202026%20Q1.xlsx';
 // Update this URL when a new annual release is published
 export const CS_STATS_URL = 'https://assets.publishing.service.gov.uk/media/696f6cdc7e827090d02d4219/Statistical_tables_-_Civil_Service_Statistics_2025.ods';
 const ONS_GEOGRAPHY_URL = 'https://open-geography-portalx-ons.hub.arcgis.com/api/download/v1/items/984b3f485d1a4c0f9d9e51617cafc224/csv?layers=0';
@@ -348,7 +348,7 @@ export async function fetchLgaFteData(): Promise<Map<string, number>> {
   const ws = wb.getWorksheet('Final Individual');
   if (!ws) throw new Error('Sheet "Final Individual" not found in QPSES spreadsheet');
 
-  const allRows = ws.getSheetValues() as (ExcelJS.CellValue[])[];
+  const allRows = ws.getSheetValues() as unknown as (ExcelJS.CellValue[])[];
   // getSheetValues() is 1-indexed and may have a leading undefined at index 0
   const rows = allRows.filter(Boolean);
 

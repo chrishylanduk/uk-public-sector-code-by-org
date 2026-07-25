@@ -214,18 +214,24 @@ export async function fetchWikidataLocalOrgs(wikidataIds: string[]): Promise<Map
     const batch = toFetch.slice(i, i + BATCH_SIZE);
     const values = batch.map((id) => `wd:${id}`).join(' ');
 
+    // Wikidata has been migrating labels from "en" to the language-neutral "mul"
+    // tag (used when a label is the same across all languages, e.g. proper nouns).
+    // An entity can therefore have no "en"-tagged label while still having an
+    // English-readable one under "mul" — so we accept both, preferring "en" when
+    // both exist (ORDER BY puts "en" rows first; the dedup below keeps the first).
     const query = `
       SELECT ?item ?label ?website ?instanceOfLabel ?parentOrg WHERE {
         VALUES ?item { ${values} }
-        ?item rdfs:label ?label . FILTER(LANG(?label) = "en")
+        ?item rdfs:label ?label . FILTER(LANG(?label) IN ("en", "mul"))
         OPTIONAL { ?item wdt:P856 ?website . }
         OPTIONAL {
           ?item wdt:P31 ?instanceOf .
-          ?instanceOf rdfs:label ?instanceOfLabel . FILTER(LANG(?instanceOfLabel) = "en")
+          ?instanceOf rdfs:label ?instanceOfLabel . FILTER(LANG(?instanceOfLabel) IN ("en", "mul"))
         }
         OPTIONAL { ?item wdt:P749 ?parentOrg . }
         OPTIONAL { ?item wdt:P361 ?parentOrg . }
       }
+      ORDER BY ?item (IF(LANG(?label) = "en", 0, 1))
     `;
 
     const response = await fetchWithRetry(

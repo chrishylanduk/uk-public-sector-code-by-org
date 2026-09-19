@@ -85,11 +85,11 @@
     },
     {
       "type": "gov_uk",
-      "govuk_slug": "department-for-culture-media-and-sport",
+      "govuk_slug": "department-for-digital-culture-media-and-sport",
       "wikidata_id": "Q910019",
       "github_accounts": [],
-      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-culture-media-and-sport",
-      "site_slug": "department-for-culture-media-and-sport"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-digital-culture-media-and-sport",
+      "site_slug": "department-for-digital-culture-media-and-sport"
     },
     {
       "type": "gov_uk",
@@ -1134,8 +1134,8 @@
       "github_accounts": [
         "TheHighlandCouncil"
       ],
-      "site_url": "https://publicsectorcodebyorg.co.uk/org/the-highland-council",
-      "site_slug": "the-highland-council"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/highland-council",
+      "site_slug": "highland-council"
     },
     {
       "type": "other",

@@ -15,9 +15,9 @@ const UNAVAILABLE_REPOS_CACHE_FILE = path.join(CACHE_DIR, 'missing-repos.json');
 const CACHE_MAX_AGE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // Update this URL when a new quarterly release is published
-export const LGA_FTE_URL = 'https://www.local.gov.uk/sites/default/files/documents/QPSES%202026%20Q1.xlsx';
+export const LGA_FTE_URL = 'https://www.local.gov.uk/sites/default/files/documents/QPSES%202026%20Q2.xlsx';
 // Update this URL when a new annual release is published
-export const CS_STATS_URL = 'https://assets.publishing.service.gov.uk/media/696f6cdc7e827090d02d4219/Statistical_tables_-_Civil_Service_Statistics_2025.ods';
+export const CS_STATS_URL = 'https://assets.publishing.service.gov.uk/media/6ad7476437f279373fa3c9c9/Statistical_tables_-_Civil_Service_Statistics_2026_V2.ods';
 const ONS_GEOGRAPHY_URL = 'https://open-geography-portalx-ons.hub.arcgis.com/api/download/v1/items/984b3f485d1a4c0f9d9e51617cafc224/csv?layers=0';
 
 /**
@@ -345,6 +345,14 @@ export async function fetchLgaFteData(): Promise<Map<string, number>> {
   }
   console.log(`✓ Parsed ${lgaNameToOnsCode.size} LGA name → ONS code mappings`);
 
+  // The ONS file only covers districts/unitaries, so English county councils (listed in QPSES by bare
+  // name, e.g. "Devon") are looked up from the "CTY" entries in the planning data instead.
+  const countyNameToOnsCode = new Map<string, string>();
+  for (const org of await fetchPlanningDataOrgs()) {
+    if (org['local-authority-type'] !== 'CTY' || org['end-date']) continue;
+    countyNameToOnsCode.set(org.name.replace(/ County Council$/, ''), org['statistical-geography']);
+  }
+
   console.log(`Fetching LGA FTE data from ${LGA_FTE_URL}...`);
   const xlsxResponse = await fetchWithRetry(LGA_FTE_URL);
   const xlsxBuffer = await xlsxResponse.arrayBuffer();
@@ -375,7 +383,7 @@ export async function fetchLgaFteData(): Promise<Map<string, number>> {
     const fte = row[fteCol];
     if (!lgaName || typeof fte !== 'number') continue;
 
-    const onsCode = lgaNameToOnsCode.get(lgaName) ?? lgaShortNameToOnsCode.get(lgaName);
+    const onsCode = lgaNameToOnsCode.get(lgaName) ?? lgaShortNameToOnsCode.get(lgaName) ?? countyNameToOnsCode.get(lgaName);
     if (onsCode) {
       onsFteMap.set(onsCode, fte);
       matched++;
@@ -393,9 +401,15 @@ export async function fetchLgaFteData(): Promise<Map<string, number>> {
   return onsFteMap;
 }
 
-function normaliseOrgName(s: string): string {
-  return s.replace(/&/g, 'and').replace(/\s+/g, ' ').trim().toLowerCase();
+// Strips a leading "the" so e.g. gov.uk's "The Scottish Government" matches the CS row "Scottish Government".
+export function normaliseOrgName(s: string): string {
+  return s.replace(/&/g, 'and').replace(/\s+/g, ' ').trim().toLowerCase().replace(/^the /, '');
 }
+
+// Civil Service Statistics rows whose name differs from the gov.uk title (both normalised).
+const CS_NAME_ALIASES: Record<string, string> = {
+  'office of qualifications and examinations regulation': 'ofqual',
+};
 
 export interface CsStatsFteEntry {
   fte: number;
@@ -489,6 +503,9 @@ export async function fetchCsStatsFteData(): Promise<Map<string, CsStatsFteEntry
     let orgName = cells[orgNameCol]?.trim() ?? '';
     if (!orgName) continue;
 
+    // Drop trailing footnote markers, e.g. "Department for Work and Pensions (excl. agencies) [note 21]"
+    orgName = orgName.replace(/\s*\[note \d+\]$/i, '');
+
     // Discard "X Overall" rows — represent combined parent+agencies totals
     if (orgName.endsWith(' Overall')) continue;
 
@@ -504,7 +521,8 @@ export async function fetchCsStatsFteData(): Promise<Map<string, CsStatsFteEntry
     const ddRaw = digitalDataFteCol !== -1 ? cells[digitalDataFteCol]?.replace(/,/g, '').trim() : '';
     const digitalDataFte = ddRaw ? parseFloat(ddRaw) : NaN;
 
-    fteMap.set(normaliseOrgName(orgName), {
+    const normalisedName = normaliseOrgName(orgName);
+    fteMap.set(CS_NAME_ALIASES[normalisedName] ?? normalisedName, {
       fte,
       digitalDataFte: isNaN(digitalDataFte) ? undefined : digitalDataFte,
     });

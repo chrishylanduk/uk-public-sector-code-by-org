@@ -103,14 +103,13 @@
     },
     {
       "type": "gov_uk",
-      "govuk_slug": "department-for-science-innovation-and-technology",
-      "wikidata_id": "Q116719150",
+      "govuk_slug": "ai-security-institute",
+      "wikidata_id": "Q126284597",
       "github_accounts": [
-        "UKGovernmentBEIS",
-        "CDEIUK"
+        "UKGovernmentBEIS"
       ],
-      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-science-innovation-and-technology",
-      "site_slug": "department-for-science-innovation-and-technology"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/ai-security-institute",
+      "site_slug": "ai-security-institute"
     },
     {
       "type": "gov_uk",
@@ -160,7 +159,8 @@
         "govuk-forms",
         "govuk-paas",
         "openregister",
-        "gds-dead"
+        "gds-dead",
+        "CDEIUK"
       ],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/government-digital-service",
       "site_slug": "government-digital-service"

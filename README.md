@@ -64,6 +64,7 @@ A static website that shows UK public sector organisations and their open-source
 ### Available Scripts
 
 - `npm run dev` — Start development server
+- `npm run clean` — Delete the `.next` build output (don't run while a dev server is running)
 - `npm run update-mapping` — Populate missing fields in `org-mapping.json` and regenerate the CSV (run locally after adding entries, then commit)
 - `npm run prebuild` — Fetch and cache all external data, validate mapping (runs automatically before build)
 - `npm run build` — Full production build (runs prebuild automatically)

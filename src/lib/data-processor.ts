@@ -1,6 +1,6 @@
 import type { GithubRepo, GovUkOrg, PlanningDataOrg, OrganisationStats, OrgEntry, GroupedFormats, UnavailableRepo } from './types';
 import { getOrgMapping, getLocalGovEntries, getAllMappedGithubOrgs, getMissingWikidataOrgs, getDuplicateWikidataOrgs, getWikidataIdToSlug, getGovUkWikidataIds } from './mapping';
-import { fetchWikidataLocalOrgs } from './data-fetcher';
+import { fetchWikidataLocalOrgs, normaliseOrgName } from './data-fetcher';
 import type { CsStatsFteEntry } from './data-fetcher';
 import { isActiveRepo } from '@/utils/format';
 
@@ -33,10 +33,6 @@ const LOCAL_AUTHORITY_TYPE: Record<string, string> = {
  * Process and aggregate organisation data
  * Validates mapping file and fails build if stale
  */
-function normaliseOrgName(s: string): string {
-  return s.replace(/&/g, 'and').replace(/\s+/g, ' ').trim().toLowerCase();
-}
-
 /**
  * Run data quality checks. Call from prebuild only — not during page rendering.
  * Throws on critical errors; warns on issues that don't block builds.

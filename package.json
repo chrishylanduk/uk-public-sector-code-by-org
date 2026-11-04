@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "rm -rf .next && next dev --webpack",
+    "dev": "next dev --webpack",
+    "clean": "rm -rf .next",
     "update-mapping": "tsx scripts/update-mapping.ts",
     "list-missing-github-orgs": "tsx --env-file=.env scripts/list-missing-github-orgs.ts",
     "prebuild": "tsx scripts/prebuild.ts",

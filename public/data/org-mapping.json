@@ -64,19 +64,11 @@
     },
     {
       "type": "gov_uk",
-      "govuk_slug": "department-for-business-and-trade",
-      "wikidata_id": "Q116726347",
+      "govuk_slug": "department-for-business-innovation-science-and-trade",
+      "wikidata_id": "Q140645712",
       "github_accounts": [
         "uktrade"
       ],
-      "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-business-and-trade",
-      "site_slug": "department-for-business-and-trade"
-    },
-    {
-      "type": "gov_uk",
-      "govuk_slug": "department-for-business-innovation-science-and-trade",
-      "wikidata_id": "Q140645712",
-      "github_accounts": [],
       "site_url": "https://publicsectorcodebyorg.co.uk/org/department-for-business-innovation-science-and-trade",
       "site_slug": "department-for-business-innovation-science-and-trade"
     },

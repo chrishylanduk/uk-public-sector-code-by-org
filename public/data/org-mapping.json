@@ -133,13 +133,13 @@
     },
     {
       "type": "gov_uk",
-      "govuk_slug": "prime-ministers-office-10-downing-street",
+      "govuk_slug": "prime-ministers-office-no-10",
       "github_accounts": [
         "no10ds"
       ],
       "wikidata_id": "Q96758600",
-      "site_url": "https://publicsectorcodebyorg.co.uk/org/prime-ministers-office-10-downing-street",
-      "site_slug": "prime-ministers-office-10-downing-street"
+      "site_url": "https://publicsectorcodebyorg.co.uk/org/prime-ministers-office-no-10",
+      "site_slug": "prime-ministers-office-no-10"
     },
     {
       "type": "gov_uk",
